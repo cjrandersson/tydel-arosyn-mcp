@@ -1,4 +1,4 @@
-#### Elevator pitch: MCP för Ediel
+# Tydel (Projektbeskrivning i elevator pitch format)
 
 Svenska elmarknaden utbyter stora mängder affärskritisk information genom Ediel – exempelvis mätvärden, leverantörsbyten och avräkningsunderlag. När meddelanden fastnar eller innehåller fel krävs ofta manuell felsökning mellan energibolag, nätägare och IT-leverantörer.
 
@@ -7,7 +7,7 @@ Vi vill utveckla ett MCP-baserat, AI-drivet support- och analyslager för Ediel.
 Vi ersätter inte Ediel-infrastrukturen – vi gör den begripligare, snabbare att felsöka och billigare att drifta. Första produkten kan vara en fristående validator och supportassistent, med potential att utvecklas till ett gemensamt observability- och automationslager för den nordiska energimarknaden.
 
 
-# Tydel: MCP-Driven Grid Data Monitoring & Ingestion Framework
+> Tydel: MCP-Driven Grid Data Monitoring & Ingestion Framework
 An intelligent, Model Context Protocol (MCP) powered operational middleware platform engineered specifically for regional Swedish Distribution System Operators (DSOs) and Balance Responsible Parties (BRPs) in the Mälardalen region (SE3 Bidding Zone).
 
 Tydel continuously parses legacy **Ediel (EDIFACT)** messaging streams, tracks operational errors, forecasts grid load capacities, and translates technical data infrastructure bottlenecks into natural language actionable alerts.
