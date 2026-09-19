@@ -1,3 +1,12 @@
+#### Elevator pitch: MCP för Ediel
+
+Svenska elmarknaden utbyter stora mängder affärskritisk information genom Ediel – exempelvis mätvärden, leverantörsbyten och avräkningsunderlag. När meddelanden fastnar eller innehåller fel krävs ofta manuell felsökning mellan energibolag, nätägare och IT-leverantörer.
+
+Vi vill utveckla ett MCP-baserat, AI-drivet support- och analyslager för Ediel. Det kopplar säkert samman AI med specifikationer, valideringsverktyg, meddelandeflöden och driftdata. Lösningen kan översätta tekniska felkoder till tydliga orsaker, lokalisera felet i meddelandet, föreslå korrigering och vid behov notifiera rätt aktör.
+
+Vi ersätter inte Ediel-infrastrukturen – vi gör den begripligare, snabbare att felsöka och billigare att drifta. Första produkten kan vara en fristående validator och supportassistent, med potential att utvecklas till ett gemensamt observability- och automationslager för den nordiska energimarknaden.
+
+
 # Tydel: MCP-Driven Grid Data Monitoring & Ingestion Framework
 An intelligent, Model Context Protocol (MCP) powered operational middleware platform engineered specifically for regional Swedish Distribution System Operators (DSOs) and Balance Responsible Parties (BRPs) in the Mälardalen region (SE3 Bidding Zone).
 
