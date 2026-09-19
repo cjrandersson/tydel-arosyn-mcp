@@ -1,175 +1,193 @@
-# Tydel (Projektbeskrivning i elevator pitch format)
+# Tydel
 
-Svenska elmarknaden utbyter stora mängder affärskritisk information genom Ediel – exempelvis mätvärden, leverantörsbyten och avräkningsunderlag. När meddelanden fastnar eller innehåller fel krävs ofta manuell felsökning mellan energibolag, nätägare och IT-leverantörer.
+**An explainability and validation layer for Ediel-based energy-market communication.**
 
-Vi vill utveckla ett MCP-baserat, AI-drivet support- och analyslager för Ediel. Det kopplar säkert samman AI med specifikationer, valideringsverktyg, meddelandeflöden och driftdata. Lösningen kan översätta tekniska felkoder till tydliga orsaker, lokalisera felet i meddelandet, föreslå korrigering och vid behov notifiera rätt aktör.
+> **Project status:** Research, architecture and early prototype. This repository does not yet contain a production-ready or runnable MCP server.
 
-Vi ersätter inte Ediel-infrastrukturen – vi gör den begripligare, snabbare att felsöka och billigare att drifta. Första produkten kan vara en fristående validator och supportassistent, med potential att utvecklas till ett gemensamt observability- och automationslager för den nordiska energimarknaden.
+Tydel explores how deterministic validation, operational context and the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) can make legacy energy-market messages easier to understand, troubleshoot and support.
 
+The initial focus is the Swedish electricity market. The longer-term opportunity is a reusable observability and support layer for Nordic energy-market communication.
 
-> Tydel: MCP-Driven Grid Data Monitoring & Ingestion Framework
-An intelligent, Model Context Protocol (MCP) powered operational middleware platform engineered specifically for regional Swedish Distribution System Operators (DSOs) and Balance Responsible Parties (BRPs) in the Mälardalen region (SE3 Bidding Zone).
+## The problem
 
-Tydel continuously parses legacy **Ediel (EDIFACT)** messaging streams, tracks operational errors, forecasts grid load capacities, and translates technical data infrastructure bottlenecks into natural language actionable alerts.
+The Swedish electricity market exchanges business-critical information through Ediel and related market processes, including meter values, supplier changes and settlement data.
 
----
+When a message is rejected, delayed or malformed, troubleshooting may require manual coordination between electricity suppliers, distribution system operators (DSOs), balance responsible parties (BRPs), service providers and system vendors. The underlying EDIFACT messages and implementation rules are difficult to interpret without specialist knowledge.
 
-## 🏗️ Platform Core Architecture
+## Proposed solution
 
-Tydel bridges the structural gap between legacy electrical utility communications and modern automated agentic workflows using a layered microservice blueprint:
+Tydel is intended to sit beside existing EDI infrastructure as a support and analysis layer. It does **not** replace Ediel, existing EDI routers or authoritative market systems.
 
-```
-                  ┌──────────────────────────────────────────────┐
-                  │               TYDEL CORE ENGINE              │
-                  │  (EDIFACT Parser, MCP Agent, Forecast Engine) │
-                  └───────▲──────────────────────────────▲───────┘
-                          │                              │
-     PHASE 1: Passive     │                              │   PHASE 2: Active
-     Log Ingestion        │                              │   Inline Routing
-                          │                              │
-    ┌─────────────────────┴──────┐                ┌──────┴─────────────────────┐
-    │ CLIENT'S EXIST. EDI ROUTER │                │       CENTRAL EDIEL /      │
-    │ (e.g., eBuilder / BizTalk) │                │    eSETT MARKET PLATFORM   │
-    └──────────────▲─────────────┘                └──────────────▲─────────────┘
-                   │                                             │
-                   │ (Copies files via SFTP)                     │ (Direct AS2 / HTTPS)
-                   │                                             │
-    ┌──────────────┴─────────────┐                               │
-    │    Smart Meters / Grid     │───────────────────────────────┘
-    └────────────────────────────┘
-```
+The first product direction is a read-only validator and support assistant that can:
 
-### 🔓 The Ingestion Strategy
-* **Passive Log Ingestion (Low Friction):** Integrates via automated `SFTP` text outbox dumps without disrupting operational inline environments. 
-* **Inline Communications Gateway (Active Loop):** Intercepts live data pipelines as an active routing layer using `AS2 / HTTPS` transport frameworks, allowing automated runtime transaction error self-healing.
+- ingest copied messages, validation results and operational logs;
+- parse and validate messages using deterministic rules;
+- identify the segment and rule associated with an error;
+- assemble verified operational context;
+- expose validation tools and reference material through MCP;
+- explain errors and recommended actions in clear language;
+- preserve source evidence and an audit trail;
+- notify or hand off to the appropriate operator when configured.
 
----
+Any generated explanation or recommendation must remain traceable to deterministic validation results and approved reference material.
 
-## ⚙️ MCP Server Logic & Step-by-Step Translation Blueprint
+## Why MCP?
 
-The Model Context Protocol (MCP) server acts as a standardized interface mapping underlying code validation anomalies into natural language suggestions over a secure JSON-RPC interface.
+MCP is the interface between Tydel's domain services and compatible AI applications. It is not the parser, validation engine or language model.
 
-```
-[ Raw Inbound MSCONS File ] ──► [ 1. Parsing Engine ] ──► [ 2. Context Packager ]
-                                                                   │
-                                                                   ▼
-[ 5. Frontend Dashboard UI ] ◄── [ 4. LLM Inference ] ◄── [ 3. MCP Server Payload ]
-```
+An MCP server can expose:
 
-1. **Raw Error Extraction (Parser):** The TypeScript pipeline encounters anomalies within an incoming file stream (e.g., a non-numeric value in a data segment):
-   ```text
-   LOC+172+735999102030405061'
-   DTM+241:PT15M:806'
-   QTY+131:NULL'  <-- CRASH: System encounters string instead of expected numeric value
-   ```
-2. **Context Packaging:** The extraction loop links structural error parameters to operational grid definitions:
-   ```json
-   {
-     "errorCode": "EDI_VALUE_TYPE_MISMATCH",
-     "segment": "QTY",
-     "meta": {
-       "meteringPointId": "735999102030405061",
-       "affectedUtility": "Upplands Energi",
-       "marketPartner": "eSett",
-       "imbalanceRiskZone": "SE3"
-     }
-    }
-   ```
-3. **MCP Tool Formatting:** Exposes standardized resources compliant with the `@modelcontextprotocol/sdk`:
-   ```typescript
-   import { CallToolResult } from "@modelcontextprotocol/sdk";
-   
-   export async function handleGetEdiErrorContext(messageId: string): Promise<CallToolResult> {
-     const errorData = await db.fetchErrorLog(messageId);
-     return {
-       content: [{
-         type: "text",
-         text: `CONTEXT ENVIRONMENT: Swedish DSO operational error.\nRaw Segment: ${errorData.rawString}\nMetering Point: ${errorData.meta.meteringPointId}`
-       }]
-     };
-   }
-   ```
-4. **LLM Inference Processing:** Uses internal systemic templates to translate the error context into a structured, plain-language action sequence.
-5. **UI Rendering:** Renders contextual actions directly into the frontend command center sidebar.
+- **Tools** for validating a message, inspecting an incident or retrieving error context;
+- **Resources** containing approved specifications, code lists and implementation guidance;
+- structured results that an AI client can turn into an explanation or support workflow.
 
----
+The deterministic core must continue to work without an LLM. AI is used for interpretation and interaction—not as the source of truth for message validity.
 
-## 🇸🇪 Swedish Infrastructure Compliance & Hosting
+## Proposed architecture
 
-To operate inside critical national infrastructure under Sweden's **Säkerhetsskyddslagen** and the EU **NIS2 directive**, Tydel isolates data from non-EU legal jurisdictions (negating US Cloud Act exposure).
-
-* **Sovereign Cloud Layer:** Deployed within secure, local Swedish hosting nodes (such as **Safespring**, **Cleura**, or **Elastx**).
-* **Multi-Tenant BYOC Model:** Features a *Bring Your Own Certificate* cryptography structure. Private keys and X.509 certificates required by the *Svenska kraftnät Ediel Agreement* remain isolated in individual encrypted environments.
-
----
-
-## 💻 TypeScript Implementation Blueprint
-
-### Core Domain Layout Types (`types/grid.ts`)
-```typescript
-export type MessageType = 'MSCONS' | 'PRODAT' | 'DELFOR' | 'APERAK';
-export type PipelineStatus = 'healthy' | 'warning' | 'critical';
-
-export interface EdiErrorPayload {
-  messageId: string;
-  type: MessageType;
-  origin: string;
-  timestamp: string;
-  status: PipelineStatus;
-  segmentErrorLocation?: string;
-  plainEnglishSummary: string;
-  rawPayloadUrl: string;
-}
+```mermaid
+flowchart TD
+    A["Ediel messages and operational logs"] --> B["Read-only ingestion adapters"]
+    B --> C["Parser and canonical message model"]
+    C --> D["Validation and rules engine"]
+    D --> E["Incident context and audit store"]
+    E --> F["MCP server"]
+    F --> G["AI client and operator UI"]
+    E --> H["Controlled notification workflows"]
 ```
 
-### PDF Ingestion & Automation Engine (`scripts/ingest-ediel-handbook.ts`)
-```typescript
-import * as fs from 'fs';
-import * as path from 'path';
-import pdf from 'pdf-parse';
+### Architectural boundaries
 
-interface ExtractedSection {
-  segmentCode: string;
-  markdownContext: string;
-}
+- Existing EDI infrastructure remains authoritative.
+- Ingestion is read-only in the initial phase.
+- Parsing and validation are deterministic and testable.
+- MCP provides controlled access to data and capabilities.
+- The LLM explains evidence; it does not invent missing operational facts.
+- Corrections, retransmissions and other state-changing actions require explicit authorization, validation and audit logging.
 
-export async function convertEdielPdfToMarkdown(pdfPath: string): Promise<ExtractedSection[]> {
-  const dataBuffer = fs.readFileSync(pdfPath);
-  const parsedPdf = await pdf(dataBuffer);
-  const fullText = parsedPdf.text;
-  
-  const segmentDelimiter = /(Segment:\s+[A-Z]{3})/g;
-  const rawChunks = fullText.split(segmentDelimiter);
-  const formattedSections: ExtractedSection[] = [];
+Transport mechanisms such as SFTP, APIs, AS2 or HTTPS are adapter choices to be decided from real pilot-system requirements. They are not fixed parts of the architecture yet.
 
-  rawChunks.forEach((chunk, index) => {
-    formattedSections.push({
-      segmentCode: `EDIEL_SEGMENT_${index}`,
-      markdownContext: `### Ediel Specification Rule\n\n\`\`\`\n${chunk.trim()}\n\`\`\``
-    });
-  });
+## Initial use case
 
-  return formattedSections;
-}
-```
+Given a copied Ediel message or recorded validation failure, Tydel should be able to return:
 
----
+1. message type and identifiable parties;
+2. exact segment and element where validation failed;
+3. deterministic error code and applicable rule;
+4. plain-language explanation;
+5. suggested next diagnostic or corrective step;
+6. evidence and references used to produce the result.
 
-## 🛠️ Getting Started & Local Development
+The system should return a structured validation error rather than crash when it encounters invalid input.
 
-### 1. Prerequisites
-Ensure you have the following frameworks configured locally within your sovereign deployment container:
-* Node.js v18+ 
-* TypeScript v5+
+## Delivery phases
 
-### 2. Installation
-```bash
-npm install @modelcontextprotocol/sdk pdf-parse
-npm install --save-dev typescript @types/node
-```
+### Phase 0 — Domain research and foundations
 
-### 3. Build the Context Core
-To run the documentation parsing pipeline and initialize the localized context databases:
-```bash
-npx ts-node scripts/ingest-ediel-handbook.ts
-```
+- Verify Swedish Ediel processes, message types and terminology.
+- Collect legally reusable specifications and representative synthetic test data.
+- Define the canonical message and validation-result schemas.
+- Establish security, privacy and audit requirements.
+
+### Phase 1 — Read-only validator
+
+- Parse selected Ediel/EDIFACT messages.
+- Run deterministic structural and domain validations.
+- Produce structured, traceable error reports.
+- Test locally with synthetic or safely anonymized data.
+
+### Phase 2 — MCP support assistant
+
+- Expose validation and incident-inspection tools through MCP.
+- Provide approved specifications and code lists as MCP resources.
+- Generate evidence-linked explanations for operators.
+- Add a minimal operator interface.
+
+### Phase 3 — Operational observability
+
+- Correlate message failures across authorized logs and systems.
+- Add dashboards, trends and controlled notifications.
+- Introduce role-based access control and deployment integrations.
+
+### Future opportunities — not committed scope
+
+- Human-approved correction workflows.
+- Carefully constrained automation for low-risk actions.
+- Support for additional Nordic market formats and processes.
+- Forecasting or grid-capacity analysis only if supported by separate, appropriate datasets and validated models.
+
+## Safety and security principles
+
+- Read-only by default.
+- Least-privilege access to customer systems.
+- No production message modification without explicit authorization.
+- Human approval for consequential actions.
+- Complete auditability of data access, tool calls and recommendations.
+- Data minimization and clear retention policies.
+- Tenant isolation and customer-controlled credentials.
+- Deployment and data-residency requirements assessed per customer and use case.
+- No claim of regulatory compliance without a documented assessment.
+
+Swedish security-protection legislation, the Cybersecurity Act/NIS2-related requirements, GDPR and sector-specific obligations may be relevant depending on the operator, data and deployment. Applicability must be assessed rather than assumed.
+
+## Technology direction
+
+The current repository uses TypeScript configuration and references the official MCP TypeScript SDK. This is an initial direction, not a final platform decision.
+
+TypeScript is a reasonable starting point for the MCP interface and an MVP because it provides:
+
+- a mature Node.js integration ecosystem;
+- official MCP SDK support;
+- shared types between services and a future web interface;
+- fast iteration during domain discovery.
+
+Parser correctness, validation coverage, security and operability matter more than language preference. Other languages or isolated services should only be introduced when measurable requirements justify the added complexity.
+
+## Repository contents
+
+| Path | Status | Purpose |
+| --- | --- | --- |
+| `README.md` | Current | Product scope, principles and proposed architecture |
+| `package.json` | Scaffolding | Initial TypeScript and MCP dependencies; requires review |
+| `tsconfig.json` | Scaffolding | Initial TypeScript compiler configuration |
+| `mock_mscons.edi` | Synthetic fixture | Early mock message for research; not an authoritative Ediel example |
+| `src/` | Not yet present | Future implementation |
+
+## Local development
+
+There is not yet a runnable implementation. Installation and execution instructions will be added when the first tested vertical slice exists. Until then, commands that imply a working server would be misleading.
+
+## Decision principles
+
+Major technical choices should be documented with their context, alternatives and consequences. The project will favor:
+
+- verified domain knowledge over generated assumptions;
+- a narrow working vertical slice over speculative platform breadth;
+- deterministic validation before AI interpretation;
+- reversible integrations before inline control;
+- evidence-linked output over opaque AI conclusions;
+- explicit project boundaries over feature accumulation.
+
+## Svenska sammanfattning
+
+<details>
+<summary>Visa projektbeskrivningen på svenska</summary>
+
+Svenska elmarknaden utbyter stora mängder affärskritisk information genom Ediel, exempelvis mätvärden, leverantörsbyten och avräkningsunderlag. När meddelanden fastnar eller innehåller fel krävs ofta manuell felsökning mellan marknadsaktörer och deras IT-leverantörer.
+
+Tydel utforskar ett MCP-baserat support- och analyslager som säkert kopplar AI-applikationer till deterministiska valideringsverktyg, godkända specifikationer, meddelandeflöden och driftdata. Lösningen ska kunna lokalisera ett fel, visa vilken regel som brutits, förklara orsaken och föreslå ett spårbart nästa steg.
+
+Tydel ersätter inte Ediel-infrastrukturen. Målet är att göra den begripligare, snabbare att felsöka och billigare att stödja. Den första produkten är tänkt som en fristående, read-only validator och supportassistent. På längre sikt kan den utvecklas till ett observability- och supportlager för den nordiska energimarknaden.
+
+</details>
+
+## References
+
+- [Model Context Protocol](https://modelcontextprotocol.io/)
+- [Svenska kraftnät: Använda Ediel](https://www.svk.se/aktorsportalen/it-systemsupport/anvanda-ediel/)
+- [eSett: Data communication](https://www.esett.com/)
+- [Swedish Energy Agency: Cybersecurity Act](https://www.energimyndigheten.se/)
+
+## Disclaimer
+
+Tydel is an independent research and development project. It is not affiliated with, endorsed by or certified by Svenska kraftnät, eSett or any named market participant. All example data in this repository must be synthetic or properly anonymized.
