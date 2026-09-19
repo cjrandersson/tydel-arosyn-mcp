@@ -1,0 +1,10 @@
+# Local reference downloads: not cleared for public redistribution.
+.cache/
+__pycache__/
+*.pyc
+node_modules/
+dist/
+build/
+.env
+.env.*
+!.env.example

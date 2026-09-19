@@ -85,8 +85,12 @@ TypeScript and the official MCP TypeScript SDK are the current starting point. T
 | --- | --- |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | System design, boundaries and data flow |
 | [`docs/`](docs/) | Research, decisions and deeper documentation |
+| [`reference/`](reference/) | Official-source catalogue, licensed MCP files and local download instructions |
+| [`AGENTS.md`](AGENTS.md) | Guidance for Codex and other coding assistants |
 | [`assets/graphics/`](assets/graphics/) | Diagrams, source graphics and exports |
 | [`fixtures/edifact/`](fixtures/edifact/) | Synthetic EDIFACT test messages |
+| [`scripts/reference_library.py`](scripts/reference_library.py) | Reference download and checksum checks; not application code |
+| [`tests/`](tests/) | Offline tests for the reference helper |
 | [`misc/`](misc/) | Temporary material waiting to be classified |
 | `src/` | Future implementation; not created yet |
 
@@ -95,6 +99,17 @@ TypeScript and the official MCP TypeScript SDK are the current starting point. T
 - `package.json` and `tsconfig.json` are early scaffolding and still need review.
 - `fixtures/edifact/mock_mscons.edi` is a synthetic research fixture, not an authoritative Ediel example.
 - Installation instructions will be added when the first tested vertical slice can run.
+
+## Reference material
+
+Start with the [reading guide](docs/research/reading-guide.md) and
+[reference library](reference/README.md). Sources are separated by country,
+format and edition. Licensed MCP originals are included in Git; other permitted
+public downloads stay in a local, Git-ignored cache. Restricted sources remain
+links only. This is reference material, not an approved model-training dataset.
+
+The Swedish meter-data research starts with UTILTS/APERAK. The existing MSCONS
+fixture does not establish which profile the first product should support.
 
 ## Svenska
 

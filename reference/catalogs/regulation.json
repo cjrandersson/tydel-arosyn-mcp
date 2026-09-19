@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-09-19",
+  "scope": "Selected official source indexes; not a complete or production-approved standard library.",
+  "sources": [
+    {
+      "id": "ei-eifs-2025-1",
+      "group": "regulation",
+      "title": "EIFS 2025:1 — measurement and reporting of electricity",
+      "url": "https://ei.se/om-oss/publikationer/publikationer/foreskrifter-el/2025/foreskrift-eifs-20251",
+      "index_url": "https://ei.se/om-oss/publikationer/publikationer/foreskrifter-el/2025/foreskrift-eifs-20251",
+      "publisher": "Ei",
+      "topic": "regulation",
+      "format": "link",
+      "edition_status": "reference-not-adopted",
+      "version_hint": null,
+      "version_verified": false,
+      "effective_from": null,
+      "storage": "link-only",
+      "rights": "manual-review-required",
+      "rights_url": "https://ei.se/om-oss/publikationer/publikationer/foreskrifter-el/2025/foreskrift-eifs-20251",
+      "model_use": "not-approved-by-this-catalogue",
+      "note": "PDF download not captured; verify later amendments and the period being reported."
+    }
+  ]
+}

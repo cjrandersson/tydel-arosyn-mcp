@@ -2,9 +2,16 @@
 
 This folder contains material that is too detailed for the main README.
 
+Available now:
+
+- [Research reading guide](research/reading-guide.md) — source order, format boundaries and open questions.
+- [Source permissions](research/source-permissions.md) — local reference use, public copies and model-use boundaries.
+- [Reference collection log](research/collection-log.md) — what was collected and checked.
+- [Reference library](../reference/README.md) — catalogues, originals and download commands.
+
 Planned sections:
 
-- `research/` — verified Ediel and energy-market research;
+- `research/` — Ediel and energy-market research with source evidence and review status;
 - `decisions/` — architecture decision records;
 - `security/` — threat models and deployment requirements;
 - `product/` — scope, users and validated use cases.

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-09-19",
+  "scope": "Selected official source indexes; not a complete or production-approved standard library.",
+  "sources": [
+    {
+      "id": "esett-handbook-55c9a61ef879",
+      "group": "esett-handbook",
+      "title": "NBS-Handbook-v5.4.pdf",
+      "url": "https://www.esett.com/app/uploads/2026/06/NBS-Handbook-v5.4.pdf",
+      "index_url": "https://www.esett.com/handbook/",
+      "publisher": "eSett",
+      "topic": "esett-handbook",
+      "format": "pdf",
+      "edition_status": "listed-not-adopted",
+      "version_hint": "5.4",
+      "version_verified": false,
+      "effective_from": null,
+      "storage": "link-only",
+      "rights": "permission-required",
+      "rights_url": "https://www.esett.com/terms-conditions/",
+      "model_use": "not-approved-by-this-catalogue"
+    },
+    {
+      "id": "esett-handbook-d951c95a2c0e",
+      "group": "esett-handbook",
+      "title": "NBS-Handbok-Svenska-5.4.pdf",
+      "url": "https://www.esett.com/app/uploads/2026/06/NBS-Handbok-Svenska-5.4.pdf",
+      "index_url": "https://www.esett.com/handbook/",
+      "publisher": "eSett",
+      "topic": "esett-handbook",
+      "format": "pdf",
+      "edition_status": "listed-not-adopted",
+      "version_hint": "5.4",
+      "version_verified": false,
+      "effective_from": null,
+      "storage": "link-only",
+      "rights": "permission-required",
+      "rights_url": "https://www.esett.com/terms-conditions/",
+      "model_use": "not-approved-by-this-catalogue"
+    },
+    {
+      "id": "esett-handbook-a243a544c655",
+      "group": "esett-handbook",
+      "title": "NBS-Handbook-Norsk-v5.4.pdf",
+      "url": "https://www.esett.com/app/uploads/2026/06/NBS-Handbook-Norsk-v5.4.pdf",
+      "index_url": "https://www.esett.com/handbook/",
+      "publisher": "eSett",
+      "topic": "esett-handbook",
+      "format": "pdf",
+      "edition_status": "listed-not-adopted",
+      "version_hint": "5.4",
+      "version_verified": false,
+      "effective_from": null,
+      "storage": "link-only",
+      "rights": "permission-required",
+      "rights_url": "https://www.esett.com/terms-conditions/",
+      "model_use": "not-approved-by-this-catalogue"
+    }
+  ]
+}

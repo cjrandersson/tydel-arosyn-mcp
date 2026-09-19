@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-09-19",
+  "scope": "Selected official source indexes; not a complete or production-approved standard library.",
+  "sources": [
+    {
+      "id": "swedish-handbook-b535c7bf633a",
+      "group": "swedish-handbook",
+      "title": "NEMHB.pdf",
+      "url": "https://www.elmarknadshandboken.se/Dokumentation/Texter/NEMHB.pdf",
+      "index_url": "https://www.elmarknadshandboken.se/handbok.html",
+      "publisher": "Elmarknadshandboken",
+      "topic": "swedish-handbook",
+      "format": "pdf",
+      "edition_status": "listed-not-adopted",
+      "version_hint": null,
+      "version_verified": false,
+      "effective_from": null,
+      "storage": "cache",
+      "rights": "public-reference-reuse-unconfirmed",
+      "rights_url": "https://www.elmarknadshandboken.se/handbok.html",
+      "model_use": "not-approved-by-this-catalogue"
+    }
+  ]
+}
