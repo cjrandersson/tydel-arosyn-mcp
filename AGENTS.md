@@ -1,9 +1,32 @@
 # Working on Tydel
 
 Tydel is a research-stage, read-only Ediel validation and support project. There is
-no production service yet. Read `README.md` and `ARCHITECTURE.md` before changing
-the system design. Explain material scope or architecture changes to the owner
-before implementing them.
+no production service yet.
+
+## Development cockpit comes first
+
+Before doing any work, read the **Development Status — Team Cockpit** near the top
+of `README.md`.
+
+Treat it as the operational source of truth for:
+
+- the current milestone;
+- the exact next task;
+- task ownership;
+- blockers / pending decisions;
+- which milestone items are complete;
+- what should happen next.
+
+Only start work assigned to **Codex** or work explicitly requested by the owner.
+Do not silently take over tasks owned by `@cjrandersson`, `ChatGPT`, `Gonzalo` or
+another named collaborator.
+
+If implementation changes milestone status, completes a checklist item, changes a
+blocker or changes the immediate next step, update the README cockpit in the same
+work so it remains accurate.
+
+Read `README.md` and `ARCHITECTURE.md` before changing the system design. Explain
+material scope or architecture changes to the owner before implementing them.
 
 ## Use the reference library
 
