@@ -6,7 +6,7 @@
 
 ---
 
-# 🧭 Development Status — Team Cockpit
+# 🧭 DEVELOPMENT COCKPIT
 
 > **This is the operational source of truth for where Tydel is right now.**  
 > Update this section whenever implementation status, architecture, milestone completion, ownership or the immediate next step changes.
