@@ -4,6 +4,80 @@
 
 > **Status:** Research and early prototype. There is no runnable MCP server yet.
 
+---
+
+# 🧭 Development Status — Team Cockpit
+
+> **This is the operational source of truth for where Tydel is right now.**  
+> Update this section whenever implementation status, architecture, milestone completion, ownership or the immediate next step changes.
+
+| | Current state |
+|---|---|
+| **Current milestone** | **M0 — Research foundation & first validator scope** |
+| **Status** | 🟡 **IN PROGRESS** |
+| **Current objective** | Lock the first narrow, authoritative and testable Ediel validation slice before application code is expanded |
+| **Exact next task** | Run an independent architecture/product peer review and produce a recommendation for the first supported Swedish message/profile + validator contract |
+| **Next-task owner** | **ChatGPT** |
+| **Blocked / waiting on team** | ✅ **Nothing required from @cjrandersson right now** |
+| **Codex state** | ⏸ **WAITING** — implementation should start after the first validator slice is locked |
+| **Next milestone** | **M1 — First deterministic validator vertical slice** |
+| **Last updated** | **2026-09-25** |
+
+### Active ownership / pending
+
+| Owner | Pending now | State |
+|---|---|---|
+| **@cjrandersson** | Nothing required before the peer review / scope recommendation | ✅ **CLEAR** |
+| **ChatGPT** | Stress-test Tydel architecture/product assumptions and recommend the first validator slice | 🟡 **NEXT MOVE** |
+| **Codex** | Begin implementation only after the first message/profile and validator contract are locked | ⏸ **WAITING** |
+| **Gonzalo** | Nothing assigned | ⚪ **CLEAR** |
+
+> **Ownership rule:** nothing may be marked `pending`, `blocked`, `waiting` or `next` without an explicit owner. If Robin must act, show it explicitly as `🚨 @cjrandersson — <required action>`. Use `ChatGPT`, `Codex` or a named collaborator for other owners. Do not invent GitHub handles.
+
+### Milestone progress
+
+- [ ] **M0 — Research foundation & first validator scope** ← **CURRENT**
+  - [x] Core problem and first user value defined
+  - [x] Read-only first-version boundary defined
+  - [x] Deterministic parser / validator as source of truth defined
+  - [x] MCP positioned as controlled access/explanation layer, not validation authority
+  - [x] Architecture documented
+  - [x] Reference-library structure established
+  - [x] Official-source / edition separation established
+  - [x] Synthetic test-fixture policy established
+  - [ ] Independent peer review of architecture and product assumptions — **ChatGPT**
+  - [ ] Select first supported Swedish message/profile — **ChatGPT recommendation → @cjrandersson approval if a product choice is required**
+  - [ ] Define the first validator contract and structured error output — **ChatGPT / Codex**
+  - [ ] Define authoritative positive + negative fixtures for that slice — **ChatGPT / Codex**
+  - [ ] Review `package.json` and `tsconfig.json` against the locked vertical slice — **Codex**
+
+- [ ] **M1 — First deterministic validator vertical slice**
+  - [ ] Create production `src/` structure
+  - [ ] Implement parser for the selected message/profile
+  - [ ] Implement deterministic validation rules
+  - [ ] Return exact segment / rule / evidence / safe next step
+  - [ ] Add positive and negative unit fixtures
+  - [ ] Add repeatable offline test suite
+  - [ ] Provide a runnable local validation entry point
+
+- [ ] **M2 — MCP assistant layer**
+  - [ ] Expose validator through MCP tools
+  - [ ] Expose approved reference material through controlled resources
+  - [ ] Add plain-language explanation of verified validator output
+  - [ ] Preserve evidence and source traceability
+  - [ ] Keep write/change actions out of scope
+
+- [ ] **M3 — Observability & real-world validation**
+  - [ ] Add validation history / trends
+  - [ ] Add controlled alerts
+  - [ ] Test with representative operator workflows
+  - [ ] Find first design-partner / pilot candidate
+  - [ ] Measure time saved and diagnostic accuracy
+
+**Rule:** a meaningful project change is not fully documented until this cockpit reflects the new state **and the correct owner for every pending action**.
+
+---
+
 Tydel is a planned validation and support layer for energy-market communication. It helps operators find message errors, understand what they mean and decide what to do next.
 
 The first focus is the Swedish electricity market. Tydel will work beside existing Ediel and EDI systems—not replace them.
