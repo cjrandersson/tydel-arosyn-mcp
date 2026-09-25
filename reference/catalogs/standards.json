@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-09-19",
-  "scope": "Selected official source indexes; not a complete or production-approved standard library.",
+  "reviewed_at": "2026-09-25",
+  "scope": "Selected official and technical source indexes; not a complete or production-approved standard library.",
   "sources": [
     {
       "id": "unece-edifact-directories",
@@ -59,6 +59,44 @@
       "rights_url": "https://www.svk.se/aktorsportalen/it-systemsupport/anvanda-ediel/",
       "model_use": "not-approved-by-this-catalogue",
       "note": "Entry point for participation, testing and current national instructions."
+    },
+    {
+      "id": "openedi-specification",
+      "group": "standards",
+      "title": "OpenEDI Specification",
+      "url": "https://github.com/EdiNation/OpenEDI-Specification",
+      "index_url": "https://github.com/EdiNation/OpenEDI-Specification",
+      "publisher": "EdiFabric / EdiNation",
+      "topic": "machine-readable-edi",
+      "format": "openapi-extension",
+      "edition_status": "evaluation-approved",
+      "version_hint": "2.0.0",
+      "version_verified": true,
+      "effective_from": null,
+      "storage": "vendored-eligible",
+      "rights": "MIT",
+      "rights_url": "https://github.com/EdiNation/OpenEDI-Specification/blob/main/LICENSE",
+      "model_use": "specification-use-approved-subject-to-MIT",
+      "note": "Candidate machine-readable representation for generic EDI/EDIFACT structure. This source defines the OpenEDI format; it is not an authority for Swedish Ediel business rules."
+    },
+    {
+      "id": "edination-edi-spec-library",
+      "group": "standards",
+      "title": "EdiNation EDI Specification Library",
+      "url": "https://edination.edifabric.com/edi-spec-library.html",
+      "index_url": "https://edination.edifabric.com/edi-spec-library.html",
+      "publisher": "EdiFabric / EdiNation",
+      "topic": "machine-readable-edi-models",
+      "format": "openedi-json",
+      "edition_status": "evaluation-approved",
+      "version_hint": null,
+      "version_verified": false,
+      "effective_from": null,
+      "storage": "link-only",
+      "rights": "model-specific-review-required",
+      "rights_url": "https://edination.edifabric.com/edi-spec-library.html",
+      "model_use": "local-evaluation-only-until-rights-reviewed",
+      "note": "Potential source of machine-readable EDIFACT models for the M0 OpenEDI spike. Do not assume the MIT license of the OpenEDI specification applies to every downloadable standard model. Cache/checksum locally only after model-specific rights review."
     },
     {
       "id": "esbuild-architecture",
