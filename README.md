@@ -1,7 +1,7 @@
 # Tydel
 
 **A clearer way to understand and troubleshoot Ediel messages.**
-
+> En AI-driven, molnbaserad TypeScript-MCP-server som omedelbart tolkar komplexa Ediel EDIFACT-energidata till konkreta insikter, vilket gör det möjligt för energibolag i Mälardalen att enkelt diagnostisera fel, upptäcka avvikelser i förbrukningen och prognostisera nätkapacitet med hjälp av naturligt språk.
 
 ---
 
