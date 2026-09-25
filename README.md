@@ -2,7 +2,6 @@
 
 **A clearer way to understand and troubleshoot Ediel messages.**
 
-> **Status:** Research and early prototype. There is no runnable MCP server yet.
 
 ---
 
