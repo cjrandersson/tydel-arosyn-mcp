@@ -27,12 +27,12 @@
 
   <text x="62" y="207" class="mono row active">● ACTIVE</text>
   <text x="230" y="207" class="mono row">ChatGPT</text>
-  <text x="620" y="207" class="mono row">Ediel research + första validator-scope</text>
+  <text x="620" y="207" class="mono row">Peer review + OpenEDI standard-layer spike</text>
   <text x="1338" y="207" text-anchor="end" class="mono row active">PÅGÅR</text>
 
   <text x="62" y="253" class="mono row wait">○ WAIT</text>
   <text x="230" y="253" class="mono row">Codex</text>
-  <text x="620" y="253" class="mono row">Deterministisk validator vertical slice</text>
+  <text x="620" y="253" class="mono row">OpenEDI support + validator vertical slice</text>
   <text x="1338" y="253" text-anchor="end" class="mono row wait">VÄNTAR</text>
 
   <text x="62" y="299" class="mono row clear">○ CLEAR</text>
@@ -52,8 +52,8 @@
   <line x1="62" y1="442" x2="1338" y2="442" class="line"/>
 
   <text x="62" y="486" class="mono row active">M0</text>
-  <text x="230" y="486" class="mono row">Research foundation + validator scope</text>
-  <text x="1338" y="486" text-anchor="end" class="mono row active">███████░░░</text>
+  <text x="230" y="486" class="mono row">Research + validator scope + OpenEDI spike</text>
+  <text x="1338" y="486" text-anchor="end" class="mono row active">████████░░</text>
 
   <text x="62" y="530" class="mono row muted">M1</text>
   <text x="230" y="530" class="mono row muted">Deterministisk validator</text>
@@ -65,6 +65,6 @@
 
   <line x1="62" y1="610" x2="1338" y2="610" class="line"/>
   <text x="62" y="651" class="mono label">NEXT DEPARTURE</text>
-  <text x="300" y="651" class="mono row">Peer review → rekommendera första svenska message/profile + validator contract</text>
+  <text x="300" y="651" class="mono row">Peer review + OpenEDI spike → första svenska profile + validator contract</text>
   <text x="1338" y="651" text-anchor="end" class="mono row active">NEXT</text>
 </svg>
