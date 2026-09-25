@@ -11,6 +11,10 @@
 > **This is the operational source of truth for where Tydel is right now.**  
 > Update this section whenever implementation status, architecture, milestone completion, ownership or the immediate next step changes.
 
+![Tydel Development Cockpit](assets/graphics/development-cockpit.svg)
+
+> The board above is the fast visual overview. The tables below are the machine-readable source of truth and must stay synchronized with the board.
+
 | | Current state |
 |---|---|
 | **Current milestone** | **M0 — Research foundation & first validator scope** |
@@ -30,7 +34,7 @@
 | **@cjrandersson** | Nothing required before the peer review / scope recommendation | ✅ **CLEAR** |
 | **ChatGPT** | Stress-test Tydel architecture/product assumptions and recommend the first validator slice | 🟡 **NEXT MOVE** |
 | **Codex** | Begin implementation only after the first message/profile and validator contract are locked | ⏸ **WAITING** |
-| **Gonzalo** | Nothing assigned | ⚪ **CLEAR** |
+| **@gonzalolorcakeabit-bit** | Nothing assigned | ⚪ **CLEAR** |
 
 > **Ownership rule:** nothing may be marked `pending`, `blocked`, `waiting` or `next` without an explicit owner. If Robin must act, show it explicitly as `🚨 @cjrandersson — <required action>`. Use `ChatGPT`, `Codex` or a named collaborator for other owners. Do not invent GitHub handles.
 
