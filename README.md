@@ -19,11 +19,11 @@
 |---|---|
 | **Current milestone** | **M0 — Research foundation & first validator scope** |
 | **Status** | 🟡 **IN PROGRESS** |
-| **Current objective** | Lock the first narrow, authoritative and testable Ediel validation slice before application code is expanded |
-| **Exact next task** | Run an independent architecture/product peer review and produce a recommendation for the first supported Swedish message/profile + validator contract |
+| **Current objective** | Lock the first narrow, authoritative and testable Ediel validation slice, including whether OpenEDI should provide the generic machine-readable EDIFACT base layer |
+| **Exact next task** | Run the independent architecture/product peer review together with the OpenEDI support spike, then recommend the first supported Swedish message/profile + validator contract |
 | **Next-task owner** | **ChatGPT** |
 | **Blocked / waiting on team** | ✅ **Nothing required from @cjrandersson right now** |
-| **Codex state** | ⏸ **WAITING** — implementation should start after the first validator slice is locked |
+| **Codex state** | ⏸ **WAITING** — implementation starts after the first validator slice and OpenEDI boundary are locked |
 | **Next milestone** | **M1 — First deterministic validator vertical slice** |
 | **Last updated** | **2026-09-25** |
 
@@ -31,9 +31,9 @@
 
 | Owner | Pending now | State |
 |---|---|---|
-| **@cjrandersson** | Nothing required before the peer review / scope recommendation | ✅ **CLEAR** |
-| **ChatGPT** | Stress-test Tydel architecture/product assumptions and recommend the first validator slice | 🟡 **NEXT MOVE** |
-| **Codex** | Begin implementation only after the first message/profile and validator contract are locked | ⏸ **WAITING** |
+| **@cjrandersson** | Nothing required before the peer review / OpenEDI scope recommendation | ✅ **CLEAR** |
+| **ChatGPT** | Stress-test Tydel architecture/product assumptions, evaluate OpenEDI as the generic EDIFACT standard layer and recommend the first validator slice | 🟡 **NEXT MOVE** |
+| **Codex** | Support the OpenEDI spike and begin the vertical slice only after the selected message/profile and validator contract are locked | ⏸ **WAITING** |
 | **@gonzalolorcakeabit-bit** | Nothing assigned | ⚪ **CLEAR** |
 
 > **Ownership rule:** nothing may be marked `pending`, `blocked`, `waiting` or `next` without an explicit owner. If Robin must act, show it explicitly as `🚨 @cjrandersson — <required action>`. Use `ChatGPT`, `Codex` or a named collaborator for other owners. Do not invent GitHub handles.
@@ -49,7 +49,10 @@
   - [x] Reference-library structure established
   - [x] Official-source / edition separation established
   - [x] Synthetic test-fixture policy established
+  - [x] OpenEDI approved for M0 evaluation as a candidate machine-readable base-standard layer
   - [ ] Independent peer review of architecture and product assumptions — **ChatGPT**
+  - [ ] Run OpenEDI support spike against the candidate first message/version — **ChatGPT / Codex**
+  - [ ] Confirm model-specific storage / redistribution boundary for the OpenEDI model used in the spike — **ChatGPT**
   - [ ] Select first supported Swedish message/profile — **ChatGPT recommendation → @cjrandersson approval if a product choice is required**
   - [ ] Define the first validator contract and structured error output — **ChatGPT / Codex**
   - [ ] Define authoritative positive + negative fixtures for that slice — **ChatGPT / Codex**
@@ -58,6 +61,8 @@
 - [ ] **M1 — First deterministic validator vertical slice**
   - [ ] Create production `src/` structure
   - [ ] Implement parser for the selected message/profile
+  - [ ] Implement machine-readable base-standard import if the OpenEDI spike passes
+  - [ ] Implement separately versioned Swedish Ediel/profile overlays
   - [ ] Implement deterministic validation rules
   - [ ] Return exact segment / rule / evidence / safe next step
   - [ ] Add positive and negative unit fixtures
@@ -111,11 +116,13 @@ Tydel will not change or resend production messages in this phase.
 flowchart TD
     A["Messages + logs"]:::input --> B["Ingest"]:::core
     B --> C["Parse"]:::core
-    C --> D["Validate"]:::core
-    D --> E["Build context"]:::core
-    E --> F["MCP server"]:::mcp
-    F --> G["Assistant + operator UI"]:::mcp
-    E --> H["Audit + controlled alerts"]:::action
+    C --> D["Canonical message"]:::core
+    D --> E["Base standard + Ediel overlay"]:::core
+    E --> F["Validate"]:::core
+    F --> G["Build context"]:::core
+    G --> H["MCP server"]:::mcp
+    H --> I["Assistant + operator UI"]:::mcp
+    G --> J["Audit + controlled alerts"]:::action
 
     classDef input fill:#EAF4FF,stroke:#4C8DFF,color:#102A43,stroke-width:1.5px;
     classDef core fill:#EAFBF4,stroke:#22A06B,color:#12372A,stroke-width:1.5px;
@@ -134,9 +141,27 @@ The parser and validator are the source of truth. MCP gives compatible AI applic
 
 Read the deeper technical overview in [ARCHITECTURE.md](ARCHITECTURE.md).
 
+## OpenEDI evaluation
+
+Tydel is evaluating [OpenEDI](https://github.com/EdiNation/OpenEDI-Specification) as a machine-readable representation of the **generic EDI/EDIFACT base standard**.
+
+The intended separation is:
+
+```text
+UN/EDIFACT / OpenEDI base
+          +
+Swedish Ediel / process-profile overlay
+          ↓
+Tydel deterministic validator
+```
+
+OpenEDI does **not** replace Svenska kraftnät, eSett or other authoritative market documentation. National and process-specific rules remain separately versioned and traceable to their official sources.
+
+Tydel will evaluate OpenEDI as structured input to its own rule engine rather than depend on an external EdiNation validator at runtime. See [OpenEDI evaluation](docs/research/openedi-evaluation.md) and [Decision 0002](docs/decisions/0002-openedi-machine-readable-standard-layer.md).
+
 ## Plan
 
-1. **Research** — verify Ediel processes, terms, specifications and test data.
+1. **Research** — verify Ediel processes, terms, specifications, machine-readable base models and test data.
 2. **Validator** — parse selected messages and return structured errors.
 3. **MCP assistant** — expose validation tools and approved documentation through MCP.
 4. **Observability** — add trends, dashboards and controlled notifications.
@@ -157,6 +182,8 @@ Ideas such as automatic corrections, retransmission, forecasting and grid-capaci
 
 TypeScript and the official MCP TypeScript SDK are the current starting point. This is not a permanent decision. We will keep this choice only if it continues to support correctness, security and simple operation.
 
+OpenEDI is being evaluated as an **input format**, not as Tydel's internal domain model. Tydel's canonical message and rule representation must remain replaceable and independent of a single external specification format.
+
 ## Project files
 
 | Path | What belongs there |
@@ -176,6 +203,7 @@ TypeScript and the official MCP TypeScript SDK are the current starting point. T
 
 - `package.json` and `tsconfig.json` are early scaffolding and still need review.
 - `fixtures/edifact/mock_mscons.edi` is a synthetic research fixture, not an authoritative Ediel example.
+- OpenEDI has been accepted for an M0 compatibility spike; it is not yet an adopted runtime dependency or proven source for the first validator.
 - Installation instructions will be added when the first tested vertical slice can run.
 
 ## Reference material
@@ -185,6 +213,8 @@ Start with the [reading guide](docs/research/reading-guide.md) and
 format and edition. Licensed MCP originals are included in Git; other permitted
 public downloads stay in a local, Git-ignored cache. Restricted sources remain
 links only. This is reference material, not an approved model-training dataset.
+
+The OpenEDI specification and EdiNation specification library are now catalogued separately. The OpenEDI format specification is MIT-licensed; downloadable EDI models require their own rights/storage review before Tydel vendors or redistributes them.
 
 The Swedish meter-data research starts with UTILTS/APERAK. The existing MSCONS
 fixture does not establish which profile the first product should support.
@@ -198,15 +228,19 @@ Tydel är ett planerat validerings- och supportlager för Ediel. Det ska hjälpa
 
 Den första versionen blir read-only och arbetar bredvid befintlig EDI-infrastruktur. Fasta och testbara regler avgör om ett meddelande är korrekt. MCP gör sedan valideringsverktyg och godkänt referensmaterial tillgängligt för en AI-assistent, som kan förklara resultatet på begripligt språk.
 
+OpenEDI utvärderas som ett maskinläsbart lager för den generella EDIFACT-strukturen. Svenska Ediel-regler och affärsprocessregler ligger separat ovanpå och måste fortfarande komma från relevanta auktoritativa källor.
+
 </details>
 
 ## Sources
 
 - [Model Context Protocol](https://modelcontextprotocol.io/)
+- [OpenEDI Specification](https://github.com/EdiNation/OpenEDI-Specification)
+- [EdiNation EDI Specification Library](https://edination.edifabric.com/edi-spec-library.html)
 - [Svenska kraftnät: Använda Ediel](https://www.svk.se/aktorsportalen/it-systemsupport/anvanda-ediel/)
 - [eSett](https://www.esett.com/)
 - [esbuild architecture documentation](https://github.com/evanw/esbuild/blob/main/docs/architecture.md)
 
 ## Disclaimer
 
-Tydel is an independent research and development project. It is not affiliated with, endorsed by or certified by Svenska kraftnät, eSett or any market participant.
+Tydel is an independent research and development project. It is not affiliated with, endorsed by or certified by Svenska kraftnät, eSett, EdiNation/EdiFabric or any market participant.
