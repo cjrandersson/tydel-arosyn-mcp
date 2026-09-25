@@ -5,9 +5,12 @@ This folder contains material that is too detailed for the main README.
 Available now:
 
 - [Research reading guide](research/reading-guide.md) — source order, format boundaries and open questions.
+- [OpenEDI evaluation](research/openedi-evaluation.md) — M0 spike for a machine-readable generic EDI/EDIFACT base layer.
 - [Source permissions](research/source-permissions.md) — local reference use, public copies and model-use boundaries.
 - [Reference collection log](research/collection-log.md) — what was collected and checked.
 - [Reference library](../reference/README.md) — catalogues, originals and download commands.
+- [Decision 0001 — Live Development Cockpit](decisions/0001-live-development-cockpit.md) — README cockpit is the operational project source of truth.
+- [Decision 0002 — OpenEDI machine-readable standard layer](decisions/0002-openedi-machine-readable-standard-layer.md) — evaluate OpenEDI as structured base-standard input while keeping Swedish Ediel rules separate.
 
 Planned sections:
 
