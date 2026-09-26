@@ -1,76 +1,145 @@
 # UTILTS och APERAK — aktuell verifierad evidens
 
-> Status: researchunderlag. Dokumentet beskriver endast sådant som kan beläggas i auktoritativa källor. Det är inte ännu ett komplett validator-kontrakt.
+> Status: researchunderlag. Dokumentet beskriver endast sådant som kan beläggas i auktoritativa källor. Det är ännu inte ett komplett validator-kontrakt.
 
 ## Syfte
 
-Det här dokumentet flyttar Tydels research från den breda processnivån närmare konkreta `Message`, `MessageVersion`, `Acknowledgement` och `Rule` för en avgränsad svensk Ediel-process.
+Det här dokumentet flyttar Tydels research från bred processnivå mot konkreta `Message`, `MessageVersion`, `Rule` och `Acknowledgement` för en avgränsad svensk Ediel-process.
 
-## Verifierad aktuell användning
+## Primär källa och giltighet
 
-Svenska kraftnäts implementationsguide för FCR (2025) anger att både **committed plan FCR** och **activated energy FCR** skickas en gång per dag efter leveransdygnets slut i **UTILTS-format, UTILTS S01**. Guiden hänvisar uttryckligen vidare till Edielportalens avsnitt `6. UTILTS-APERAK` för ytterligare information om tidsserieprodukterna.
+Svenska kraftnäts **BSP – Implementation guide FCR**, ärende `Svk 2021/3931`, är daterad **5 mars 2025** och anger **Valid from 28 April 2025**. Guiden beskriver integration mellan BSP och Fifty MMS och är därför stark evidens för just FCR-processen.
 
-Detta räcker för att klassificera UTILTS som `CURRENT_SCOPED` för denna process. Det bevisar inte att UTILTS är den generella aktuella profilen för all svensk mätvärdes- eller handelsvärdesrapportering.
+Källa:
+- https://www.svk.se/siteassets/aktorsportalen/dokument-for-aktorer/dokument-for-reserver/implementationsguide_fcr_en_2025.pdf
+- hänvisad Edielanvisning: https://www.ediel.se/Info/edielanvisningar
 
-Källa: Svenska kraftnät, *BSP – Implementationsguide FCR*, 2025, avsnitt 2.3.2.2–2.3.2.3 och Appendix C.
+## Verifierad FCR-message map
 
-- https://www.svk.se/siteassets/aktorsportalen/dokument-for-aktorer/dokument-for-reserver/implementationsguide_fcr_sv_2025.pdf
-- Edielportalens hänvisade anvisningssida: https://www.ediel.se/Info/edielanvisningar
+Guiden visar att Ediel används som dataformat och SMTP som kommunikationsprotokoll mellan BSP och Fifty MMS. Följande dokumentflöden anges uttryckligen:
 
-## Verifierad acknowledgement-relation
+| Riktning | Affärsobjekt | Message | Scope/status |
+| --- | --- | --- | --- |
+| BSP → Fifty MMS | FCR-bud | `QUOTES` | `CURRENT_SCOPED` |
+| BSP → Fifty MMS | FCR-planer | `DELFOR` | `CURRENT_SCOPED` |
+| Fifty MMS → BSP | accepterade bud | `UTILTS S08` | `CURRENT_SCOPED` |
+| Fifty MMS → BSP | committed plan | `UTILTS S01` | `CURRENT_SCOPED` |
+| Fifty MMS → BSP | activated energy | `UTILTS S01` | `CURRENT_SCOPED` |
 
-Samma aktuella implementationsguide innehåller Appendix C med exempel på **positiv APERAK för UTILTS**. Exemplet visar bland annat:
+Detta bevisar inte att samma profiler gäller andra svenska Ediel-processer.
 
-- `UNH+1+APERAK:D:04A:UN:E5SE9B'`
-- `BGM+312+...` för positiv APERAK
-- guiden anger `313` för negativ APERAK
-- `DOC+E31::260+...` refererar till UTILTS-meddelandet och dess meddelandenummer
-- `RFF+ACW:...` refererar till UTILTS-transaktionen
-- `ERC+100::260` används i det positiva exemplet för godkänd transaktion
+## Verifierade UTILTS-versioner och processkoder
 
-Detta ger konkret evidens för följande avgränsade taxonomikedja:
+Appendix B innehåller konkreta UTILTS-exempel. För activated energy visas:
 
 ```text
-Process: FCR reporting
-  → Transaction: committed plan / activated energy
-  → Message: UTILTS
-  → scoped subtype/profile evidence: S01
-  → Acknowledgement: APERAK
-  → acknowledgement version evidence: D:04A:UN:E5SE9B
-  → positive BGM code: 312
-  → negative BGM code: 313
+UNH+1+UTILTS:D:02B:UN:E5SE9B'
+BGM+S01:SVK:260+DOCUMENTID+9+AB'
 ```
 
-### Viktig avgränsning
+Det ger evidens för:
 
-Exempelfilen visar en konkret APERAK-version och semantik i en aktuell Svenska kraftnät-guide. Tydel ska **inte** därifrån anta att `D:04A:UN:E5SE9B`, BGM-koderna eller samtliga segmentregler gäller universellt för alla svenska UTILTS-processer. De klassificeras tills vidare som `CURRENT_SCOPED` till den process/evidens där de är belagda.
+- `Message = UTILTS`
+- directory/version `D:02B`
+- svensk/profilspecifik identifierare `E5SE9B`
+- `BGM` document type `S01` för den visade settlement/activated-energy-kedjan
 
-## Kandidater till framtida deterministiska regler
+Guiden anger dessutom tidsserieprodukterna:
 
-Följande är nu tillräckligt konkreta för att registreras som **rule candidates**, men de ska inte bli produktionsregler innan det aktuella validator-scope:et har låsts och motsvarande officiella profilkrav har verifierats:
+- committed plan: `S195` FCR-N, `S197` FCR-D upp, `S437` FCR-D ned;
+- activated energy: `S402` FCR-N, `S403` FCR-D upp/ned;
+- accepted bids: `UTILTS S08`, med `S419/S420`, `S423/S424` och `S431/S432` för respektive produkt/auktion.
 
-| Kandidat | Evidens | Status |
+Alla dessa klassificeras `CURRENT_SCOPED` till FCR-guidens scope.
+
+## Verifierade generella regler inom FCR-scope
+
+Guidens avsnitt 2.4 ger flera regelkandidater som kan uttryckas deterministiskt när validator-scope låsts:
+
+- datum och tider uttrycks i UTC;
+- document identification ska vara unik för avsändaren;
+- ett nytt mottaget dokument ersätter i normalfallet tidigare dokument enligt guidens update/cancel-principer;
+- acknowledgement accepterar eller avvisar hela mottagna dokumentet, partial acceptance används inte;
+- APERAK-exempel finns för `UTILTS`, `DELFOR` och `QUOTES`.
+
+Dessa regler ska fortfarande scope-bindas till FCR/Fifty MMS och inte lyftas till globala svenska Ediel-regler utan separat stöd.
+
+## Verifierad APERAK-relation för UTILTS
+
+Appendix C visar:
+
+```text
+UNH+1+APERAK:D:04A:UN:E5SE9B'
+BGM+312+99900033+9'
+DOC+E31::260+205436160319'
+ERC+100::260'
+RFF+ACW:MD200205832134'
+```
+
+Guidens kommentarer anger:
+
+- `312` = positiv APERAK;
+- `313` = negativ APERAK;
+- `DOC` refererar till UTILTS message type/message number;
+- `RFF+ACW` refererar till UTILTS-transaktionen;
+- `ERC+100` betyder i det positiva exemplet att transaktionen är godkänd.
+
+Taxonomikedjan kan därför uttryckas:
+
+```text
+Process: FCR
+→ Transaction: accepted bid | committed plan | activated energy
+→ Message: UTILTS
+→ MessageVersion: D:02B:UN:E5SE9B [belagd i activated-energy-exempel]
+→ subtype: S08 | S01 [scope enligt transaktion]
+→ TransportProfile: SMTP
+→ Acknowledgement: APERAK
+→ AcknowledgementVersion: D:04A:UN:E5SE9B
+→ positive BGM: 312
+→ negative BGM: 313
+```
+
+### APERAK skiljer sig mellan message-familjer
+
+Samma Appendix C visar ett separat acknowledgement-exempel för `DELFOR/QUOTES`:
+
+```text
+UNH+1+APERAK:D:96A:UN:E2SE3B'
+BGM+++29'
+RFF+ACW:A438775'
+```
+
+Guiden anger `29` som positiv och `27` som negativ APERAK för detta exempel. Detta är viktig evidens för att Tydel **inte får modellera APERAK som en enda global version/koduppsättning**. Acknowledgement-regler måste bindas till message family/process/profile.
+
+## Kandidater till deterministiska regler
+
+| Rule candidate | Evidens | Status |
 | --- | --- | --- |
-| APERAK kan kvittera UTILTS | Svk FCR 2025 Appendix C | `CURRENT_SCOPED` |
-| Positiv APERAK använder BGM 312 i exemplet | Svk FCR 2025 Appendix C | `CURRENT_SCOPED` |
-| Negativ APERAK anges som BGM 313 | Svk FCR 2025 Appendix C | `CURRENT_SCOPED` |
-| APERAK refererar till UTILTS message/transaction | `DOC` och `RFF+ACW` i Svk-exemplet | `CURRENT_SCOPED` |
-| APERAK-profil `D:04A:UN:E5SE9B` | Svk FCR 2025 Appendix C | `CURRENT_SCOPED` |
+| FCR activated energy använder `UTILTS:D:02B:UN:E5SE9B` i guideexemplet | Svk FCR 2025 Appendix B | `CURRENT_SCOPED` |
+| FCR committed plan/activated energy använder `S01` | Svk FCR 2025 §2.3.2 | `CURRENT_SCOPED` |
+| Accepted bids använder `UTILTS S08` | Svk FCR 2025 §2.3.2.1 | `CURRENT_SCOPED` |
+| UTILTS acknowledgement använder APERAK i processen | Svk FCR 2025 §2.4.4 + Appendix C | `CURRENT_SCOPED` |
+| UTILTS APERAK-profil i exemplet är `D:04A:UN:E5SE9B` | Appendix C | `CURRENT_SCOPED` |
+| Positiv/negativ UTILTS-APERAK anges som `312/313` | Appendix C | `CURRENT_SCOPED` |
+| `DOC` och `RFF+ACW` länkar acknowledgement till UTILTS message/transaction | Appendix C | `CURRENT_SCOPED` |
+| DELFOR/QUOTES använder annan APERAK-profil/koder i exemplet | Appendix C | `CURRENT_SCOPED` |
+| Partial acceptance används inte i FCR acknowledgement | Svk FCR 2025 §2.4.4 | `CURRENT_SCOPED` |
 
 ## Vad som fortfarande är UNVERIFIED
 
-För ett säkert första validator-kontrakt behöver vi fortfarande verifiera mot den aktuella fullständiga UTILTS–APERAK-anvisningen:
+För ett säkert första validator-kontrakt behöver vi fortfarande verifiera mot den fullständiga aktuella Edielanvisningen:
 
-1. exakt aktuell UTILTS `UNH`-profil/version för vald svensk process;
-2. obligatoriska och villkorade segment för just den profilen;
-3. samtliga tillåtna qualifiers och kodlistor;
-4. negativ APERAK-semantik och felkoder utöver att BGM 313 anges;
-5. om acknowledgement-regler varierar mellan olika UTILTS-transaktionstyper;
-6. editions-/giltighetsdatum så att Tydel kan välja rätt regelverk historiskt.
+1. om `UTILTS:D:02B:UN:E5SE9B` är den normerande aktuella profilen och inte bara formatet i FCR-exemplet;
+2. obligatoriska och villkorade segment för vald profil;
+3. kompletta qualifiers och kodlistor;
+4. negativ APERAK-semantik och samtliga felkoder;
+5. exakt vilka acknowledgement-regler som varierar mellan UTILTS-transaktionstyper;
+6. editions-/giltighetsdatum för Edielanvisningen;
+7. om de visade exemplen innehåller historiska exempelvärden som inte ska tolkas som dagens affärsregler.
 
 ## Taxonomikonsekvens
 
-Tydels maskinläsbara modell bör kunna uttrycka både evidensstatus och scope:
+Tydels modell behöver kunna uttrycka både format, transport, scope och evidens:
 
 ```text
 Actor
@@ -78,7 +147,8 @@ Actor
 → Transaction
 → Message
 → MessageVersion
-→ SyntaxFormat / TransportProfile
+→ SyntaxFormat
+→ TransportProfile
 → Rule
 → Acknowledgement
 → Error
@@ -91,11 +161,12 @@ Varje nod/regelkandidat behöver minst:
 - `scope`
 - `source`
 - `source_date_or_edition`
-- `valid_from` / `valid_to` när källa stödjer det
+- `valid_from` / `valid_to` när källan stödjer det
 - `evidence_note`
-
-Det förhindrar att en korrekt regel från FCR-processen oavsiktligt blir en global svensk Ediel-regel.
 
 ## Nästa researchsteg
 
-Nästa steg är att få fram och editionsbestämma den fullständiga aktuella **UTILTS–APERAK-anvisningen** från Edielportalen och jämföra den med FCR-guidens exempel. Först därefter bör vi föreslå ett exakt första validator-kontrakt.
+1. editionsbestäm den fullständiga aktuella `UTILTS–APERAK`-anvisningen i Edielportalen;
+2. jämför dess segment- och kodkrav mot FCR-guiden;
+3. separera `example evidence` från `normative rule evidence`;
+4. därefter föreslå ett första validator-kontrakt och vilka positiva/negativa fixtures som kan byggas utan antaganden.
