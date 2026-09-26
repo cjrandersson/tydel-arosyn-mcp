@@ -6,13 +6,28 @@
 
 Det här dokumentet flyttar Tydels research från bred processnivå mot konkreta `Message`, `MessageVersion`, `Rule` och `Acknowledgement` för en avgränsad svensk Ediel-process.
 
-## Primär källa och giltighet
+## Primära källor och giltighet
 
 Svenska kraftnäts **BSP – Implementation guide FCR**, ärende `Svk 2021/3931`, är daterad **5 mars 2025** och anger **Valid from 28 April 2025**. Guiden beskriver integration mellan BSP och Fifty MMS och är därför stark evidens för just FCR-processen.
 
-Källa:
+Edielportalens aktuella sida **Edielanvisningar** visar samtidigt en aktiv huvudkategori **`6. UTILTS-APERAK`** och beskriver att UTILTS och dess APERAK används för utbyte av **mätvärden och avräkningsinformation** mellan branschens aktörer. Portalen har en separat kategori **`11. Äldre anvisningar`** för anvisningar som har utgått. Detta är viktig editions-evidens: UTILTS–APERAK är inte bara ett historiskt dokumentnamn, utan ligger i portalens aktuella anvisningsstruktur per 2026-09-26.
+
+Detta bevisar däremot **inte** ännu vilken enskild underliggande UTILTS-/APERAK-fil, edition eller profil som är normerande för varje svensk process. Den detaljen måste hämtas från dokumenten under den aktiva kategorin innan segmentkrav kan göras till validatorregler.
+
+Källor:
 - https://www.svk.se/siteassets/aktorsportalen/dokument-for-aktorer/dokument-for-reserver/implementationsguide_fcr_en_2025.pdf
-- hänvisad Edielanvisning: https://www.ediel.se/Info/edielanvisningar
+- https://www.ediel.se/Info/edielanvisningar
+
+## Evidenshierarki
+
+För att undvika att ett exempel blir en påhittad standardregel använder Tydel följande ordning:
+
+1. **Normativ profil-/Edielanvisning** — kan bära obligatoriska, villkorade och kodspecifika regler när edition och scope är verifierade.
+2. **Aktuell process-/implementationsguide från marknadsansvarig** — stark evidens för process, message family, transport och processpecifika krav.
+3. **Exempelfil i aktuell guide** — evidens för att en konkret struktur/version förekommer i guidens scope, men inte ensam bevis för generell obligatorisk segmentstruktur.
+4. **Sekundär teknisk källa** — stöd för syntax/basstandard, aldrig ensam auktoritet för svensk Ediel-profil.
+
+En validatorregel får inte uppgraderas från `example evidence` till `normative rule evidence` utan stöd från nivå 1 eller ett uttryckligt normativt krav på nivå 2.
 
 ## Verifierad FCR-message map
 
@@ -115,6 +130,7 @@ Guiden anger `29` som positiv och `27` som negativ APERAK för detta exempel. De
 
 | Rule candidate | Evidens | Status |
 | --- | --- | --- |
+| Aktiv Edielkategori `6. UTILTS-APERAK` används för mätvärden och avräkningsinformation | Edielportalen, aktuell Edielanvisningssida | `CURRENT` på kategorinivå; profil/edition ännu `UNVERIFIED` |
 | FCR activated energy använder `UTILTS:D:02B:UN:E5SE9B` i guideexemplet | Svk FCR 2025 Appendix B | `CURRENT_SCOPED` |
 | FCR committed plan/activated energy använder `S01` | Svk FCR 2025 §2.3.2 | `CURRENT_SCOPED` |
 | Accepted bids använder `UTILTS S08` | Svk FCR 2025 §2.3.2.1 | `CURRENT_SCOPED` |
@@ -127,15 +143,15 @@ Guiden anger `29` som positiv och `27` som negativ APERAK för detta exempel. De
 
 ## Vad som fortfarande är UNVERIFIED
 
-För ett säkert första validator-kontrakt behöver vi fortfarande verifiera mot den fullständiga aktuella Edielanvisningen:
+För ett säkert första validator-kontrakt behöver vi fortfarande verifiera mot dokumenten under Edielportalens aktiva `6. UTILTS-APERAK`:
 
-1. om `UTILTS:D:02B:UN:E5SE9B` är den normerande aktuella profilen och inte bara formatet i FCR-exemplet;
-2. obligatoriska och villkorade segment för vald profil;
-3. kompletta qualifiers och kodlistor;
-4. negativ APERAK-semantik och samtliga felkoder;
-5. exakt vilka acknowledgement-regler som varierar mellan UTILTS-transaktionstyper;
-6. editions-/giltighetsdatum för Edielanvisningen;
-7. om de visade exemplen innehåller historiska exempelvärden som inte ska tolkas som dagens affärsregler.
+1. exakt dokumenttitel, edition/revision och giltighetsdatum för aktuell UTILTS- och APERAK-anvisning;
+2. om `UTILTS:D:02B:UN:E5SE9B` är normerande för den valda processen och inte bara formatet i FCR-exemplet;
+3. obligatoriska och villkorade segment för vald profil;
+4. kompletta qualifiers och kodlistor;
+5. negativ APERAK-semantik och samtliga felkoder;
+6. exakt vilka acknowledgement-regler som varierar mellan UTILTS-transaktionstyper;
+7. om guideexemplen innehåller historiska exempelvärden som inte ska tolkas som dagens affärsregler.
 
 ## Taxonomikonsekvens
 
@@ -162,11 +178,13 @@ Varje nod/regelkandidat behöver minst:
 - `source`
 - `source_date_or_edition`
 - `valid_from` / `valid_to` när källan stödjer det
+- `evidence_level`: `NORMATIVE | PROCESS_GUIDE | EXAMPLE | SECONDARY`
 - `evidence_note`
 
 ## Nästa researchsteg
 
-1. editionsbestäm den fullständiga aktuella `UTILTS–APERAK`-anvisningen i Edielportalen;
-2. jämför dess segment- och kodkrav mot FCR-guiden;
-3. separera `example evidence` från `normative rule evidence`;
-4. därefter föreslå ett första validator-kontrakt och vilka positiva/negativa fixtures som kan byggas utan antaganden.
+1. hämta metadata och innehåll för dokumenten under Edielportalens aktiva `6. UTILTS-APERAK`;
+2. editionsbestäm den fullständiga aktuella UTILTS-/APERAK-profilen;
+3. jämför dess segment- och kodkrav mot FCR-guiden;
+4. uppgradera endast uttryckligen stödda kandidater från `example evidence` till `normative rule evidence`;
+5. därefter föreslå ett första validator-kontrakt och positiva/negativa fixtures utan antaganden.
