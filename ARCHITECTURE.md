@@ -1,50 +1,50 @@
-# Tydel architecture
+# Tydels arkitektur
 
-This document explains how Tydel is intended to work and where its boundaries are. It should help contributors understand the system before changing it.
+Det här dokumentet beskriver hur Tydel är tänkt att fungera, vilka systemgränser som gäller och vilka principer som ska styra implementationen. Syftet är att en utvecklare eller samarbetspartner ska kunna förstå helheten innan någon ändrar systemet.
 
-The structure is inspired by [esbuild's architecture documentation](https://github.com/evanw/esbuild/blob/main/docs/architecture.md): start with the whole system, state the design principles, then explain each stage. Tydel is still an experiment in progress. The current design is a direction, not proof that every choice is final.
+Tydel är fortfarande under utveckling. Arkitekturen nedan är den nuvarande riktningen, inte ett påstående om att varje tekniskt val är slutgiltigt.
 
-## Design principles
+## Designprinciper
 
-### Keep the truth outside the language model
+### Håll sanningen utanför språkmodellen
 
-Parsing and validation must be deterministic, versioned and testable. An LLM may explain a result, but it must not invent a rule or silently change the validation outcome.
+Parsing och validering ska vara deterministisk, versionsstyrd och testbar. En LLM får förklara ett verifierat resultat, men får inte hitta på regler eller ändra valideringsutfallet.
 
-### Separate base standards from market profiles
+### Separera grundstandard från marknadsprofil
 
-Generic UN/EDIFACT structure and Swedish Ediel / market-process rules are different evidence layers and must remain independently versioned and attributable.
+Generell UN/EDIFACT-struktur och svenska Ediel-/affärsprocessregler är olika evidenslager. De ska versionsstyras och kunna spåras oberoende av varandra.
 
-A machine-readable base model may describe the generic message structure. It does not become authoritative for Swedish business rules merely because it is easier for software to consume.
+En maskinläsbar grundmodell kan beskriva den generella meddelandestrukturen. Den blir inte auktoritativ för svenska affärsregler bara för att den är enklare för programvara att läsa.
 
-### Keep external specification formats replaceable
+### Håll externa specifikationsformat utbytbara
 
-OpenEDI is being evaluated as an input format for generic EDI/EDIFACT structure. Tydel's canonical message model and internal validation-rule model must not become dependent on OpenEDI-specific field names or on an external validation service.
+OpenEDI utvärderas som inputformat för generell EDI/EDIFACT-struktur. Tydels canonical message model och interna validation-rule model får inte bli beroende av OpenEDI-specifika fältnamn eller en extern valideringstjänst.
 
-### Do as little work as possible
+### Gör så lite dubbelarbete som möjligt
 
-Parse each message once and pass a shared structured model through later stages. Avoid repeated conversions between raw EDIFACT, text summaries and tool-specific formats.
+Varje meddelande ska parsas en gång och därefter passera genom systemet som en gemensam strukturerad modell. Undvik upprepade konverteringar mellan rå EDIFACT, textsammanfattningar och verktygsspecifika format.
 
-### Make every stage observable
+### Gör varje steg observerbart
 
-Each stage should return a structured result with timing, rule version and trace information. A failed run should be possible to replay without contacting a production system.
+Varje steg ska kunna lämna ett strukturerat resultat med timing, regelversion och trace-information. Ett misslyckat körfall ska kunna reproduceras utan kontakt med ett produktionssystem.
 
-### Start read-only
+### Börja read-only
 
-The first integrations consume copies of messages, errors and logs. Inline routing, correction and retransmission are separate future capabilities with a much higher risk level.
+De första integrationerna arbetar med kopior av meddelanden, fel och loggar. Inline-routing, korrigering och återsändning är separata framtida funktioner med betydligt högre risk.
 
-### Keep adapters replaceable
+### Håll adapters utbytbara
 
-SFTP, file imports, APIs, AS2 and HTTPS are possible ways to receive data. They belong in adapters and must not shape the core validation model.
+SFTP, filimport, API, AS2 och HTTPS är möjliga sätt att ta emot data. De hör hemma i adapters och får inte forma kärnans valideringsmodell.
 
-### Grow from one working path
+### Väx från en fungerande vertikal slice
 
-The first goal is one complete path: load one supported message type, parse it, validate it and return a useful error through MCP. New message types and services come after this works.
+Första målet är en komplett väg genom systemet: läs ett uttryckligen stött meddelande, parsa det, validera det och returnera ett användbart resultat genom MCP. Fler meddelandetyper och tjänster kommer först därefter.
 
-## System overview
+## Systemöversikt
 
 ```mermaid
 flowchart TD
-    A["Copied messages + logs"]:::input --> B["Input adapter"]:::adapter
+    A["Kopierade meddelanden + loggar"]:::input --> B["Input adapter"]:::adapter
     B --> C["Parser"]:::core
     C --> D["Canonical message"]:::data
     D --> E["Base standard model"]:::standard
@@ -53,8 +53,8 @@ flowchart TD
     G --> H["Validation result"]:::data
     H --> I["Context service"]:::core
     I --> J["MCP tools + resources"]:::mcp
-    J --> K["AI client / operator UI"]:::mcp
-    I --> L["Audit + alert workflow"]:::action
+    J --> K["AI-klient / operator UI"]:::mcp
+    I --> L["Audit + kontrollerade alerts"]:::action
 
     classDef input fill:#EAF4FF,stroke:#4C8DFF,color:#102A43,stroke-width:1.5px;
     classDef adapter fill:#EEF7FF,stroke:#60A5FA,color:#102A43,stroke-width:1.5px;
@@ -65,153 +65,89 @@ flowchart TD
     classDef action fill:#FFF4E5,stroke:#F59E0B,color:#5F370E,stroke-width:1.5px;
 ```
 
-## Main stages
+## Huvudsteg
 
 ### 1. Input
 
-An adapter receives a copied message, a file upload or a recorded error. It records where the data came from and when it was received.
-
-The core must not assume a specific transport.
+En adapter tar emot ett kopierat meddelande, en fil eller ett registrerat fel och sparar var datan kom ifrån och när den togs emot. Kärnan får inte anta en viss transport.
 
 ### 2. Parse
 
-The parser turns EDIFACT syntax into a canonical message model. It preserves the original content and source positions so every result can point back to the exact segment and element.
+Parsern omvandlar EDIFACT-syntax till Tydels canonical message model. Originalinnehåll och källpositioner bevaras så att varje resultat kan peka tillbaka på exakt segment och dataelement.
 
-A syntax problem returns a structured parse error. It must not crash the process.
+Syntaxfel returneras som strukturerade parse errors och får inte krascha processen. Parsern är en Tydel-komponent; en maskinläsbar standardmodell ersätter inte behovet av korrekt parsing av rå EDIFACT.
 
-The parser is a Tydel component. Importing a machine-readable standard model does not remove the need to parse raw EDIFACT correctly.
+### 3. Lös upp grundstandarden
 
-### 3. Resolve the base standard
+Tydel hämtar den generella meddelandestrukturen för namngiven EDIFACT message/version.
 
-Tydel resolves the generic message structure for the named EDIFACT message/version.
+OpenEDI är nuvarande kandidat i M0 eftersom formatet kan uttrycka bland annat messages, loops, segments, composites, data elements, occurrence constraints och syntax/situational rules som OpenAPI Schema Objects med EDI-specifika extensions.
 
-OpenEDI is currently the preferred candidate for the M0 evaluation because it can express EDI messages, loops, segments, composites, data elements, occurrence constraints, syntax rules and situational rules as OpenAPI Schema Objects with EDI-specific extensions.
+Base-standard-importern ska översätta externa representationer till Tydels interna regelmodell. Rules engine ska inte behöva veta om en grundregel ursprungligen kom från OpenEDI, en manuellt kuraterad definition eller en framtida källa.
 
-The base-standard importer must translate any external representation into Tydel's own internal rule model. The rules engine should not need to know whether a base rule originally came from OpenEDI, a manually curated definition or another future source.
+Varje importerad constraint ska bevara provenance, minst source identifier, publisher, model/version/edition, exakt regelposition och checksum för lokala källbytes när det är relevant.
 
-Every imported constraint must preserve provenance such as:
+### 4. Lägg på Ediel-/processprofilen
 
-- source identifier;
-- publisher;
-- model/version/edition;
-- exact schema object or rule location;
-- checksum of the exact local source bytes when applicable.
+Svenska Ediel- och affärsprocessregler läggs ovanpå som ett separat versionsstyrt lager. Lagret kan skärpa, specialisera eller komplettera grundstandarden men får inte tyst mutera den lagrade grundmodellen.
 
-### 4. Apply the Ediel / process overlay
+Regler ska minst kunna klassificeras som `BASE_STANDARD`, `SWEDISH_PROFILE`, `BUSINESS_PROCESS` eller `TYDEL_SAFETY`.
 
-Swedish Ediel and business-process constraints are applied as a separately versioned overlay.
+Auktoritativ källa för svenska och processpecifika regler är relevant officiell marknadsdokumentation, inte OpenEDI eller EdiNation.
 
-The overlay can tighten, specialize or add constraints, but it must not silently mutate the stored generic base model.
+### 5. Validera
 
-Each rule should be classifiable as one of at least:
+Rules engine kontrollerar canonical message mot ett uttryckligen namngivet och versionsstyrt regelpaket. Regler kan omfatta struktur, obligatoriska segment och värden, code lists, datatyper/format, occurrences, generell EDIFACT-syntax och verifierade Ediel-affärsregler.
 
-- `BASE_STANDARD`;
-- `SWEDISH_PROFILE`;
-- `BUSINESS_PROCESS`;
-- `TYDEL_SAFETY`.
+Primärt output är ett maskinläsbart validation result, inte en textsammanfattning. Ett användbart fel ska kunna ange message/version, exakt segment/element, stabilt Tydel rule ID, rule layer, expected/observed samt provenance/evidence.
 
-The authoritative source for Swedish/profile-specific rules remains the applicable official market documentation, not OpenEDI or EdiNation.
+### 6. Bygg kontext
 
-### 5. Validate
+Context service kombinerar valideringsresultatet med godkända referenser och behörig operativ metadata. Den ska tydligt skilja mellan vad som observerats, vad som slagits upp och vad som fortfarande är okänt.
 
-The rules engine checks the canonical message against the resolved, named and versioned rule set.
+### 7. Exponera via MCP
 
-Rules may cover:
+MCP-servern ska erbjuda smala tools, exempelvis `validate_message`, `get_validation_result`, `explain_error_context` och `find_reference`. Specifications och code lists kan exponeras som resources. Tool-resultat ska innehålla strukturerad data, evidence och stabila error codes.
 
-- message structure;
-- required segments and values;
-- code lists;
-- field types and formats;
-- segment/data-element occurrence;
-- generic EDIFACT syntax/situational rules;
-- Ediel-specific business rules that we are legally allowed to implement.
+### 8. Presentera och agera
 
-The output is a machine-readable validation result. Plain-language text is not the primary result.
+En AI-klient eller operator UI gör det strukturerade resultatet begripligt för människan. Notifications är kontrollerade workflows utanför valideringskärnan. Ingen produktionskorrigering, retransmission eller annan write action hör till första versionen.
 
-A useful error should be able to identify:
+## OpenEDI-gräns
 
-- message and version;
-- exact segment/element position;
-- stable Tydel rule ID;
-- rule layer;
-- expected versus observed value/state;
-- provenance/evidence for the rule.
-
-### 6. Build context
-
-The context service combines the validation result with approved references and authorized operational metadata. It must label what was observed, what was looked up and what is still unknown.
-
-### 7. Expose through MCP
-
-The MCP server exposes narrow tools such as:
-
-- `validate_message`
-- `get_validation_result`
-- `explain_error_context`
-- `find_reference`
-
-Specifications and code lists can be exposed as resources. Tool results should include structured content, evidence and stable error codes.
-
-### 8. Present and act
-
-An AI client or operator UI turns the structured result into an explanation. Notifications are controlled workflows outside the validation core.
-
-No production correction, retransmission or other write action belongs in the first version.
-
-## OpenEDI boundary
-
-The accepted M0 decision is to **evaluate**, not blindly adopt, OpenEDI.
-
-The intended relationship is:
+M0-beslutet är att **utvärdera**, inte okritiskt införa, OpenEDI.
 
 ```text
-OpenEDI / other external schema
+OpenEDI / annan extern schemaform
           ↓ import
-Tydel internal base rules
+Tydels interna base rules
           +
-Swedish Ediel / process overlay
+Svensk Ediel / process overlay
           ↓
 Resolved Tydel rule set
 ```
 
-Tydel must not:
+Tydel får inte behandla en extern EdiNation-validator som sin egen sanningskälla, anta att OpenEDI-modeller är auktoritativa för svensk marknadsanvändning, exponera OpenEDI-detaljer som publikt validator contract eller lägga nedladdade modeller i det publika repot utan rättighetsgranskning.
 
-- call an external EdiNation validator and treat its response as Tydel's validation result;
-- assume that machine-readable OpenEDI models are authoritative for Swedish market usage;
-- expose OpenEDI-specific implementation details as the public validator contract;
-- vendor downloadable models into the public repository without model-specific rights review.
+Se [`docs/research/openedi-evaluation.md`](docs/research/openedi-evaluation.md) och [`docs/decisions/0002-openedi-machine-readable-standard-layer.md`](docs/decisions/0002-openedi-machine-readable-standard-layer.md).
 
-See [`docs/research/openedi-evaluation.md`](docs/research/openedi-evaluation.md) and [`docs/decisions/0002-openedi-machine-readable-standard-layer.md`](docs/decisions/0002-openedi-machine-readable-standard-layer.md).
+## Systemgränser
 
-## System boundaries
+Tydel är inte en ersättare för Ediel, en central marknadsplattform, ett EDI-transportnät, ett grid-control system, ett forecasting-system i första produkten, en compliance-myndighet eller en EdiNation-wrapper. Befintliga EDI-system och marknadsplattformar förblir auktoritativa för sina respektive funktioner.
 
-Tydel is not:
-
-- an Ediel replacement;
-- a central market platform;
-- an EDI transport network;
-- a grid-control system;
-- a forecasting system in the first product;
-- an authority on compliance;
-- an EdiNation wrapper.
-
-Existing EDI systems and market platforms remain authoritative.
-
-## Planned code layout
-
-This layout will be created as implementation begins:
+## Planerad kodstruktur
 
 ```text
 src/
-  adapters/       Input and external-system adapters
-  domain/         Canonical message and validation types
+  adapters/       Input och externa system
+  domain/         Canonical message- och validation-typer
   parser/         EDIFACT parsing
-  standards/      External base-standard import and normalization
-  rules/          Internal versioned rules + Ediel/process overlays
-  context/        Evidence and operational context
-  mcp/            MCP tools, resources and transport
-  audit/          Trace and audit events
-  app/            Composition and startup
+  standards/      Import och normalisering av extern grundstandard
+  rules/          Interna versionsregler + Ediel/process overlays
+  context/        Evidence och operativ kontext
+  mcp/            MCP tools, resources och transport
+  audit/          Trace- och audit events
+  app/            Composition och startup
 tests/
   unit/
   integration/
@@ -219,28 +155,28 @@ fixtures/
   edifact/
 ```
 
-Folders should follow real module boundaries. We will not create empty source folders before the first vertical slice defines what they need.
+Mappar ska följa verkliga modulgränser. Vi skapar inte tomma source-mappar innan första vertical slice visar vad som faktiskt behövs.
 
-## Data rules
+## Dataregler
 
-- Store the original message separately from derived explanations.
-- Never put secrets or production certificates in the repository.
-- Use synthetic or properly anonymized fixtures.
-- Give rule sets and reference documents explicit versions.
-- Keep evidence links with every generated explanation.
-- Keep generic base rules separate from Swedish/profile overlays.
-- Preserve the checksum/version of external machine-readable models used to derive rules.
-- Treat missing context as unknown, not as permission to guess.
+- Lagra originalmeddelandet separat från härledda förklaringar.
+- Lägg aldrig secrets eller produktionscertifikat i repositoryt.
+- Använd syntetiska eller korrekt anonymiserade fixtures.
+- Ge rule sets och referensdokument explicita versioner.
+- Behåll evidence links med genererade förklaringar.
+- Separera generella base rules från svenska/profile overlays.
+- Bevara checksum/version för externa maskinläsbara modeller som regler härletts från.
+- Behandla saknad kontext som okänd, aldrig som tillåtelse att gissa.
 
-## Decisions still open
+## Öppna beslut
 
-- Which message type/profile should be supported first?
-- Does the OpenEDI model for that exact message/version contain enough semantics for the first vertical slice?
-- What is the final canonical message schema?
-- What is the final internal rule representation?
-- Which official specifications can be stored or indexed legally?
-- Which downloaded OpenEDI models, if any, can be redistributed or vendored legally?
-- Which MCP transport and authentication model fit the first deployment?
-- What data must remain at the customer's site?
+- Vilken message type/profile ska stödjas först?
+- Innehåller OpenEDI-modellen för exakt den message/version tillräcklig semantik för första vertical slice?
+- Hur ska slutlig canonical message schema se ut?
+- Hur ska intern rule representation se ut?
+- Vilka officiella specifications får lagras eller indexeras juridiskt?
+- Vilka OpenEDI-modeller får eventuellt redistribueras?
+- Vilken MCP transport/authentication passar första deployment?
+- Vilken data måste stanna hos kunden?
 
-Answers that affect the architecture should be recorded in [`docs/decisions/`](docs/decisions/).
+Arkitekturbeslut ska dokumenteras i [`docs/decisions/`](docs/decisions/).
