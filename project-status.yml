@@ -30,6 +30,14 @@ current:
   next_owner: ChatGPT
   blocked: false
 
+peer_review:
+  state: waiting
+  owner: "@gonzalolorcakeabit-bit"
+  reviewer: "Claude"
+  scope: "whole repository"
+  trigger: "ChatGPT pre-review sweep marked complete"
+  purpose: "Independent peer review for ambiguities, contradictions, scope gaps and unsupported claims"
+
 owners:
   - owner: ChatGPT
     state: active
@@ -41,8 +49,8 @@ owners:
     state: clear
     task: "Validator First beslutat; inget produktgränsbeslut väntar"
   - owner: "@gonzalolorcakeabit-bit"
-    state: clear
-    task: "Ingen uppgift tilldelad"
+    state: waiting
+    task: "Kör Claude peer-to-peer review av hela repot när ChatGPT markerat pre-review-svepet klart"
 
 milestones:
   - id: M0
