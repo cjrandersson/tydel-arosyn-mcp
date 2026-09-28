@@ -5,48 +5,93 @@
 
 ## Canonical positioning
 
-> **Tydel sits at the market-data and integration layer above the physical power grid, where meter data, trading information and other energy-market transactions must conform to versioned message standards and process rules. As Nordic market communication evolves across EDIFACT, XML/CIM and ECP-based exchange, Tydel provides deterministic validation and traceable diagnostics for the messages moving between market participants.**
+> **Tydel validerar energimarknadens meddelanden mot rätt marknadsregler och visar exakt vad som är fel, varför det är fel och vad som bör undersökas härnäst.**
 
-## What this means
+Detta är den primära produktbeskrivningen. Den ska användas före tekniska implementationstermer som MCP, TypeScript, AI eller cloud när Tydel förklaras för en kund eller extern part.
 
-Tydel does not operate the physical grid and is not a grid-control system. It works with the structured market and integration data exchanged between energy-market participants and the systems that support those exchanges.
+## Vad detta betyder
 
-The first product is **Validator First**: deterministic, evidence-backed validation and diagnostics for Swedish Ediel and related energy-market communication. Swedish Ediel is the first narrow product wedge, not a permanent protocol boundary.
+Tydel arbetar i lagret där energimarknadens strukturerade meddelanden utbyts mellan marknadsaktörer och deras system. Första produkt-wedgen är svensk Ediel, men arkitekturen ska inte låsas permanent till ett enda land, protokoll eller syntaxformat.
 
-The intended product layer is therefore:
+Den första produkten är **Validator First**: deterministisk och evidensbaserad validering där rätt process, message/profile, version och regelverk identifieras innan AI får förklara resultatet.
+
+Den avsedda produktkedjan är:
 
 ```text
-Physical grid / smart meters
+ENERGY-MARKET MESSAGE
         ↓
-Utility and market systems
+IDENTIFY PROCESS / PROFILE / VERSION
         ↓
-Market-message exchange
+APPLY SCOPED MARKET RULES
         ↓
-Tydel validation + diagnostics
+DETERMINISTIC VALIDATION
         ↓
-Receiving market actor / operator workflow
+EXACT FAILURE + EVIDENCE
+        ↓
+HUMAN EXPLANATION + NEXT INVESTIGATION STEP
 ```
 
-## Product boundaries
+## Det Tydel ska vara bäst på
 
-Tydel is not:
+Tydel ska konkurrera på marknadsbetydelse och felsökningsprecision, inte på generell EDIFACT-syntaxkontroll.
 
-- a physical smart-grid or OT control product;
-- an Ediel transport network;
-- an automatic production-message repair engine in the first product stages;
-- an LLM deciding message validity;
-- an OpenEDI wrapper;
-- limited permanently to EDIFACT.
+En generisk validator kan säga att ett segment eller dataelement är ogiltigt. Tydel ska kunna förklara att ett meddelande är fel för en specifik svensk eller nordisk marknadsprocess, message/profile och edition, visa den tillämpliga regeln och hjälpa operatören till nästa säkra felsökningssteg.
 
-MCP is an access and integration layer, not the product's only user interface. Future clients may include an operator UI, API, CLI or other controlled interfaces over the same deterministic core.
+Den långsiktiga moat-hypotesen är därför:
 
-## Commercial hypothesis
+`market-specific executable rules + version history + process context + error taxonomy + real failure cases + resolution knowledge + provenance`
 
-The first commercial hypothesis is that provenance-backed diagnostics can reduce message-investigation MTTR, escalation to scarce specialists and dependency on undocumented expert knowledge. This remains a hypothesis to validate with real operators and integration teams; it is not yet a proven market claim.
+AI är ett förklarings- och accesslager ovanpå denna kunskap, inte själva valideringsauktoriteten.
 
-## Relationship to architecture
+## Produktgränser
 
-This positioning does not change Tydel's architecture or M0/M1 scope. It clarifies where the product sits in the energy ecosystem and supports the existing decisions in:
+Tydel är inte:
+
+- ett fysiskt smart-grid- eller OT-control-system;
+- ett transportnät för Ediel;
+- en generell EDIFACT-validator utan marknadskontext;
+- en automatisk produktionsreparatör i första produktstadiet;
+- en LLM som själv avgör om ett meddelande är giltigt;
+- en OpenEDI-wrapper;
+- permanent begränsad till EDIFACT.
+
+MCP är ett access- och integrationslager, inte produktens enda användargränssnitt. Framtida klienter kan vara operator UI, API, CLI eller andra kontrollerade gränssnitt över samma deterministiska kärna.
+
+## Kommersiell hypotes
+
+Den första kommersiella hypotesen är att spårbar, processmedveten diagnostik kan minska felsökningstid, eskalering till knappa specialister och beroende av odokumenterad expertkunskap.
+
+Detta är ännu inte kommersiellt validerat. Därför ska kunddiscovery ske parallellt med M0/M1 och mäta bland annat:
+
+- hur ofta verkliga Ediel-/marknadsmeddelandefel uppstår;
+- faktisk time-to-resolution;
+- hur många system och personer som krävs för diagnos;
+- expertberoende och eskaleringsgrad;
+- affärskonsekvens;
+- buyer, budget och willingness-to-pay;
+- om en design partner vill bidra med anonymiserade failure cases och pilotera Tydel.
+
+Se [`customer-discovery.md`](customer-discovery.md).
+
+## Expansionsriktning
+
+Den nuvarande arbetshypotesen är:
+
+```text
+Swedish Ediel
+    ↓
+Nordic market-message validation
+    ↓
+EDIFACT + XML/CIM diagnostics
+    ↓
+Broader European energy-market interoperability
+```
+
+Detta är en riktning, inte ett löfte om framtida scope. Expansion sker först när validatorns kvalitet och kommersiella efterfrågan är belagda.
+
+## Relation till arkitekturen
+
+Positioneringen ändrar inte den deterministiska arkitekturprincipen eller M0/M1-scope. Den förtydligar varför arkitekturen finns och stöder besluten i:
 
 - `../../ARCHITECTURE.md`
 - `../decisions/0002-openedi-machine-readable-standard-layer.md`
