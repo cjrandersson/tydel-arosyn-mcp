@@ -7,7 +7,7 @@
 
 Av äldre germanskt ursprung, besläktat med ord för **folk**. Den ursprungliga innebörden kan ungefär förstås som:
 
-> **”att göra något begripligt för folket”**
+> 🟡 **”att göra något begripligt för folket”**
 
 Därifrån har ordet utvecklat betydelser som:
 
