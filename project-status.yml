@@ -4,7 +4,7 @@ updated: 2026-09-28
 product:
   strategy: validator_first
   north_star: "Build a best-in-class validator for Swedish Ediel and energy-market communication."
-  positioning: "Tydel is a deterministic validation and diagnostic layer for energy-market messaging, starting with Swedish Ediel."
+  positioning: "Tydel validerar energimarknadens meddelanden mot rätt marknadsregler och visar exakt vad som är fel, varför det är fel och vad som bör undersökas härnäst."
   later_expansion:
     - analytics
     - forecasting
@@ -26,10 +26,20 @@ current:
   milestone: M0
   milestone_title: "Research foundation + första validator-scope"
   status: active
-  objective: "Låsa en smal, auktoritativ och testbar svensk Ediel-slice utan globala standardantaganden."
+  objective: "Låsa en smal, auktoritativ och testbar svensk Ediel-slice och parallellt förbereda kunddiscovery utan globala standard- eller marknadsantaganden."
   next_task: "Extrahera normativa revision-3 UTILTS/APERAK-regler för en smal kandidat-slice och håll dem separerade från processguide/exempel."
   next_owner: ChatGPT
   blocked: false
+
+customer_discovery:
+  state: preparation
+  owner: ChatGPT
+  user_action_required: false
+  document: "docs/product/customer-discovery.md"
+  next_task: "Förbered intervju-guide, target-list-struktur, failure-case intake template och discovery scorecard."
+  target_interviews: "10-15"
+  target_failure_cases: "20-50 anonymiserade verkliga cases när sekretess och dataskydd tillåter"
+  design_partner_timing: "M0/M1"
 
 peer_review:
   state: ready
@@ -43,13 +53,13 @@ peer_review:
 owners:
   - owner: ChatGPT
     state: active
-    task: "Extrahera normativa revision-3 UTILTS/APERAK-regler och skilj dem från processguide/exempel"
+    task: "Normativa revision-3 UTILTS/APERAK-regler + customer discovery preparation"
   - owner: Codex
     state: waiting
     task: "Validator vertical slice efter låst contract"
   - owner: "@cjrandersson"
     state: clear
-    task: "Validator First beslutat; inget produktgränsbeslut väntar"
+    task: "Validator First beslutat; ingen outreach krävs innan discovery-underlag är klara"
   - owner: "@gonzalolorcakeabit-bit"
     state: ready
     task: "Kör Claude peer-to-peer review enligt docs/reviews/claude-peer-review-brief.md"
@@ -58,6 +68,9 @@ milestones:
   - id: M0
     state: active
     progress: 0.8
+  - id: M0-CD
+    state: preparation
+    progress: 0.1
   - id: M1
     state: queued
     progress: 0.0
