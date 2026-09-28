@@ -26,6 +26,14 @@ Tydel är ett planerat read-only validerings- och supportlager för svensk energ
 
 > ✅ **Produktstrategi låst: Validator First.** Tydels första produkt och kärnkompetens är en deterministisk, evidensbaserad validator för svensk Ediel- och energimarknadskommunikation. Analytics och forecasting kan tillkomma senare som separata förmågor, men får inte försvaga validatorns precision, determinism, evidensspårbarhet eller regelauktoritet. Se [`Decision 0003`](docs/decisions/0003-validator-first-product-strategy.md).
 
+## Var Tydel sitter
+
+> **Tydel sits at the market-data and integration layer above the physical power grid, where meter data, trading information and other energy-market transactions must conform to versioned message standards and process rules. As Nordic market communication evolves across EDIFACT, XML/CIM and ECP-based exchange, Tydel provides deterministic validation and traceable diagnostics for the messages moving between market participants.**
+
+Detta är projektets canonical product positioning. Svensk Ediel är den första smala produkt-wedgen, inte en permanent protokollgräns. Tydel är inte ett grid-control-system, och MCP är ett access-/integrationslager snarare än produktens enda användargränssnitt.
+
+Se [`docs/product/positioning.md`](docs/product/positioning.md).
+
 ---
 
 # 🧭 DEVELOPMENT COCKPIT
@@ -39,11 +47,11 @@ Tydel är ett planerat read-only validerings- och supportlager för svensk energ
 | **Nuvarande milestone** | **M0 — Research foundation & första validator-scope** |
 | **Status** | 🟡 **PÅGÅR** |
 | **Nuvarande mål** | Låsa en smal, auktoritativ och testbar svensk Ediel-slice utan att göra globala standardantaganden |
-| **Exakt nästa uppgift** | Editionsbestäm aktuell UTILTS–APERAK-anvisning och skilj normativa profilregler från FCR-guidens exempel |
+| **Exakt nästa uppgift** | Extrahera normativa revision-3 UTILTS/APERAK-regler för en smal kandidat-slice och håll dem separerade från processguide/exempel |
 | **Nästa owner** | **ChatGPT** |
 | **Blockerat / väntar på teamet** | **Inget produktgränsbeslut väntar. Validator First är låst.** |
 | **Codex** | ⏸ **VÄNTAR** — implementation börjar först när första message/profile och validator contract är låsta |
-| **Peer review** | ⏳ **@gonzalolorcakeabit-bit** — kör Claude mot hela repot när ChatGPT markerat pre-review-svepet klart |
+| **Peer review** | ✅ **READY** — **@gonzalolorcakeabit-bit** kör Claude mot hela repot enligt [`docs/reviews/claude-peer-review-brief.md`](docs/reviews/claude-peer-review-brief.md) |
 | **Nästa milestone** | **M1 — Första deterministiska validator vertical slice** |
 | **Senast uppdaterad** | **2026-09-28** |
 
@@ -52,9 +60,9 @@ Tydel är ett planerat read-only validerings- och supportlager för svensk energ
 | Owner | Pending nu | Läge |
 |---|---|---|
 | **@cjrandersson** | Inget produktgränsbeslut väntar; Validator First är beslutat | ⚪ **CLEAR** |
-| **ChatGPT** | Fortsätt auktoritativ Ediel-kartläggning, editionsbestäm UTILTS/APERAK och håll taxonomi/cockpit synkroniserade | 🟢 **ACTIVE** |
+| **ChatGPT** | Extrahera normativa revision-3 UTILTS/APERAK-regler och skilj dem från processguide/exempel | 🟢 **ACTIVE** |
 | **Codex** | Vänta med produktionskod tills första validator-slice och contract är låsta | ⏸ **WAITING** |
-| **@gonzalolorcakeabit-bit** | Kör Claude peer-to-peer review av hela repot när pre-review-svepet är klart | ⏳ **WAITING / NEXT REVIEW** |
+| **@gonzalolorcakeabit-bit** | Kör Claude peer-to-peer review enligt review-briefen | 🟡 **READY / NEXT REVIEW** |
 
 > **Ownership rule:** inget får markeras `pending`, `blocked`, `waiting` eller `next` utan explicit owner. Om Robin behöver agera ska det stå `🚨 @cjrandersson — <åtgärd>`.
 
@@ -73,9 +81,10 @@ Tydel är ett planerat read-only validerings- och supportlager för svensk energ
   - [x] FCR-kedja kartlagd till `QUOTES`, `DELFOR`, `UTILTS S08/S01` och message-specifik `APERAK`
   - [x] Evidens visar att APERAK-version/koder måste scope-bindas till message family/process/profile
   - [x] Produktstrategi låst: **Validator First**
-  - [ ] Editionsbestäm aktuell fullständig UTILTS–APERAK-anvisning — **ChatGPT**
-  - [ ] Separera `example evidence` från `normative rule evidence` — **ChatGPT**
-  - [ ] Kör oberoende Claude peer-to-peer review av hela repot efter pre-review-svep — **@gonzalolorcakeabit-bit**
+  - [x] Canonical product positioning definierad
+  - [x] Aktuell UTILTS/APERAK-edition identifierad: revision 3 / E5SE5A, giltig från 2025-06-01; revision 4 future-effective 2026-10-01
+  - [ ] Separera `example evidence` från `normative rule evidence` på regel-/segmentnivå — **ChatGPT**
+  - [ ] Kör oberoende Claude peer-to-peer review av hela repot — **@gonzalolorcakeabit-bit**
   - [ ] Välj första stödda svenska message/profile — **ChatGPT rekommendation → @cjrandersson endast om produktval krävs**
   - [ ] Definiera första validator contract + strukturerad error output — **ChatGPT / Codex**
   - [ ] Definiera auktoritativa positiva och negativa fixtures — **ChatGPT / Codex**
@@ -213,11 +222,14 @@ TypeScript och officiella MCP TypeScript SDK är nuvarande utgångspunkt, inte e
 | --- | --- |
 | [`project-status.yml`](project-status.yml) | Gemensam statuskälla för Development Cockpit |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Systemdesign, gränser och dataflöde |
+| [`docs/product/`](docs/product/) | Canonical product positioning och framtida produktdefinitioner |
+| [`docs/reviews/`](docs/reviews/) | Oberoende review-briefs och granskade findings |
 | [`docs/research/`](docs/research/) | Källbaserad Ediel- och marknadsresearch |
 | [`docs/decisions/`](docs/decisions/) | Låsta tekniska/produktrelaterade beslut |
 | [`reference/`](reference/) | Källkatalog, tillåtna referensfiler och download-instruktioner |
 | [`AGENTS.md`](AGENTS.md) | Instruktioner för Codex och andra coding assistants |
 | [`assets/graphics/`](assets/graphics/) | Diagram och Development Cockpit |
+| [`assets/maps/`](assets/maps/) | Prospecting- och discoverykartor; inte officiella nätområdeskartor |
 | [`fixtures/edifact/`](fixtures/edifact/) | Synthetic EDIFACT fixtures |
 | [`tests/`](tests/) | Offline tests |
 | `src/` | Framtida implementation; skapas först när M1-scope är låst |
@@ -225,6 +237,8 @@ TypeScript och officiella MCP TypeScript SDK är nuvarande utgångspunkt, inte e
 ## Läsordning
 
 Börja med [reading guide](docs/research/reading-guide.md), därefter [arkitekturen](ARCHITECTURE.md), [Ediel-taxonomin](docs/research/ediel-taxonomi.md) och de processpecifika researchdokumenten.
+
+För oberoende M0-review, använd [Claude peer review brief](docs/reviews/claude-peer-review-brief.md).
 
 ## Primära källor
 
