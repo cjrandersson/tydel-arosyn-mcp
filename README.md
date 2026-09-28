@@ -1,5 +1,5 @@
 # Tydel
-> Tyda el**
+> Tyda el - tyda, fornsvenska þȳþa, tyda, meddela, betyda med mera
 
 **Ett tydligare sätt att förstå, validera och felsöka Ediel-meddelanden.**
 
