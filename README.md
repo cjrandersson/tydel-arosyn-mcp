@@ -18,9 +18,9 @@ Därifrån har ordet utvecklat betydelser som:
 
 **Kärnbetydelse:** att göra något förståeligt eller tydligt.
 
+---
 
-
-**Ett tydligare sätt att förstå, validera och felsöka Ediel-meddelanden.**
+### Ett tydligare sätt att förstå, validera och felsöka Ediel-meddelanden.
 
 Tydel är ett planerat read-only validerings- och supportlager för svensk energimarknadskommunikation. Målet är att hjälpa operatörer hitta meddelandefel, förstå vad de betyder och se ett säkert nästa steg, utan att ersätta befintlig EDI/Ediel-infrastruktur.
 
