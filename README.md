@@ -1,11 +1,22 @@
 # Tydel
-> Tyda el -
-> Tyda
-fornsvenska þyþa
+> Tyda el
+## Etymologi
 
-Av äldre germanskt ursprung, besläktat med ord för folk. Den ursprungliga innebörden kan ungefär förstås som:
+**Tyda**
+*fornsvenska* **þyþa**
 
-”att göra något begripligt för folket”
+Av äldre germanskt ursprung, besläktat med ord för **folk**. Den ursprungliga innebörden kan ungefär förstås som:
+
+> **”att göra något begripligt för folket”**
+
+Därifrån har ordet utvecklat betydelser som:
+
+* tolka
+* förklara
+* meddela innebörden av
+* betyda
+
+**Kärnbetydelse:** att göra något förståeligt eller tydligt.
 
 
 
