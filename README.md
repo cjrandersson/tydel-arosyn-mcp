@@ -24,6 +24,7 @@ Tydel är ett planerat read-only validerings- och supportlager för svensk energ
 | **Nästa owner** | **ChatGPT** |
 | **Blockerat / väntar på teamet** | **Inget produktgränsbeslut väntar. Validator First är låst.** |
 | **Codex** | ⏸ **VÄNTAR** — implementation börjar först när första message/profile och validator contract är låsta |
+| **Peer review** | ⏳ **@gonzalolorcakeabit-bit** — kör Claude mot hela repot när ChatGPT markerat pre-review-svepet klart |
 | **Nästa milestone** | **M1 — Första deterministiska validator vertical slice** |
 | **Senast uppdaterad** | **2026-09-28** |
 
@@ -34,7 +35,7 @@ Tydel är ett planerat read-only validerings- och supportlager för svensk energ
 | **@cjrandersson** | Inget produktgränsbeslut väntar; Validator First är beslutat | ⚪ **CLEAR** |
 | **ChatGPT** | Fortsätt auktoritativ Ediel-kartläggning, editionsbestäm UTILTS/APERAK och håll taxonomi/cockpit synkroniserade | 🟢 **ACTIVE** |
 | **Codex** | Vänta med produktionskod tills första validator-slice och contract är låsta | ⏸ **WAITING** |
-| **@gonzalolorcakeabit-bit** | Ingen uppgift tilldelad | ⚪ **CLEAR** |
+| **@gonzalolorcakeabit-bit** | Kör Claude peer-to-peer review av hela repot när pre-review-svepet är klart | ⏳ **WAITING / NEXT REVIEW** |
 
 > **Ownership rule:** inget får markeras `pending`, `blocked`, `waiting` eller `next` utan explicit owner. Om Robin behöver agera ska det stå `🚨 @cjrandersson — <åtgärd>`.
 
@@ -55,6 +56,7 @@ Tydel är ett planerat read-only validerings- och supportlager för svensk energ
   - [x] Produktstrategi låst: **Validator First**
   - [ ] Editionsbestäm aktuell fullständig UTILTS–APERAK-anvisning — **ChatGPT**
   - [ ] Separera `example evidence` från `normative rule evidence` — **ChatGPT**
+  - [ ] Kör oberoende Claude peer-to-peer review av hela repot efter pre-review-svep — **@gonzalolorcakeabit-bit**
   - [ ] Välj första stödda svenska message/profile — **ChatGPT rekommendation → @cjrandersson endast om produktval krävs**
   - [ ] Definiera första validator contract + strukturerad error output — **ChatGPT / Codex**
   - [ ] Definiera auktoritativa positiva och negativa fixtures — **ChatGPT / Codex**
