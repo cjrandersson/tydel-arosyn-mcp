@@ -4,6 +4,7 @@ updated: 2026-09-28
 product:
   strategy: validator_first
   north_star: "Build a best-in-class validator for Swedish Ediel and energy-market communication."
+  positioning: "Tydel is a deterministic validation and diagnostic layer for energy-market messaging, starting with Swedish Ediel."
   later_expansion:
     - analytics
     - forecasting
@@ -26,22 +27,23 @@ current:
   milestone_title: "Research foundation + första validator-scope"
   status: active
   objective: "Låsa en smal, auktoritativ och testbar svensk Ediel-slice utan globala standardantaganden."
-  next_task: "Editionsbestäm aktuell UTILTS–APERAK-anvisning och skilj normativa profilregler från FCR-guidens exempel."
+  next_task: "Extrahera normativa revision-3 UTILTS/APERAK-regler för en smal kandidat-slice och håll dem separerade från processguide/exempel."
   next_owner: ChatGPT
   blocked: false
 
 peer_review:
-  state: waiting
+  state: ready
   owner: "@gonzalolorcakeabit-bit"
   reviewer: "Claude"
   scope: "whole repository"
-  trigger: "ChatGPT pre-review sweep marked complete"
+  trigger: "ChatGPT pre-review sweep completed 2026-09-28"
+  brief: "docs/reviews/claude-peer-review-brief.md"
   purpose: "Independent peer review for ambiguities, contradictions, scope gaps and unsupported claims"
 
 owners:
   - owner: ChatGPT
     state: active
-    task: "UTILTS/APERAK edition + normative evidence"
+    task: "Extrahera normativa revision-3 UTILTS/APERAK-regler och skilj dem från processguide/exempel"
   - owner: Codex
     state: waiting
     task: "Validator vertical slice efter låst contract"
@@ -49,8 +51,8 @@ owners:
     state: clear
     task: "Validator First beslutat; inget produktgränsbeslut väntar"
   - owner: "@gonzalolorcakeabit-bit"
-    state: waiting
-    task: "Kör Claude peer-to-peer review av hela repot när ChatGPT markerat pre-review-svepet klart"
+    state: ready
+    task: "Kör Claude peer-to-peer review enligt docs/reviews/claude-peer-review-brief.md"
 
 milestones:
   - id: M0
