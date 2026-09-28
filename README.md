@@ -5,13 +5,13 @@
 
 Tydel är ett planerat read-only validerings- och supportlager för svensk energimarknadskommunikation. Målet är att hjälpa operatörer hitta meddelandefel, förstå vad de betyder och se ett säkert nästa steg, utan att ersätta befintlig EDI/Ediel-infrastruktur.
 
-> 🚨 **Produktgräns som ännu inte är låst:** tidigare material nämner även förbrukningsavvikelser och prognostisering av nätkapacitet. Det är inte del av det verifierade validator-scope som dokumentationen nedan bygger på. En sådan utvidgning kräver separat beslut av **@cjrandersson**.
+> ✅ **Produktstrategi låst: Validator First.** Tydels första produkt och kärnkompetens är en deterministisk, evidensbaserad validator för svensk Ediel- och energimarknadskommunikation. Analytics och forecasting kan tillkomma senare som separata förmågor, men får inte försvaga validatorns precision, determinism, evidensspårbarhet eller regelauktoritet. Se [`Decision 0003`](docs/decisions/0003-validator-first-product-strategy.md).
 
 ---
 
 # 🧭 DEVELOPMENT COCKPIT
 
-> **Operativ source of truth för projektets aktuella läge.** Uppdatera denna sektion när researchstatus, arkitektur, milestone, ansvar eller exakt nästa steg förändras. Den visuella tavlan och tabellerna ska alltid vara synkroniserade.
+> **Operativ kontrollvy för projektets aktuella läge.** `project-status.yml` är den gemensamma statuskällan. README och den visuella cockpiten ska spegla samma statusmodell och får inte bära motstridiga pending-, blocker- eller owner-värden.
 
 ![Tydel Development Cockpit](assets/graphics/development-cockpit.svg)
 
@@ -22,16 +22,16 @@ Tydel är ett planerat read-only validerings- och supportlager för svensk energ
 | **Nuvarande mål** | Låsa en smal, auktoritativ och testbar svensk Ediel-slice utan att göra globala standardantaganden |
 | **Exakt nästa uppgift** | Editionsbestäm aktuell UTILTS–APERAK-anvisning och skilj normativa profilregler från FCR-guidens exempel |
 | **Nästa owner** | **ChatGPT** |
-| **Blockerat / väntar på teamet** | 🚨 **@cjrandersson — besluta senare om Tydel ska förbli validator/support-first eller även omfatta analytics/forecasting. Detta blockerar inte M0-research.** |
+| **Blockerat / väntar på teamet** | **Inget produktgränsbeslut väntar. Validator First är låst.** |
 | **Codex** | ⏸ **VÄNTAR** — implementation börjar först när första message/profile och validator contract är låsta |
 | **Nästa milestone** | **M1 — Första deterministiska validator vertical slice** |
-| **Senast uppdaterad** | **2026-09-26** |
+| **Senast uppdaterad** | **2026-09-28** |
 
 ### Aktivt ansvar / pending
 
 | Owner | Pending nu | Läge |
 |---|---|---|
-| **@cjrandersson** | Produktgräns: validator/support-first kontra senare analytics/forecasting | 🚨 **BESLUT KRÄVS, men blockerar inte research** |
+| **@cjrandersson** | Inget produktgränsbeslut väntar; Validator First är beslutat | ⚪ **CLEAR** |
 | **ChatGPT** | Fortsätt auktoritativ Ediel-kartläggning, editionsbestäm UTILTS/APERAK och håll taxonomi/cockpit synkroniserade | 🟢 **ACTIVE** |
 | **Codex** | Vänta med produktionskod tills första validator-slice och contract är låsta | ⏸ **WAITING** |
 | **@gonzalolorcakeabit-bit** | Ingen uppgift tilldelad | ⚪ **CLEAR** |
@@ -52,6 +52,7 @@ Tydel är ett planerat read-only validerings- och supportlager för svensk energ
   - [x] Formatlandskap dokumenterat med `CURRENT`, `CURRENT_SCOPED`, `TRANSITIONAL`, `LEGACY`, `UNVERIFIED`
   - [x] FCR-kedja kartlagd till `QUOTES`, `DELFOR`, `UTILTS S08/S01` och message-specifik `APERAK`
   - [x] Evidens visar att APERAK-version/koder måste scope-bindas till message family/process/profile
+  - [x] Produktstrategi låst: **Validator First**
   - [ ] Editionsbestäm aktuell fullständig UTILTS–APERAK-anvisning — **ChatGPT**
   - [ ] Separera `example evidence` från `normative rule evidence` — **ChatGPT**
   - [ ] Välj första stödda svenska message/profile — **ChatGPT rekommendation → @cjrandersson endast om produktval krävs**
@@ -82,7 +83,7 @@ Tydel är ett planerat read-only validerings- och supportlager för svensk energ
   - [ ] Första design-partner/pilot
   - [ ] Mät tidsbesparing och diagnostisk precision
 
-**Regel:** en meningsfull projektförändring är inte färdigdokumenterad förrän cockpit visar verkligt läge och korrekt owner för varje pending action.
+**Regel:** en meningsfull projektförändring är inte färdigdokumenterad förrän `project-status.yml`, README-cockpit och den visuella cockpiten visar samma verkliga läge och korrekt owner för varje pending action.
 
 ---
 
@@ -189,6 +190,7 @@ TypeScript och officiella MCP TypeScript SDK är nuvarande utgångspunkt, inte e
 
 | Path | Innehåll |
 | --- | --- |
+| [`project-status.yml`](project-status.yml) | Gemensam statuskälla för Development Cockpit |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Systemdesign, gränser och dataflöde |
 | [`docs/research/`](docs/research/) | Källbaserad Ediel- och marknadsresearch |
 | [`docs/decisions/`](docs/decisions/) | Låsta tekniska/produktrelaterade beslut |
