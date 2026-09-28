@@ -1,0 +1,56 @@
+version: 1
+updated: 2026-09-28
+
+product:
+  strategy: validator_first
+  north_star: "Build a best-in-class validator for Swedish Ediel and energy-market communication."
+  later_expansion:
+    - analytics
+    - forecasting
+  guardrail: "Later capabilities must not weaken validator precision, determinism, evidence traceability, or rule authority."
+
+cockpit:
+  title: "TYDEL / DEVELOPMENT COCKPIT"
+  labels:
+    status: "STATUS"
+    owner: "OPERATOR"
+    task: "UPPGIFT"
+    state: "LÄGE"
+    milestone: "MILESTONE"
+    description: "BESKRIVNING"
+    progress: "PROGRESS"
+    next: "NEXT DEPARTURE"
+
+current:
+  milestone: M0
+  milestone_title: "Research foundation + första validator-scope"
+  status: active
+  objective: "Låsa en smal, auktoritativ och testbar svensk Ediel-slice utan globala standardantaganden."
+  next_task: "Editionsbestäm aktuell UTILTS–APERAK-anvisning och skilj normativa profilregler från FCR-guidens exempel."
+  next_owner: ChatGPT
+  blocked: false
+
+owners:
+  - owner: ChatGPT
+    state: active
+    task: "UTILTS/APERAK edition + normative evidence"
+  - owner: Codex
+    state: waiting
+    task: "Validator vertical slice efter låst contract"
+  - owner: "@cjrandersson"
+    state: clear
+    task: "Validator First beslutat; inget produktgränsbeslut väntar"
+  - owner: "@gonzalolorcakeabit-bit"
+    state: clear
+    task: "Ingen uppgift tilldelad"
+
+milestones:
+  - id: M0
+    state: active
+    progress: 0.8
+  - id: M1
+    state: queued
+    progress: 0.0
+  - id: M2
+    state: queued
+    progress: 0.0
