@@ -1,13 +1,14 @@
 # Decision 0001 — Live Development Cockpit
 
-**Status:** Accepted  
-**Date:** 2026-09-25
+**Status:** Replaced by [Decision 0005](0005-machine-readable-project-status.md)  
+**Date:** 2026-09-25  
+**Replaced:** 2026-09-28
 
-## Decision
+## Historical decision
 
-The repository README is the team's live development cockpit and must show the actual current state of Tydel near the top of the first page.
+The repository README was originally designated as the team's live development cockpit and operational source of truth.
 
-It must always include:
+It was required to show:
 
 - current milestone;
 - current status;
@@ -20,14 +21,12 @@ It must always include:
 - next milestone;
 - last-updated date.
 
-If Robin must act, the cockpit must show this explicitly as:
+If Robin must act, the cockpit should still show this explicitly as:
 
 `🚨 @cjrandersson — <required action>`
 
-Other owners may be named as `ChatGPT`, `Codex`, `Gonzalo` or another named collaborator/system. Do not invent GitHub handles.
+## Why this was replaced
 
-## Maintenance rule
+Keeping operational state directly in README and separately in the visual cockpit created duplicate mutable state and allowed the two views to drift apart.
 
-A meaningful project change is not considered fully documented until the README cockpit has been updated to reflect the new status, ownership and immediate next step.
-
-This is an internal team-control surface first. Operational clarity takes priority over presentation to outsiders.
+Decision 0005 keeps the Development Cockpit concept and visual design but moves the canonical status data to `project-status.yml`. README and the SVG cockpit are now human-facing mirrors of that source.

@@ -3,27 +3,31 @@
 Tydel is a research-stage, read-only Ediel validation and support project. There is
 no production service yet.
 
-## Development cockpit comes first
+## Project status comes first
 
-Before doing any work, read the **Development Status — Team Cockpit** near the top
-of `README.md`.
-
-Treat it as the operational source of truth for:
+Before doing any work, read `project-status.yml` first. It is the operational
+source of truth for:
 
 - the current milestone;
 - the exact next task;
 - task ownership;
 - blockers / pending decisions;
-- which milestone items are complete;
+- milestone state and progress;
 - what should happen next.
 
+Then read the **Development Cockpit** near the top of `README.md`. The README and
+`assets/graphics/development-cockpit.svg` are human-facing mirrors of the status
+model and must not contradict `project-status.yml`.
+
 Only start work assigned to **Codex** or work explicitly requested by the owner.
-Do not silently take over tasks owned by `@cjrandersson`, `ChatGPT`, `Gonzalo` or
+Do not silently take over tasks owned by `@cjrandersson`, `ChatGPT`, Gonzalo or
 another named collaborator.
 
-If implementation changes milestone status, completes a checklist item, changes a
-blocker or changes the immediate next step, update the README cockpit in the same
-work so it remains accurate.
+If work changes milestone status, completes a checklist item, changes a blocker,
+ownership or the immediate next step, update `project-status.yml` first and keep
+the README cockpit and visual cockpit synchronized in the same change. Until an
+automatic cockpit renderer exists, this synchronization is an explicit repository
+maintenance requirement.
 
 Read `README.md` and `ARCHITECTURE.md` before changing the system design. Explain
 material scope or architecture changes to the owner before implementing them.
