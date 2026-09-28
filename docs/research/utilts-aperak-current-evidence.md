@@ -10,13 +10,32 @@ Det här dokumentet flyttar Tydels research från bred processnivå mot konkreta
 
 Svenska kraftnäts **BSP – Implementation guide FCR**, ärende `Svk 2021/3931`, är daterad **5 mars 2025** och anger **Valid from 28 April 2025**. Guiden beskriver integration mellan BSP och Fifty MMS och är därför stark evidens för just FCR-processen.
 
-Edielportalens aktuella sida **Edielanvisningar** visar samtidigt en aktiv huvudkategori **`6. UTILTS-APERAK`** och beskriver att UTILTS och dess APERAK används för utbyte av **mätvärden och avräkningsinformation** mellan branschens aktörer. Portalen har en separat kategori **`11. Äldre anvisningar`** för anvisningar som har utgått. Detta är viktig editions-evidens: UTILTS–APERAK är inte bara ett historiskt dokumentnamn, utan ligger i portalens aktuella anvisningsstruktur per 2026-09-26.
+Edielportalens aktuella sida **Edielanvisningar** visar en aktiv huvudkategori **`6. UTILTS-APERAK`** och beskriver att UTILTS och dess APERAK används för utbyte av **mätvärden och avräkningsinformation** mellan branschens aktörer. Portalen har en separat kategori **`11. Äldre anvisningar`** för anvisningar som har utgått.
 
-Detta bevisar däremot **inte** ännu vilken enskild underliggande UTILTS-/APERAK-fil, edition eller profil som är normerande för varje svensk process. Den detaljen måste hämtas från dokumenten under den aktiva kategorin innan segmentkrav kan göras till validatorregler.
+Den aktuella svenska UTILTS/APERAK-anvisningen är editionsbestämd i Tydels referensbibliotek som:
+
+- source `se-ediel-3333`;
+- `251001_Ediel_UTILTS-APERAK_Anvisning_version_25-A-3.pdf`;
+- UTILTS **D.02B**;
+- profil **E5SE5A**;
+- revision **3**;
+- giltig från **2025-06-01** enligt dokumentets cover evidence.
+
+Den engelska motsvarigheten är source `se-ediel-3334`. Edielportalen listar dessutom revision **4** (`se-ediel-3364` / `se-ediel-3365`) med giltighet från **2026-10-01**. Per **2026-09-28** är revision 4 därför future-effective och revision 3 den aktuella edition som ska användas som utgångspunkt för M0-research. Publication/filename-datum får inte förväxlas med `effective_from`.
+
+Det finns en dokumenterad publisher-label-avvikelse för den svenska revision-4-filen: filnamnet slutar i `25-A-4` medan page footer enligt tidigare cover review visar `25-A-5`; cover anger revision 4. Tydel bevarar avvikelsen som evidens och gissar inte vilket label som avsågs.
+
+Editionsbestämningen löser **inte** automatiskt vilka segment-, qualifier- och affärsregler som är normativa för Tydels första validator-slice. Dessa måste fortfarande extraheras och scope-bindas från den aktuella anvisningen innan de får bli validatorregler.
 
 Källor:
 - https://www.svk.se/siteassets/aktorsportalen/dokument-for-aktorer/dokument-for-reserver/implementationsguide_fcr_en_2025.pdf
 - https://www.ediel.se/Info/edielanvisningar
+- https://www.ediel.se/Portal/Document/3333
+- https://www.ediel.se/Portal/Document/3334
+- https://www.ediel.se/Portal/Document/3364
+- https://www.ediel.se/Portal/Document/3365
+- `reference/catalogs/ediel-se.json`
+- `reference/download-lock.json`
 
 ## Evidenshierarki
 
@@ -130,7 +149,9 @@ Guiden anger `29` som positiv och `27` som negativ APERAK för detta exempel. De
 
 | Rule candidate | Evidens | Status |
 | --- | --- | --- |
-| Aktiv Edielkategori `6. UTILTS-APERAK` används för mätvärden och avräkningsinformation | Edielportalen, aktuell Edielanvisningssida | `CURRENT` på kategorinivå; profil/edition ännu `UNVERIFIED` |
+| Aktiv Edielkategori `6. UTILTS-APERAK` används för mätvärden och avräkningsinformation | Edielportalen, aktuell Edielanvisningssida | `CURRENT` på kategorinivå |
+| Aktuell UTILTS/APERAK-guide är revision 3, UTILTS D.02B / E5SE5A, giltig från 2025-06-01 | `se-ediel-3333` / `se-ediel-3334`, cover evidence | `CURRENT` edition identity; full rule extraction pending |
+| Revision 4 är giltig från 2026-10-01 | `se-ediel-3364` / `se-ediel-3365`, cover evidence | `TRANSITIONAL` / future-effective per 2026-09-28 |
 | FCR activated energy använder `UTILTS:D:02B:UN:E5SE9B` i guideexemplet | Svk FCR 2025 Appendix B | `CURRENT_SCOPED` |
 | FCR committed plan/activated energy använder `S01` | Svk FCR 2025 §2.3.2 | `CURRENT_SCOPED` |
 | Accepted bids använder `UTILTS S08` | Svk FCR 2025 §2.3.2.1 | `CURRENT_SCOPED` |
@@ -143,15 +164,15 @@ Guiden anger `29` som positiv och `27` som negativ APERAK för detta exempel. De
 
 ## Vad som fortfarande är UNVERIFIED
 
-För ett säkert första validator-kontrakt behöver vi fortfarande verifiera mot dokumenten under Edielportalens aktiva `6. UTILTS-APERAK`:
+Editionsidentiteten är nu verifierad, men följande måste fortfarande lösas innan ett säkert första validator-kontrakt kan låsas:
 
-1. exakt dokumenttitel, edition/revision och giltighetsdatum för aktuell UTILTS- och APERAK-anvisning;
-2. om `UTILTS:D:02B:UN:E5SE9B` är normerande för den valda processen och inte bara formatet i FCR-exemplet;
-3. obligatoriska och villkorade segment för vald profil;
-4. kompletta qualifiers och kodlistor;
-5. negativ APERAK-semantik och samtliga felkoder;
-6. exakt vilka acknowledgement-regler som varierar mellan UTILTS-transaktionstyper;
-7. om guideexemplen innehåller historiska exempelvärden som inte ska tolkas som dagens affärsregler.
+1. obligatoriska och villkorade segment i den **aktuella revision-3-profilen** för vald transaction/message-slice;
+2. kompletta qualifiers och kodlistor för den valda slicen;
+3. relationen mellan den generella E5SE5A-guiden och processpecifika profiler/exempel såsom FCR:s E5SE9B;
+4. negativ APERAK-semantik och samtliga relevanta felkoder för vald profil;
+5. exakt vilka acknowledgement-regler som varierar mellan UTILTS-transaktionstyper;
+6. vilka guideexempel som endast är illustrativa och vilka krav som uttryckligen är normativa;
+7. om revision 4, giltig från 2026-10-01, ändrar någon regel som påverkar den första pilot-/M1-slicen.
 
 ## Taxonomikonsekvens
 
@@ -183,8 +204,9 @@ Varje nod/regelkandidat behöver minst:
 
 ## Nästa researchsteg
 
-1. hämta metadata och innehåll för dokumenten under Edielportalens aktiva `6. UTILTS-APERAK`;
-2. editionsbestäm den fullständiga aktuella UTILTS-/APERAK-profilen;
-3. jämför dess segment- och kodkrav mot FCR-guiden;
-4. uppgradera endast uttryckligen stödda kandidater från `example evidence` till `normative rule evidence`;
-5. därefter föreslå ett första validator-kontrakt och positiva/negativa fixtures utan antaganden.
+1. läs den aktuella revision-3-anvisningen (`se-ediel-3333` / `se-ediel-3334`) på regel-/segmentnivå för en smal kandidat-slice;
+2. markera varje härledd regel som `NORMATIVE`, `PROCESS_GUIDE`, `EXAMPLE` eller `SECONDARY`;
+3. jämför de normativa revision-3-kraven mot FCR-guidens E5SE9B-exempel utan att generalisera mellan profiler;
+4. kontrollera revision-4-deltat för regler som blir giltiga 2026-10-01;
+5. uppgradera endast uttryckligen stödda kandidater till validatorregler;
+6. därefter föreslå första validator-kontraktet och positiva/negativa fixtures utan antaganden.
