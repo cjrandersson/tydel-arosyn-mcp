@@ -42,19 +42,20 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md) och [`Decision 0
 | **Nuvarande mål** | Låsa en smal, auktoritativ och testbar svensk Ediel-slice och parallellt förbereda kunddiscovery |
 | **Exakt nästa tekniska uppgift** | Extrahera normativa revision-3 UTILTS/APERAK-regler för en smal kandidat-slice och håll dem separerade från processguide/exempel |
 | **Parallellt discovery-spår** | Förbered intervju-guide, target-list-struktur, failure-case intake template och discovery scorecard |
+| **Strategic watch** | 🟠 **DHV 2026-09-30** — Ei/Svenska kraftnäts redovisning om centralt datahanteringsverktyg ska analyseras innan långsiktiga Sverige-/Ediel-antaganden låses |
 | **Nästa owner** | **ChatGPT** |
-| **Blockerat / väntar på teamet** | **Inget produktgränsbeslut väntar. Validator First är låst.** |
+| **Blockerat / väntar på teamet** | **Inget hard block.** M0-research fortsätter; DHV är en decision gate för långsiktig produkt-/arkitekturthesis |
 | **Codex** | ⏸ **VÄNTAR** — implementation börjar först när första message/profile och validator contract är låsta |
 | **Peer review** | ✅ **READY** — **@gonzalolorcakeabit-bit** kör Claude enligt [`docs/reviews/claude-peer-review-brief.md`](docs/reviews/claude-peer-review-brief.md) |
 | **Nästa milestone** | **M1 — Första deterministiska validator vertical slice** |
-| **Senast uppdaterad** | **2026-09-28** |
+| **Senast uppdaterad** | **2026-09-29** |
 
 ### Aktivt ansvar / pending
 
 | Owner | Pending nu | Läge |
 |---|---|---|
-| **@cjrandersson** | Ingen outreach krävs innan discovery-underlagen är klara | ⚪ **CLEAR** |
-| **ChatGPT** | Normativa rev-3 UTILTS/APERAK-regler + customer discovery preparation | 🟢 **ACTIVE** |
+| **@cjrandersson** | Ingen outreach eller DHV-åtgärd krävs just nu | ⚪ **CLEAR** |
+| **ChatGPT** | Normativa rev-3 UTILTS/APERAK-regler + customer discovery preparation + DHV strategic watch | 🟢 **ACTIVE** |
 | **Codex** | Vänta med produktionskod tills första validator-slice och contract är låsta | ⏸ **WAITING** |
 | **@gonzalolorcakeabit-bit** | Kör Claude peer-to-peer review enligt review-briefen | 🟡 **READY / NEXT REVIEW** |
 
@@ -76,7 +77,9 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md) och [`Decision 0
   - [x] Produktstrategi låst: **Validator First**
   - [x] Canonical product positioning förenklad och låst
   - [x] Aktuell UTILTS/APERAK-edition identifierad: revision 3 / E5SE5A, giltig från 2025-06-01; revision 4 future-effective 2026-10-01
+  - [x] DHV strategic watch dokumenterad med primärkällor och analysfrågor
   - [ ] Separera `example evidence` från `normative rule evidence` på regel-/segmentnivå — **ChatGPT**
+  - [ ] **2026-09-30 DHV checkpoint:** läs redovisningen och ompröva product thesis, roadmap, architecture assumptions, customer discovery och investeringsbedömning — **ChatGPT**
   - [ ] Välj första stödda svenska message/profile — **ChatGPT rekommendation → @cjrandersson endast om produktval krävs**
   - [ ] Definiera första validator contract + strukturerad error output — **ChatGPT / Codex**
   - [ ] Definiera auktoritativa positiva och negativa fixtures — **ChatGPT / Codex**
@@ -115,6 +118,8 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md) och [`Decision 0
   - [ ] Mät tidsbesparing och diagnostisk precision i pilot
 
 **Regel:** en meningsfull projektförändring är inte färdigdokumenterad förrän `project-status.yml`, README-cockpit och den visuella cockpiten visar samma verkliga läge och korrekt owner för varje pending action.
+
+Se även [`docs/research/dhv-strategic-watch.md`](docs/research/dhv-strategic-watch.md) för den externa DHV-checkpointen.
 
 ---
 
