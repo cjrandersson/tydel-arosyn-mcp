@@ -1,5 +1,5 @@
 version: 1
-updated: 2026-09-28
+updated: 2026-09-29
 
 product:
   strategy: validator_first
@@ -31,6 +31,18 @@ current:
   next_owner: ChatGPT
   blocked: false
 
+strategic_watch:
+  id: DHV-2026-09-30
+  state: watch
+  owner: ChatGPT
+  due: 2026-09-30
+  hard_block_m0: false
+  decision_gate: true
+  subject: "Ei/Svenska kraftnät — centralt datahanteringsverktyg för elmarknaden"
+  document: "docs/research/dhv-strategic-watch.md"
+  action_when_published: "Läs hela redovisningen och ompröva product thesis, roadmap, architecture assumptions, customer discovery och investeringsbedömning."
+  guardrail_until_reviewed: "Lås inte långsiktiga antaganden som förutsätter att dagens bilaterala svenska Ediel-landskap förblir oförändrat."
+
 customer_discovery:
   state: preparation
   owner: ChatGPT
@@ -53,7 +65,7 @@ peer_review:
 owners:
   - owner: ChatGPT
     state: active
-    task: "Normativa revision-3 UTILTS/APERAK-regler + customer discovery preparation"
+    task: "Normativa revision-3 UTILTS/APERAK-regler + customer discovery preparation + DHV strategic watch"
   - owner: Codex
     state: waiting
     task: "Validator vertical slice efter låst contract"
