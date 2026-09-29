@@ -2,7 +2,7 @@
 
 > **Tyda el**
 
-## Etymologi
+---
 
 **Tyda**  
 *fornsvenska* **þyþa**
