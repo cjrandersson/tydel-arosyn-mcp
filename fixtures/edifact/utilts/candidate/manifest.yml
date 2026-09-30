@@ -1,0 +1,62 @@
+version: 1
+intake_date: 2026-09-30
+dataset: utilts_candidate_fixture_pack
+status: UNVERIFIED
+provenance: user_supplied
+raw_files_modified: false
+notes:
+  - "Filnamnens pos/neg anger avsedd testintention, inte verifierat validatorutfall."
+  - "Kandidater ska bindas till source edition, profile och expected rule IDs innan de blir regressionstester."
+files:
+  - path: utilts_neg_illegal_free_text.edi
+    intent: negative
+    verification: UNVERIFIED
+    sha256: 84833b4fdacd95f8cbf7229267f24d316951bbb80324bc46d269995c7da365c0
+  - path: utilts_neg_invalid_gs1_id.edi
+    intent: negative
+    verification: UNVERIFIED
+    sha256: 8df6e1158c837aa7cd2b1436392f7083800ede8c7dada8701723b8d15548ca6b
+  - path: utilts_neg_invalid_role_qualifier.edi
+    intent: negative
+    verification: UNVERIFIED
+    sha256: e35ee80479b61b17aa47d9653ec2ef35b8c681eb268e4f69c539bcc62df5bf97
+  - path: utilts_neg_missing_bgm_code.edi
+    intent: negative
+    verification: UNVERIFIED
+    sha256: 1831644bfd3444d3901104ce2e23382f04918e0b5b3441cc079ed9d67b591975
+  - path: utilts_neg_missing_dtm_137.edi
+    intent: negative
+    verification: UNVERIFIED
+    sha256: 762b2d40c5e5156aafa5d078a956fd2ee6340f5ad8e36ef0d5539cfc76dda62c
+  - path: utilts_neg_missing_intervals.edi
+    intent: negative
+    verification: UNVERIFIED
+    sha256: 434a41efc8858bafa4a97d3e94b4d42bca9dc165c31b7f99646562d88b56d9ab
+  - path: utilts_neg_overlapping_periods.edi
+    intent: negative
+    verification: UNVERIFIED
+    sha256: 7492290cec34528239c9ed22ff72e9717e9a74873b6ec0ca62c80723ca64263e
+  - path: utilts_neg_unb_unz_mismatch.edi
+    intent: negative
+    verification: UNVERIFIED
+    sha256: 9f56cab4808a19f844aa72734721d537554961788531bc5c299de8025a1924d5
+  - path: utilts_neg_version_mismatch.edi
+    intent: negative
+    verification: UNVERIFIED
+    sha256: 71162ad469971543178e4afdf2bd1de6587b8d38b2bcbfd88492d7c78162bb8d
+  - path: utilts_neg_wrong_unit_code.edi
+    intent: negative
+    verification: UNVERIFIED
+    sha256: c38b2ecfd218470d15cf8bc496a2f588dbb04a70d6ecb4b539f30d710fac1358
+  - path: utilts_pos_rev3_15min_clean.edi
+    intent: positive
+    verification: UNVERIFIED
+    sha256: 40fe6f7cc4ff62542e48a2d974e254837937e705982a1800d59016e355e93fc7
+  - path: utilts_pos_rev3_hourly_clean.edi
+    intent: positive
+    verification: UNVERIFIED
+    sha256: 727657c37f1d11ccf293c1bc40a6d21cda53d623d1622788714c267d4538dc01
+  - path: utilts_pos_rev4_15min_clean.edi
+    intent: positive
+    verification: UNVERIFIED
+    sha256: 61e1fae60da23416d9a18037b9ee632df70a213dd932ecdd948e3a0b70f0648f

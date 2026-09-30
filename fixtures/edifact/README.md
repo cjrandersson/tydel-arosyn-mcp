@@ -8,11 +8,11 @@ Rules:
 - State whether a fixture is valid or intentionally broken.
 - Describe the expected result in a nearby test or matching metadata file.
 - Do not treat a generated fixture as an authoritative Ediel example.
+- New cases must state their profile, expected result and source edition before they become validator tests.
 
-The current `mock_mscons.edi` file is an early research fixture and still needs domain validation.
+## Fixture sets
 
-It is not an authoritative example of today's Swedish electricity meter-value
-exchange. Start profile selection with the [research reading guide](../../docs/research/reading-guide.md).
-Downloaded publisher examples belong in the reference cache, not automatically
-in this fixture set. New cases must state their profile, expected result and
-source edition before they become validator tests.
+- `mock_mscons.edi` is an early synthetic research fixture and still needs domain validation.
+- `utilts/candidate/` contains user-supplied realistic UTILTS candidate data. These raw files are preserved unchanged and are explicitly `UNVERIFIED`; see its README and manifest before using them in tests.
+
+Downloaded publisher examples belong in the reference cache, not automatically in this fixture set. Start profile selection with the [research reading guide](../../docs/research/reading-guide.md).
