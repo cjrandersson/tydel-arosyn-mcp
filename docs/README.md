@@ -8,6 +8,7 @@ Available now:
 - [Claude M0 peer review brief](reviews/claude-peer-review-brief.md) — repository-grounded instructions for the independent review.
 - [Research reading guide](research/reading-guide.md) — source order, format boundaries and open questions.
 - [UTILTS / APERAK current evidence](research/utilts-aperak-current-evidence.md) — current edition status, FCR evidence boundaries and unresolved rule extraction.
+- [CIM / IEC 62325 tooling](research/cim-iec62325-tooling.md) — future XML/CIM research track covering IEC 62325/ENTSO-E ESMP, CIMTool, OpenCGMES, SHACL/RDFS and scope guardrails.
 - [OpenEDI evaluation](research/openedi-evaluation.md) — M0 spike for a machine-readable generic EDI/EDIFACT base layer.
 - [Source permissions](research/source-permissions.md) — local reference use, public copies and model-use boundaries.
 - [Reference collection log](research/collection-log.md) — what was collected and checked.
