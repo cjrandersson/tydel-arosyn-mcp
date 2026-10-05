@@ -1,6 +1,6 @@
 # Working on Tydel
 
-Tydel is a research-stage, read-only **energy-market conformance and diagnostics** project. Swedish Ediel is the first wedge; UTILTS/APERAK is the first planned M1 vertical slice. There is no production service yet.
+Tydel is a research-stage, read-only **energy-market conformance and CI/CD** project. Swedish Ediel is the first wedge; UTILTS/APERAK is the first planned M1 vertical slice. There is no production service yet.
 
 ## Project status comes first
 
@@ -20,13 +20,13 @@ Only start work assigned to **Codex** or work explicitly requested by the owner.
 
 If work changes milestone status, completes a checklist item, changes a blocker, ownership or the immediate next step, update `project-status.yml` first and keep the README cockpit and visual cockpit synchronized in the same change.
 
-Read `README.md`, `ARCHITECTURE.md` and `docs/decisions/0005-post-dhv-conformance-strategy.md` before changing product/system design.
+Read `README.md`, `ARCHITECTURE.md`, `docs/architecture/rule-ir-v0.md`, `docs/decisions/0005-post-dhv-conformance-strategy.md` and `docs/decisions/0006-rule-ir-v0.md` before changing product/system design.
 
 ## Current architecture rules
 
 ### Validator First still applies
 
-`Validator First` now means deterministic energy-market conformance, not permanent Ediel-only scope.
+`Validator First` means deterministic energy-market conformance, not permanent Ediel-only scope.
 
 The core responsibility is:
 
@@ -47,26 +47,47 @@ Do not build generic support for XML/CIM, REST/JSON or speculative DHV interface
 
 Keep adapters replaceable, but implement only what the supported slice requires.
 
-### Rule IR before DSL
+### Rule IR v0 is locked
 
-Do not invent a custom rule language before the first real normative rule set exposes the necessary primitives.
+The M1 internal rule contract is:
+
+- `docs/architecture/rule-ir-v0.md`
+- `schemas/rule-ir-v0.schema.json`
+
+Do not invent a parallel rule model or custom DSL during M1.
 
 The intended flow is:
 
 ```text
 normative source
 → importer / curated extraction
-→ internal Rule IR
+→ Rule IR v0
 → source/human review
 → versioned RulePack
 → deterministic runtime
 ```
 
-If a rule cannot be represented cleanly, record the gap. Do not hide it in untraceable special code.
+Rule IR v0 contains no arbitrary-code escape hatch. If a verified mandatory rule cannot be represented cleanly, mark the semantic gap `unsupported` and surface it. Do not hide the gap in an opaque custom callback.
 
 ### Temporal validity is first-class
 
 Every normative rule/profile must preserve edition and effective period where known. Never overwrite history just because a newer edition exists.
+
+### Local-first is the primary delivery model
+
+M1 should optimize for:
+
+```text
+local CLI
+→ deterministic validation
+→ source-linked diagnostics
+→ exit code
+→ CI / GitHub Action
+```
+
+Cloud deployment is not required for core validation.
+
+The `<15 ms` figure is a benchmark target only. Do not claim it as achieved until benchmark parameters and measured results exist.
 
 ### DHV is not a guessed contract
 
@@ -92,26 +113,13 @@ Use `docs/research/dhv-strategic-watch.md` for the current evidence boundary.
 
 ## RulePack quality requirements
 
-A normative Rule IR record should preserve enough metadata to support at least:
-
-```text
-rule_id
-jurisdiction
-process
-message/profile
-syntax
-effective_from
-effective_to
-assertion
-source_id
-source_edition
-source_location
-review_status
-```
+A normative Rule IR v0 record must follow the locked contract and preserve scope, applicability, evidence, review state, test linkage and execution support state.
 
 Published RulePacks should be immutable/versioned and paired with positive/negative tests.
 
 Do not create a `RulePack` from secondary commentary if an authoritative source is required for the claim.
+
+A RulePack must not claim complete supported-scope conformance while a mandatory rule is `unsupported`.
 
 ## Handle sources and customer data safely
 
@@ -126,7 +134,9 @@ Do not create a `RulePack` from secondary commentary if an authoritative source 
 
 ## Access surfaces
 
-CLI, API, CI, UI and MCP must use the same core validation contract. Do not implement separate business logic in an MCP handler or UI.
+Local CLI and CI/GitHub Action are primary M1 delivery surfaces. API, UI and MCP may be layered over the same core when needed.
+
+No access surface may implement separate business logic or validation semantics.
 
 MCP is useful for developer/agent workflows but is not assumed to be acceptable as an external cloud service in every utility environment. Keep local/private deployment possible.
 
