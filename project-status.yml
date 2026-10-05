@@ -4,10 +4,20 @@ updated: 2026-10-05
 product:
   strategy: validator_first_conformance
   category: "Energy Market Conformance & Diagnostics"
+  delivery_model: "local-first developer conformance and CI/CD layer"
   north_star: "Build the deterministic conformance and diagnostics layer for energy-market interoperability."
   positioning: "Tydel avgör vilka tekniska och marknadsmässiga regler som gäller för en energimarknadstransaktion, validerar den deterministiskt och visar exakt vad som är fel, varför och vilken evidens som stöder resultatet."
+  developer_promise: "Catch energy-market integration errors before external test or production systems do."
   first_wedge: "Swedish Ediel, with UTILTS/APERAK as the first M1 vertical slice."
   core_competency: "Rule resolution + versioned executable RulePacks + provenance-backed deterministic validation."
+  primary_surfaces:
+    - local_cli
+    - ci_cd_gate
+    - github_action
+  secondary_surfaces:
+    - api
+    - ui
+    - mcp
   product_hypotheses:
     - pre_validation
     - diagnostics
@@ -22,6 +32,7 @@ product:
     - "MCP and AI are access/explanation layers, not validation authority or the moat."
     - "Do not claim a future DHV protocol, CIM profile or migration date without authoritative evidence."
     - "Do not widen M1 into multi-protocol implementation before the first vertical slice is proven."
+    - "<15 ms local validation is a performance target, not a product claim, until a reproducible benchmark is defined and measured."
 
 cockpit:
   title: "TYDEL / DEVELOPMENT COCKPIT"
@@ -39,8 +50,8 @@ current:
   milestone: M0
   milestone_title: "Research foundation + post-DHV product reset"
   status: active
-  objective: "Låsa Rule IR v0 och ett auktoritativt UTILTS/APERAK-kontrakt för M1, utan att överkonstruera framtida DHV/CIM-stöd."
-  next_task: "Definiera Rule IR v0 + M1 validator contract för UTILTS/APERAK och representera ett första normativt regelset med provenance och giltighetstid."
+  objective: "Låsa ett auktoritativt UTILTS/APERAK M1-scope ovanpå färdig Rule IR v0 och förbereda första verifierade RulePack + validator contract."
+  next_task: "Lås exakt supported UTILTS/APERAK profile/scope, mappa första verifierade normativa reglerna till Rule IR v0 och definiera M1 validator result contract + golden fixtures."
   next_owner: ChatGPT
   blocked: false
 
@@ -58,10 +69,13 @@ strategic_checkpoint:
   follow_up_watch: "Government decision, implementation programme, authoritative interface specifications, validation/error contracts and migration milestones."
 
 rule_operations:
-  state: active_design
+  state: rule_ir_v0_locked
   owner: ChatGPT
-  decision: "Rule IR before a custom DSL."
-  target_for_m1_contract: "Represent 30-50 normative rules or enough real rule diversity to expose the first stable primitives; the number is an engineering target, not a market fact."
+  decision: "Rule IR v0 locked before M1; no custom DSL and no arbitrary executable predicates."
+  contract: "docs/architecture/rule-ir-v0.md"
+  schema: "schemas/rule-ir-v0.schema.json"
+  decision_record: "docs/decisions/0006-rule-ir-v0.md"
+  next_task: "Populate the first verified UTILTS/APERAK RulePack and record any unsupported mandatory semantics explicitly."
   required_metadata:
     - rule_id
     - jurisdiction
@@ -75,6 +89,19 @@ rule_operations:
     - evidence_location
     - review_status
   scaling_question: "Can verified RulePacks be created and updated faster than market rules change without turning Tydel into a consulting-heavy business?"
+
+developer_delivery:
+  state: approved_direction
+  owner: ChatGPT
+  model: "local-first / offline-capable / CI-native"
+  inspiration_tracks:
+    - "Conftest/OPA: local policy execution + CI-friendly exit semantics"
+    - "Argo CD: declarative desired-vs-actual diff and reproducibility"
+    - "Ruff/Biome: fast startup and high-quality source-linked terminal diagnostics"
+    - "kubeconform: offline schema resolution/cache and parallel validation patterns"
+  performance_target: "<15 ms for a defined warm local scoped benchmark"
+  performance_status: "target_only"
+  benchmark_guardrail: "Do not claim <15 ms publicly until payload size, rule count, cache state, hardware and cold/warm semantics are defined and measured."
 
 customer_discovery:
   state: preparation
@@ -98,28 +125,28 @@ peer_review:
   state: ready
   owner: "@gonzalolorcakeabit-bit"
   reviewer: "Claude"
-  scope: "whole repository, including post-DHV reset"
+  scope: "whole repository, including post-DHV reset, Rule IR v0 and local-first developer/CI direction"
   brief: "docs/reviews/claude-peer-review-brief.md"
-  purpose: "Independent challenge of scope, source authority, rule-model scalability, product positioning and unsupported assumptions"
+  purpose: "Independent challenge of scope, source authority, Rule IR/RulePack scalability, developer-first positioning and unsupported assumptions"
 
 owners:
   - owner: ChatGPT
     state: active
-    task: "Rule IR v0, UTILTS/APERAK M1 contract, post-DHV documentation sync and discovery preparation"
+    task: "Lock UTILTS/APERAK M1 scope, populate first verified RulePack, validator contract and discovery preparation"
   - owner: Codex
     state: waiting
-    task: "Implement M1 only after Rule IR + validator contract + supported profile are locked"
+    task: "Implement M1 only after supported profile + first verified RulePack + validator contract + golden fixtures are locked"
   - owner: "@cjrandersson"
     state: clear
-    task: "No immediate action; outreach begins after discovery pack review"
+    task: "No immediate action; local-first developer direction approved; outreach begins after discovery pack review"
   - owner: "@gonzalolorcakeabit-bit"
     state: ready
-    task: "Run Claude peer review against the updated repository"
+    task: "Run Claude peer review against the updated repository including Rule IR v0"
 
 milestones:
   - id: M0
     state: active
-    progress: 0.9
+    progress: 0.93
     title: "Research foundation + product reset"
   - id: M0-CD
     state: preparation
@@ -132,7 +159,7 @@ milestones:
   - id: M2
     state: queued
     progress: 0.0
-    title: "Developer conformance surfaces: CLI/API/CI + validated commercial slice"
+    title: "Developer conformance surfaces: local CLI / CI / GitHub Action + validated commercial slice"
   - id: M3
     state: hypothesis
     progress: 0.0
