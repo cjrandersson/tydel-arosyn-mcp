@@ -1,126 +1,176 @@
-# Decision 0004 — Validator result and delivery contract
+# Decision 0004 — Validation result and delivery contract
 
-**Status:** Accepted  
-**Date:** 2026-09-28
+**Status:** Accepted, refined post-DHV  
+**Original date:** 2026-09-28  
+**Refined:** 2026-10-05
 
 ## Problem
 
-Tydel ska kunna förklara samma valideringsfel för olika mottagare utan att skapa flera konkurrerande versioner av sanningen. En operatör behöver ett begripligt nästa steg, ett integrationsteam behöver teknisk detalj, ett system behöver stabil maskinläsbar data och en AI-klient behöver kontrollerad åtkomst till samma verifierade resultat och evidens.
+Tydel must explain the same conformance finding to different audiences without creating competing versions of truth.
 
-Samtidigt får Tydel inte ersätta eller förvanska den ursprungliga marknadssignalen, exempelvis en APERAK-kod eller annan acknowledgement/error code.
+An operator needs a clear next step, an integration team needs technical detail, a system needs stable machine-readable data and an AI client needs controlled access to the same verified result and evidence.
+
+The result contract must also survive expansion beyond Ediel without becoming tied to EDIFACT field names.
 
 ## Decision
 
-Tydels validator producerar **ett gemensamt strukturerat validation result**. Det resultatet är source of truth för all presentation och vidare distribution.
+Tydel produces **one canonical structured validation/conformance result**. It is the source of truth for every presentation and access surface.
 
-Ett fel är inte färdigkommunicerat förrän resultatet kan svara på:
+A finding should be able to answer:
 
-1. **Vad är fel?**
-2. **Var finns felet?**
-3. **Varför är det fel?**
-4. **Hur vet Tydel det?**
-5. **Vad är ett säkert nästa steg?**
-6. **Vem är rekommenderad owner när det går att avgöra deterministiskt eller med verifierad routinglogik?**
+1. **What failed?**
+2. **Where in the original input is it?**
+3. **Why is it invalid for this process/profile/version?**
+4. **Which rule applied at the relevant point in time?**
+5. **What normative evidence supports the rule?**
+6. **What was expected and observed?**
+7. **What is a safe next investigation step?**
+8. **What original market acknowledgement/error signal exists, if any?**
 
-### Originalsignal + Tydel-kod
+### Preserve original market signals
 
-Tydel ska alltid bevara originalkoden och originalsvaret oförändrat när sådant finns.
+Tydel preserves original acknowledgement/error codes and responses when present.
 
-Exempel:
+Example:
 
 ```text
 Original response: APERAK 313
-Tydel code: TYD-ACK-001
+Tydel finding code: TYD-ACK-001
 ```
 
-Tydel-koden är ett normaliserat lager ovanpå originalsignalen, inte en ersättning för den.
+A Tydel code normalises diagnostics. It does not replace the original market response.
 
-### Stabilt strukturerat resultat
+## Contract direction
 
-Första validator-contractet ska minst kunna bära:
+Exact field names are locked with M1, but the canonical result must support at least:
 
 ```json
 {
+  "result_id": "...",
   "code": "TYD-REF-004",
   "severity": "error",
-  "message": "UTILTS",
-  "message_version": "D02B",
-  "profile": "E5SE9B",
-  "process": "FCR Activated Energy",
-  "location": "RFF+ACW",
+  "jurisdiction": "SE",
+  "process": "...",
+  "message_or_profile": "UTILTS / E5SE5A",
+  "syntax": "EDIFACT",
+  "resolved_rulepack": "SE_EDIEL_UTILTS_E5SE5A_REV3",
+  "as_of": "2026-09-01",
+  "location": {
+    "source_path": "...",
+    "raw_reference": "RFF+..."
+  },
   "original_response": "APERAK 313",
-  "rule_id": "SE-FCR-UTILTS-RFF-004",
-  "rule_layer": "SWEDISH_PROFILE",
-  "expected": "reference to original message id",
-  "observed": "missing or mismatched reference",
-  "evidence": [],
-  "recommended_owner": "mapping",
-  "next_action": "Verify original message reference and mapping"
+  "rule_id": "SE-...",
+  "rule_layer": "MARKET_PROFILE",
+  "expected": "...",
+  "observed": "...",
+  "evidence": [
+    {
+      "source_id": "...",
+      "edition": "...",
+      "location": "...",
+      "effective_from": "...",
+      "effective_to": null
+    }
+  ],
+  "next_action": "..."
 }
 ```
 
-Fältnamn och exakt schema låses först i validator-contractet för M1, men principen ovan är accepterad.
+The contract must not require every syntax family to expose EDIFACT-specific concepts such as `segment` at top level. Syntax-specific source locations belong inside a generic location/source-reference structure.
 
-## Audience-specific presentation
+## Determinism requirement
 
-Samma validation result får olika presentation beroende på mottagare:
+For the same:
 
-| Mottagare | Primärt behov | Leverans |
+```text
+raw input
++ explicit/resolved validation context
++ exact RulePack version
+```
+
+Tydel must return the same conformance result.
+
+Human explanations and AI summaries may change wording. The underlying result may not.
+
+## Audience-specific delivery
+
+| Audience | Primary need | Potential surface |
 | --- | --- | --- |
-| Operatör / support | Begripligt fel, påverkan, evidens, nästa steg | Web UI över HTTPS |
-| EDI-/integration-/mappingteam | Message/profile, segment, expected/observed, rule ID, provenance | REST API + JSON och teknisk UI-vy |
-| Automatiska system | Stabil kod, severity, location, rule ID, correlation identifiers | REST API / webhook över HTTPS |
-| AI-klient / agent | Kontrollerad åtkomst till verifierat resultat och godkända referenser | MCP |
-| Team lead / verksamhet | Trender, återkommande rotorsaker och påverkan | Senare observability/reporting-lager |
-| Marknadens motpart | Befintligt marknadsmeddelande enligt aktuell process | Befintlig Ediel/marknadstransport, inte Tydels interna output-protokoll |
+| Operator/support | clear finding, source, impact, next step | Web/operator UI |
+| Integration/developer | profile/version, exact rule, expected/observed, provenance | CLI + API + technical UI |
+| CI/build system | stable machine result and exit status | CLI/API/CI runner |
+| AI/client agent | controlled access to verified findings/evidence | MCP |
+| Team lead/governance | history, rule/version changes, migration impact | later enterprise layer |
+| Market counterparty | official market message/acknowledgement | existing market infrastructure, not Tydel internal protocol |
+
+All surfaces consume the same result contract.
 
 ## System boundary
 
-I Validator First-fasen ligger Tydel **bredvid produktionsflödet** och arbetar read-only med kopior av messages, acknowledgements, fel och loggar.
+In the first product stages Tydel works read-only beside production flows:
 
 ```text
-MARKNADSFLÖDE
-Actor A ── EDIFACT / XML / CIM / etablerad transport ──► Actor B
-   │
-   └── copy / message / log ──► TYDEL VALIDATOR
-                                  │
-                                  ├── Web UI
-                                  ├── REST / JSON
-                                  ├── Webhook
-                                  └── MCP
+MARKET SYSTEM / INTEGRATION
+        │
+        ├── production flow continues through official channel
+        │
+        └── copy / fixture / log / test payload
+                    ↓
+             TYDEL CONFORMANCE CORE
+                    │
+          ┌─────────┼─────────┐
+          ▼         ▼         ▼
+         CLI       API       UI/MCP
 ```
 
-Tydel ska i denna fas inte automatiskt korrigera, routa om eller återsända produktionsmeddelanden.
+Tydel does not automatically correct, reroute or retransmit production transactions in this phase.
 
-## Error-code namespaces
+## Finding-code namespaces
 
-Tydels egna felkoder ska vara stabila och kategoriserbara. Följande namespace är utgångspunkt:
+Initial direction:
 
 ```text
-TYD-SYN-xxx   syntax
-TYD-PRO-xxx   profile/version
-TYD-SEG-xxx   segment/data
-TYD-BIZ-xxx   business rule
-TYD-ACK-xxx   acknowledgement
-TYD-REF-xxx   references/correlation
-TYD-TIME-xxx  time/period
-TYD-ROLE-xxx  actor/role
+TYD-SYN-xxx    syntax/parse
+TYD-CTX-xxx    unresolved/ambiguous context
+TYD-PRO-xxx    profile/version/rulepack resolution
+TYD-STR-xxx    structural rule
+TYD-DAT-xxx    data/value constraint
+TYD-BIZ-xxx    business/process rule
+TYD-ACK-xxx    acknowledgement
+TYD-REF-xxx    reference/correlation
+TYD-TIME-xxx   temporal/period
+TYD-ROLE-xxx   actor/role
+TYD-EVD-xxx    evidence/provenance problem
 ```
 
-Exakt kodkatalog definieras tillsammans med första låsta validator-profile och test-fixtures.
+The exact catalogue is defined with the M1 contract and golden fixtures.
+
+## Change Impact compatibility
+
+Future RulePack comparison must be able to reference stable `rule_id` values and distinguish:
+
+- rule added;
+- rule removed;
+- rule semantics changed;
+- scope/effective period changed;
+- evidence/source changed.
+
+Stable rule identity is therefore part of the broader product architecture.
 
 ## Consequences
 
-- Validatorn behöver bara producera ett auktoritativt resultatformat.
-- UI, API, webhook och MCP blir adapters/presentationer ovanpå samma resultat.
-- Originala marknadskoder förblir synliga och spårbara.
-- Mänskliga förklaringar får aldrig förändra validatorns deterministiska utfall.
-- Nya kundkanaler, exempelvis Teams, ServiceNow eller andra integrationsytor, kan läggas till utan att ändra valideringskärnan.
-- Routing till rekommenderad owner är ett separat lager och får inte förväxlas med själva valideringsregeln.
+- One authoritative result format serves UI/API/CLI/CI/MCP.
+- The result contract is market/syntax-neutral while retaining syntax-specific source locations.
+- Original market signals remain visible.
+- Temporal rule resolution and RulePack identity are explicit.
+- AI explanations cannot alter deterministic findings.
+- New delivery surfaces do not require new business logic.
 
 ## Revisit when
 
-- första M1 validator-contractet låses;
-- en kund kräver write-back eller automatisk retransmission;
-- Tydel börjar arbeta inline i produktionsflödet;
-- nya marknadsformat kräver andra correlation- eller acknowledgement-modeller.
+- the M1 validator contract is implemented and tested;
+- the first non-EDIFACT vertical slice exposes missing abstractions;
+- a design partner requires inline/write-back behaviour;
+- Change Impact needs stronger stable-rule identity semantics;
+- official DHV or another market infrastructure defines a validation/result model Tydel needs to interoperate with.

@@ -1,60 +1,136 @@
 # Tydels arkitektur
 
-Det här dokumentet beskriver hur Tydel är tänkt att fungera, vilka systemgränser som gäller och vilka principer som ska styra implementationen. Syftet är att en utvecklare eller samarbetspartner ska kunna förstå helheten innan någon ändrar systemet.
+Det här dokumentet beskriver Tydels nuvarande arkitekturriktning efter DHV-checkpointen 2026-10-05.
 
-Tydel är fortfarande under utveckling. Arkitekturen nedan är den nuvarande riktningen, inte ett påstående om att varje tekniskt val är slutgiltigt.
+Tydel är en research-stage **energy-market conformance and diagnostics engine**. Svensk Ediel är första wedge och UTILTS/APERAK är första planerade M1 vertical slice. Arkitekturen ska kunna växa till fler syntax-/profile-familjer utan att M1 överkonstrueras.
 
 ## Designprinciper
 
-### Håll sanningen utanför språkmodellen
+### 1. Håll sanningen utanför språkmodellen
 
-Parsing och validering ska vara deterministisk, versionsstyrd och testbar. En LLM får förklara ett verifierat resultat, men får inte hitta på regler eller ändra valideringsutfallet.
+Parsing, rule resolution och validation ska vara deterministiska, versionsstyrda och testbara. En LLM får förklara verifierade resultat men får inte:
 
-### Separera grundstandard från marknadsprofil
+- avgöra `PASS/FAIL`;
+- skapa normativa regler utan source/review;
+- ändra validation outcome;
+- gissa framtida marknadskontrakt.
 
-Generell UN/EDIFACT-struktur och svenska Ediel-/affärsprocessregler är olika evidenslager. De ska versionsstyras och kunna spåras oberoende av varandra.
+### 2. Optimera för regelresolution, inte ett filformat
 
-En maskinläsbar grundmodell kan beskriva den generella meddelandestrukturen. Den blir inte auktoritativ för svenska affärsregler bara för att den är enklare för programvara att läsa.
+Tydels centrala fråga är:
 
-### Håll externa specifikationsformat utbytbara
+```text
+transaction
++ jurisdiction
++ process
++ profile
++ as-of date
+        ↓
+which exact rules apply?
+```
 
-OpenEDI utvärderas som inputformat för generell EDI/EDIFACT-struktur. Tydels canonical message model och interna validation-rule model får inte bli beroende av OpenEDI-specifika fältnamn eller en extern valideringstjänst.
+EDIFACT, XML, CIM och API payloads är inputfamiljer. De får inte definiera domänkärnan.
 
-### Gör så lite dubbelarbete som möjligt
+### 3. Behåll formatadapters separata
 
-Varje meddelande ska parsas en gång och därefter passera genom systemet som en gemensam strukturerad modell. Undvik upprepade konverteringar mellan rå EDIFACT, textsammanfattningar och verktygsspecifika format.
+Varje syntaxfamilj ska parsas av en explicit adapter/parser som producerar en gemensam canonical transaction plus source locations.
 
-### Gör varje steg observerbart
+M1 implementerar **endast EDIFACT-stödet som behövs för den valda UTILTS/APERAK-slicen**.
 
-Varje steg ska kunna lämna ett strukturerat resultat med timing, regelversion och trace-information. Ett misslyckat körfall ska kunna reproduceras utan kontakt med ett produktionssystem.
+Vi bygger inte XML, CIM, REST och DHV samtidigt bara för att arkitekturen ska kunna stödja dem senare.
 
-### Börja read-only
+### 4. Rule IR före egen DSL
 
-De första integrationerna arbetar med kopior av meddelanden, fel och loggar. Inline-routing, korrigering och återsändning är separata framtida funktioner med betydligt högre risk.
+Tydel skapar inte ett eget regelspråk innan verklig regelvariation har visat vilka primitiver som behövs.
 
-### Håll adapters utbytbara
+Flödet är:
 
-SFTP, filimport, API, AS2 och HTTPS är möjliga sätt att ta emot data. De hör hemma i adapters och får inte forma kärnans valideringsmodell.
+```text
+Normative source
+      ↓
+Importer / curated extraction
+      ↓
+Tydel Rule IR
+      ↓
+Source + human verification
+      ↓
+Versioned executable RulePack
+      ↓
+Conformance runtime
+```
 
-### Väx från en fungerande vertikal slice
+Rule IR ska vara intern och tool-neutral. Rules engine ska inte behöva veta om en regel ursprungligen kom från OpenEDI, XSD, en Ediel-guide, SHACL eller manuell kuratering.
 
-Första målet är en komplett väg genom systemet: läs ett uttryckligen stött meddelande, parsa det, validera det och returnera ett användbart resultat genom MCP. Fler meddelandetyper och tjänster kommer först därefter.
+### 5. Version och tid är first-class
+
+En regel måste kunna gälla under en begränsad period. Runtime ska därför kunna lösa rätt RulePack för ett explicit `as_of`-datum.
+
+Det gör historisk reproduktion, migrationstest och change-impact möjligt utan att gamla regler skrivs över.
+
+### 6. Separera auktoritetslager
+
+En generell syntax-/schemaartefakt är inte automatiskt auktoritet för en svensk eller nordisk affärsprocess.
+
+Minsta regelklasser:
+
+- `BASE_STANDARD`
+- `MARKET_PROFILE`
+- `BUSINESS_PROCESS`
+- `TYDEL_SAFETY`
+
+För M1 motsvarar `MARKET_PROFILE` i praktiken svenska Ediel/profile-regler. Senare kan samma lager bära andra marknadsprofiler.
+
+### 7. Bevara provenance per regel
+
+Varje normativ regel ska minst kunna bära:
+
+```text
+rule_id
+jurisdiction
+process
+message/profile
+syntax
+effective_from
+effective_to
+assertion
+source_id
+source_edition
+source_location
+source_checksum when applicable
+review_status
+```
+
+Convenience är aldrig authority.
+
+### 8. Read-only först
+
+Första produktfaserna arbetar med kopior, fixtures, meddelanden och loggar. Tydel ska inte routa, korrigera eller återsända produktionsmeddelanden.
+
+### 9. Samma core, flera accessytor
+
+CLI, API, CI, operator UI och MCP ska vara olika clients/surfaces över samma validation core.
+
+MCP är inte validatorn och inte parsern.
+
+---
 
 ## Systemöversikt
 
 ```mermaid
 flowchart TD
-    A["Kopierade meddelanden + loggar"]:::input --> B["Input adapter"]:::adapter
-    B --> C["Parser"]:::core
-    C --> D["Canonical message"]:::data
-    D --> E["Base standard model"]:::standard
-    E --> F["Ediel / process overlay"]:::standard
-    F --> G["Rules engine"]:::core
-    G --> H["Validation result"]:::data
-    H --> I["Context service"]:::core
-    I --> J["MCP tools + resources"]:::mcp
-    J --> K["AI-klient / operator UI"]:::mcp
-    I --> L["Audit + kontrollerade alerts"]:::action
+    A["Raw input: message / file / API payload / fixture"]:::input --> B["Format adapter + parser"]:::adapter
+    B --> C["Canonical market transaction + source locations"]:::data
+    C --> D["Process / profile / version resolver"]:::core
+    D --> E["RulePack registry"]:::standard
+    E --> F["Resolved executable rules"]:::standard
+    F --> G["Deterministic conformance engine"]:::core
+    G --> H["Structured validation result"]:::data
+    H --> I["Evidence + provenance service"]:::core
+    I --> J["CLI / API / CI / UI / MCP"]:::mcp
+    J --> K["Developer / operator / controlled AI client"]:::mcp
+
+    E --> L["RulePack diff / change impact"]:::future
+    L --> M["Regression + migration assurance"]:::future
 
     classDef input fill:#EAF4FF,stroke:#4C8DFF,color:#102A43,stroke-width:1.5px;
     classDef adapter fill:#EEF7FF,stroke:#60A5FA,color:#102A43,stroke-width:1.5px;
@@ -62,121 +138,318 @@ flowchart TD
     classDef data fill:#F5F7FA,stroke:#7B8794,color:#25313C,stroke-width:1.5px;
     classDef standard fill:#FFF9E8,stroke:#C99500,color:#4A3800,stroke-width:1.5px;
     classDef mcp fill:#F3EEFF,stroke:#7A5AF8,color:#2D1B69,stroke-width:1.5px;
-    classDef action fill:#FFF4E5,stroke:#F59E0B,color:#5F370E,stroke-width:1.5px;
+    classDef future fill:#FFF4E5,stroke:#F59E0B,color:#5F370E,stroke-width:1.5px;
 ```
 
-## Huvudsteg
+---
 
-### 1. Input
+## Domänobjekt
 
-En adapter tar emot ett kopierat meddelande, en fil eller ett registrerat fel och sparar var datan kom ifrån och när den togs emot. Kärnan får inte anta en viss transport.
+### RawInput
 
-### 2. Parse
+Originalbytes/text plus metadata om källa, mottagningstid och inputtyp. Originalet bevaras separat från härledda tolkningar.
 
-Parsern omvandlar EDIFACT-syntax till Tydels canonical message model. Originalinnehåll och källpositioner bevaras så att varje resultat kan peka tillbaka på exakt segment och dataelement.
+### CanonicalTransaction
 
-Syntaxfel returneras som strukturerade parse errors och får inte krascha processen. Parsern är en Tydel-komponent; en maskinläsbar standardmodell ersätter inte behovet av korrekt parsing av rå EDIFACT.
+En marknadsneutral representation av den transaction som Tydel behöver validera, inklusive:
 
-### 3. Lös upp grundstandarden
+- normalized identifiers;
+- process/message/profile hints;
+- source locations tillbaka till originalinput;
+- parsed values utan att tappa råvärden;
+- explicit unknowns när kontext saknas.
 
-Tydel hämtar den generella meddelandestrukturen för namngiven EDIFACT message/version.
+Canonical modellen får inte bli ett försök att modellera hela energimarknaden. Den ska bara innehålla det som validation runtime behöver.
 
-OpenEDI är nuvarande kandidat i M0 eftersom formatet kan uttrycka bland annat messages, loops, segments, composites, data elements, occurrence constraints och syntax/situational rules som OpenAPI Schema Objects med EDI-specifika extensions.
+### ValidationContext
 
-Base-standard-importern ska översätta externa representationer till Tydels interna regelmodell. Rules engine ska inte behöva veta om en grundregel ursprungligen kom från OpenEDI, en manuellt kuraterad definition eller en framtida källa.
+```text
+jurisdiction
+market
+process
+message/profile
+version
+as_of
+actor/role context when required
+```
 
-Varje importerad constraint ska bevara provenance, minst source identifier, publisher, model/version/edition, exakt regelposition och checksum för lokala källbytes när det är relevant.
+Resolvern får returnera `AMBIGUOUS_CONTEXT` istället för att gissa.
 
-### 4. Lägg på Ediel-/processprofilen
+### RuleIR
 
-Svenska Ediel- och affärsprocessregler läggs ovanpå som ett separat versionsstyrt lager. Lagret kan skärpa, specialisera eller komplettera grundstandarden men får inte tyst mutera den lagrade grundmodellen.
+Intern representation av en normativ eller safety constraint.
 
-Regler ska minst kunna klassificeras som `BASE_STANDARD`, `SWEDISH_PROFILE`, `BUSINESS_PROCESS` eller `TYDEL_SAFETY`.
+Första kandidater till primitives, endast när de stöds av verkliga M1-regler:
 
-Auktoritativ källa för svenska och processpecifika regler är relevant officiell marknadsdokumentation, inte OpenEDI eller EdiNation.
+- required/presence;
+- cardinality;
+- datatype/format;
+- allowed value/code list;
+- conditional required;
+- cross-field dependency;
+- reference integrity;
+- sequence;
+- temporal applicability;
+- business-state constraint.
 
-### 5. Validera
+Detta är inte en låst DSL-design.
 
-Rules engine kontrollerar canonical message mot ett uttryckligen namngivet och versionsstyrt regelpaket. Regler kan omfatta struktur, obligatoriska segment och värden, code lists, datatyper/format, occurrences, generell EDIFACT-syntax och verifierade Ediel-affärsregler.
+### RulePack
 
-Primärt output är ett maskinläsbart validation result, inte en textsammanfattning. Ett användbart fel ska kunna ange message/version, exakt segment/element, stabilt Tydel rule ID, rule layer, expected/observed samt provenance/evidence.
+Ett immutable/versioned bundle med resolved regler för ett explicit scope.
 
-### 6. Bygg kontext
+Exempel på identitet:
 
-Context service kombinerar valideringsresultatet med godkända referenser och behörig operativ metadata. Den ska tydligt skilja mellan vad som observerats, vad som slagits upp och vad som fortfarande är okänt.
+```text
+SE_EDIEL_UTILTS_E5SE5A_REV3
+```
 
-### 7. Exponera via MCP
+RulePack ska kunna samexistera med äldre och nyare editioner.
 
-MCP-servern ska erbjuda smala tools, exempelvis `validate_message`, `get_validation_result`, `explain_error_context` och `find_reference`. Specifications och code lists kan exponeras som resources. Tool-resultat ska innehålla strukturerad data, evidence och stabila error codes.
+### ValidationResult
 
-### 8. Presentera och agera
+Primärt output är maskinläsbart.
 
-En AI-klient eller operator UI gör det strukturerade resultatet begripligt för människan. Notifications är kontrollerade workflows utanför valideringskärnan. Ingen produktionskorrigering, retransmission eller annan write action hör till första versionen.
+Ett finding ska minst kunna innehålla:
+
+```text
+result_id
+rule_id
+severity
+rule_layer
+process/profile/version
+source_location
+expected
+observed
+normative_source
+source_location_in_spec
+effective_period
+safe_next_step
+```
+
+Resultatet ska vara reproducerbart från samma input + context + RulePack-version.
+
+---
+
+## RulePack lifecycle
+
+Rule Operations är en first-class architecture concern.
+
+```text
+DISCOVER SOURCE
+    ↓
+CLASSIFY AUTHORITY / EDITION / SCOPE
+    ↓
+EXTRACT CANDIDATE RULE
+    ↓
+MAP TO RULE IR
+    ↓
+REVIEW AGAINST SOURCE
+    ↓
+ADD POSITIVE + NEGATIVE TESTS
+    ↓
+PUBLISH IMMUTABLE RULEPACK VERSION
+    ↓
+RUNTIME + CHANGE IMPACT
+```
+
+Målet är att minimera handskriven runtime-specialkod. Marknadsspecifik semantik kommer fortfarande kräva mänsklig domänreview.
+
+### Skalbarhetsrisk
+
+Om varje ny profile/version kräver veckor av unik kod måste arkitekturen omprövas. Vi mäter därför under M1:
+
+- time-to-model per regeltyp;
+- antal regler som kräver custom runtime logic;
+- source-to-RuleIR review time;
+- regression coverage;
+- edition-to-edition diffability.
+
+---
+
+## M1: explicit implementation boundary
+
+Första vertical slice är UTILTS/APERAK.
+
+M1 ska bevisa:
+
+```text
+EDIFACT input
+→ parse once
+→ identify/resolve supported context
+→ load exact RulePack
+→ deterministic PASS/FAIL/findings
+→ exact provenance
+→ golden regression tests
+→ local CLI/API entry point
+```
+
+M1 ska **inte** implementera:
+
+- generic multi-protocol runtime;
+- DHV interface;
+- IEC 62325/ESMP;
+- full PRODAT;
+- automatic rule authoring by AI;
+- production routing/retransmission;
+- forecasting/analytics.
+
+---
+
+## Change Impact architecture hypothesis
+
+När två RulePacks för samma scope finns ska Tydel senare kunna producera en strukturerad diff:
+
+```text
+rules_added
+rules_removed
+rules_changed
+code_lists_changed
+cardinality_changed
+semantic_review_required
+```
+
+Och köra samma regression corpus mot båda:
+
+```text
+RulePack N
+vs
+RulePack N+1
+        ↓
+affected fixtures / systems / behaviours
+```
+
+Detta är en M3-produkt-hypotes, inte ett M1-krav.
+
+---
+
+## DHV-gräns efter 2026-09-30
+
+Ei/Svenska kraftnäts redovisning stärker behovet av att Tydel inte låses till dagens Ediel-topologi.
+
+Men arkitekturen får **inte** innehålla antaganden om:
+
+- exakt framtida DHV-protokoll;
+- XML/CIM som obligatoriskt DHV-format;
+- specifikt API-kontrakt;
+- viss cutover-dag;
+- var all framtida validation kommer ske.
+
+Tydel bygger kompatibilitet för versionerade market contracts. En framtida DHV-adapter/profile implementeras först när auktoritativa technical specifications finns.
+
+Se `docs/research/dhv-strategic-watch.md` och Decision 0005.
+
+---
+
+## XML/CIM/IEC 62325-gräns
+
+Det framtida CIM-spåret hålls separat från M1.
+
+- IEC 61970/CGMES är främst grid-model exchange.
+- IEC 62325/ENTSO-E ESMP är mer direkt relevant för energy-market messages.
+- Swedish/Nordic business rules måste fortfarande modelleras som explicit market/process scope.
+
+CIMTool och OpenCGMES är reference/evaluation tooling, inte valda production dependencies.
+
+Se `docs/research/cim-iec62325-tooling.md`.
+
+---
 
 ## OpenEDI-gräns
 
-M0-beslutet är att **utvärdera**, inte okritiskt införa, OpenEDI.
+OpenEDI fortsätter vara kandidat som machine-readable representation av generell EDIFACT-struktur.
 
 ```text
-OpenEDI / annan extern schemaform
+OpenEDI / curated EDIFACT base
           ↓ import
-Tydels interna base rules
+Tydel base Rule IR
           +
-Svensk Ediel / process overlay
+Swedish market/profile rules
           ↓
-Resolved Tydel rule set
+Versioned RulePack
 ```
 
-Tydel får inte behandla en extern EdiNation-validator som sin egen sanningskälla, anta att OpenEDI-modeller är auktoritativa för svensk marknadsanvändning, exponera OpenEDI-detaljer som publikt validator contract eller lägga nedladdade modeller i det publika repot utan rättighetsgranskning.
+OpenEDI får inte bli svensk marknadsauktoritet eller Tydels publika domain contract.
 
-Se [`docs/research/openedi-evaluation.md`](docs/research/openedi-evaluation.md) och [`docs/decisions/0002-openedi-machine-readable-standard-layer.md`](docs/decisions/0002-openedi-machine-readable-standard-layer.md).
+---
 
-## Systemgränser
+## Access surfaces
 
-Tydel är inte en ersättare för Ediel, en central marknadsplattform, ett EDI-transportnät, ett grid-control system, ett forecasting-system i första produkten, en compliance-myndighet eller en EdiNation-wrapper. Befintliga EDI-system och marknadsplattformar förblir auktoritativa för sina respektive funktioner.
+### CLI
+
+För lokala tester, CI och developer workflows.
+
+### API
+
+För privata eller serverbaserade integrationer.
+
+### CI runner
+
+För regression/conformance i build pipelines.
+
+### Operator UI
+
+För diagnostik, evidence navigation och senare governance/history.
+
+### MCP
+
+För kontrollerad tool access från AI/developer clients. Kan deployas lokalt/private där säkerhetskrav kräver det.
+
+Ingen accessyta får ha en egen validation implementation.
+
+---
 
 ## Planerad kodstruktur
 
+Skapas först när M1-contract är låst och faktiska modulgränser är tydliga.
+
 ```text
 src/
-  adapters/       Input och externa system
-  domain/         Canonical message- och validation-typer
-  parser/         EDIFACT parsing
-  standards/      Import och normalisering av extern grundstandard
-  rules/          Interna versionsregler + Ediel/process overlays
-  context/        Evidence och operativ kontext
-  mcp/            MCP tools, resources och transport
-  audit/          Trace- och audit events
-  app/            Composition och startup
+  adapters/        syntax/input adapters
+  domain/          canonical transaction + context + result
+  resolver/        process/profile/version/as-of resolution
+  rules/           Rule IR, RulePack loading and registry
+  runtime/         deterministic conformance execution
+  evidence/        source/provenance resolution
+  cli/             local developer entry point
+  api/             controlled API surface
+  mcp/             MCP adapter over the same core
+  app/             composition/startup
+
 tests/
   unit/
   integration/
+  regression/
 fixtures/
   edifact/
 ```
 
-Mappar ska följa verkliga modulgränser. Vi skapar inte tomma source-mappar innan första vertical slice visar vad som faktiskt behövs.
+Mappar skapas inte som tom arkitekturdekor.
 
-## Dataregler
+---
 
-- Lagra originalmeddelandet separat från härledda förklaringar.
-- Lägg aldrig secrets eller produktionscertifikat i repositoryt.
+## Data- och säkerhetsregler
+
+- Bevara originalinput separat från härledda resultat.
+- Lägg aldrig secrets, produktionscertifikat eller kundcredentials i repo:t.
 - Använd syntetiska eller korrekt anonymiserade fixtures.
-- Ge rule sets och referensdokument explicita versioner.
-- Behåll evidence links med genererade förklaringar.
-- Separera generella base rules från svenska/profile overlays.
-- Bevara checksum/version för externa maskinläsbara modeller som regler härletts från.
-- Behandla saknad kontext som okänd, aldrig som tillåtelse att gissa.
+- Commit inte konfidentiella real-world failure messages.
+- Ge varje RulePack immutable version/identifier.
+- Bevara normative source/evidence per regel.
+- Behandla saknad kontext som okänd, inte som tillåtelse att gissa.
+- Future write/change actions kräver separat threat model och human approval.
+
+---
 
 ## Öppna beslut
 
-- Vilken message type/profile ska stödjas först?
-- Innehåller OpenEDI-modellen för exakt den message/version tillräcklig semantik för första vertical slice?
-- Hur ska slutlig canonical message schema se ut?
-- Hur ska intern rule representation se ut?
-- Vilka officiella specifications får lagras eller indexeras juridiskt?
-- Vilka OpenEDI-modeller får eventuellt redistribueras?
-- Vilken MCP transport/authentication passar första deployment?
-- Vilken data måste stanna hos kunden?
+- Exakt Rule IR v0 efter första normativa UTILTS/APERAK-regelsetet.
+- Exakt supported UTILTS/APERAK profile för M1.
+- Validator contract och stable error taxonomy.
+- Vilka machine-readable base artifacts som juridiskt och tekniskt kan användas.
+- Hur RulePack signing/checksums ska fungera senare.
+- Vilken deploymentmodell första design partner kräver.
+- Om Commercial Slice 2 ska vara PRODAT eller annan process efter discovery.
+- När Change Impact har tillräcklig kundsignal för M3.
 
-Arkitekturbeslut ska dokumenteras i [`docs/decisions/`](docs/decisions/).
+Arkitekturbeslut dokumenteras i `docs/decisions/`.

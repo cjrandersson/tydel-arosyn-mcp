@@ -1,14 +1,27 @@
 version: 1
-updated: 2026-09-29
+updated: 2026-10-05
 
 product:
-  strategy: validator_first
-  north_star: "Build a best-in-class validator for Swedish Ediel and energy-market communication."
-  positioning: "Tydel validerar energimarknadens meddelanden mot rätt marknadsregler och visar exakt vad som är fel, varför det är fel och vad som bör undersökas härnäst."
+  strategy: validator_first_conformance
+  category: "Energy Market Conformance & Diagnostics"
+  north_star: "Build the deterministic conformance and diagnostics layer for energy-market interoperability."
+  positioning: "Tydel avgör vilka tekniska och marknadsmässiga regler som gäller för en energimarknadstransaktion, validerar den deterministiskt och visar exakt vad som är fel, varför och vilken evidens som stöder resultatet."
+  first_wedge: "Swedish Ediel, with UTILTS/APERAK as the first M1 vertical slice."
+  core_competency: "Rule resolution + versioned executable RulePacks + provenance-backed deterministic validation."
+  product_hypotheses:
+    - pre_validation
+    - diagnostics
+    - change_impact
+    - migration_assurance
   later_expansion:
-    - analytics
-    - forecasting
-  guardrail: "Later capabilities must not weaken validator precision, determinism, evidence traceability, or rule authority."
+    - XML/CIM/IEC 62325 and ENTSO-E ESMP for selected market processes
+    - future DHV interfaces when authoritative technical contracts exist
+    - Nordic rule packs where customer evidence supports expansion
+  guardrails:
+    - "Ediel is the first wedge, not the permanent product boundary."
+    - "MCP and AI are access/explanation layers, not validation authority or the moat."
+    - "Do not claim a future DHV protocol, CIM profile or migration date without authoritative evidence."
+    - "Do not widen M1 into multi-protocol implementation before the first vertical slice is proven."
 
 cockpit:
   title: "TYDEL / DEVELOPMENT COCKPIT"
@@ -24,68 +37,107 @@ cockpit:
 
 current:
   milestone: M0
-  milestone_title: "Research foundation + första validator-scope"
+  milestone_title: "Research foundation + post-DHV product reset"
   status: active
-  objective: "Låsa en smal, auktoritativ och testbar svensk Ediel-slice och parallellt förbereda kunddiscovery utan globala standard- eller marknadsantaganden."
-  next_task: "Extrahera normativa revision-3 UTILTS/APERAK-regler för en smal kandidat-slice och håll dem separerade från processguide/exempel."
+  objective: "Låsa Rule IR v0 och ett auktoritativt UTILTS/APERAK-kontrakt för M1, utan att överkonstruera framtida DHV/CIM-stöd."
+  next_task: "Definiera Rule IR v0 + M1 validator contract för UTILTS/APERAK och representera ett första normativt regelset med provenance och giltighetstid."
   next_owner: ChatGPT
   blocked: false
 
-strategic_watch:
+strategic_checkpoint:
   id: DHV-2026-09-30
-  state: watch
+  state: reviewed
   owner: ChatGPT
-  due: 2026-09-30
+  reviewed_on: 2026-10-05
   hard_block_m0: false
-  decision_gate: true
-  subject: "Ei/Svenska kraftnät — centralt datahanteringsverktyg för elmarknaden"
+  decision_gate: completed
+  subject: "Ei/Svenska kraftnät, förslag om centralt datahanteringsverktyg för elmarknaden"
   document: "docs/research/dhv-strategic-watch.md"
-  action_when_published: "Läs hela redovisningen och ompröva product thesis, roadmap, architecture assumptions, customer discovery och investeringsbedömning."
-  guardrail_until_reviewed: "Lås inte långsiktiga antaganden som förutsätter att dagens bilaterala svenska Ediel-landskap förblir oförändrat."
+  conclusion: "DHV weakens an Ediel-only company thesis but strengthens the case for format-agnostic conformance, migration assurance and change-impact tooling."
+  verified_boundary: "The report is a proposal to government. The current market model is proposed to remain, implementation should be stepwise, and final technical interfaces/formats are not yet treated as locked Tydel assumptions."
+  follow_up_watch: "Government decision, implementation programme, authoritative interface specifications, validation/error contracts and migration milestones."
+
+rule_operations:
+  state: active_design
+  owner: ChatGPT
+  decision: "Rule IR before a custom DSL."
+  target_for_m1_contract: "Represent 30-50 normative rules or enough real rule diversity to expose the first stable primitives; the number is an engineering target, not a market fact."
+  required_metadata:
+    - rule_id
+    - jurisdiction
+    - process
+    - message_or_profile
+    - syntax
+    - effective_from
+    - effective_to
+    - assertion
+    - evidence_source
+    - evidence_location
+    - review_status
+  scaling_question: "Can verified RulePacks be created and updated faster than market rules change without turning Tydel into a consulting-heavy business?"
 
 customer_discovery:
   state: preparation
   owner: ChatGPT
   user_action_required: false
   document: "docs/product/customer-discovery.md"
-  next_task: "Förbered intervju-guide, target-list-struktur, failure-case intake template och discovery scorecard."
-  target_interviews: "10-15"
-  target_failure_cases: "20-50 anonymiserade verkliga cases när sekretess och dataskydd tillåter"
+  next_task: "Prepare two-track discovery: 5 operator/utility interviews + 5 SI/software-vendor interviews, plus failure-case intake and economic-pain scorecard."
+  target_interviews: "10 initial interviews, then extend toward 15 if evidence is mixed"
+  target_failure_cases: "20-50 anonymised real-world cases when confidentiality, contracts and data protection allow"
   design_partner_timing: "M0/M1"
+  ninety_day_gate:
+    - "UTILTS/APERAK vertical slice works end-to-end on supported scope"
+    - "Rule IR represents meaningful normative rule diversity without runtime special-casing"
+    - "At least one edition-to-edition rule change is represented through versioned RulePacks"
+    - "At least 10 relevant discovery interviews across operators and SI/vendors"
+    - "At least 3 interviewees show recurring costly or specialist-dependent integration diagnosis"
+    - "At least 2 are willing to provide anonymised cases or test data"
+    - "At least 1 is willing to explore an active pilot"
 
 peer_review:
   state: ready
   owner: "@gonzalolorcakeabit-bit"
   reviewer: "Claude"
-  scope: "whole repository"
-  trigger: "ChatGPT pre-review sweep completed 2026-09-28"
+  scope: "whole repository, including post-DHV reset"
   brief: "docs/reviews/claude-peer-review-brief.md"
-  purpose: "Independent peer review for ambiguities, contradictions, scope gaps and unsupported claims"
+  purpose: "Independent challenge of scope, source authority, rule-model scalability, product positioning and unsupported assumptions"
 
 owners:
   - owner: ChatGPT
     state: active
-    task: "Normativa revision-3 UTILTS/APERAK-regler + customer discovery preparation + DHV strategic watch"
+    task: "Rule IR v0, UTILTS/APERAK M1 contract, post-DHV documentation sync and discovery preparation"
   - owner: Codex
     state: waiting
-    task: "Validator vertical slice efter låst contract"
+    task: "Implement M1 only after Rule IR + validator contract + supported profile are locked"
   - owner: "@cjrandersson"
     state: clear
-    task: "Validator First beslutat; ingen outreach krävs innan discovery-underlag är klara"
+    task: "No immediate action; outreach begins after discovery pack review"
   - owner: "@gonzalolorcakeabit-bit"
     state: ready
-    task: "Kör Claude peer-to-peer review enligt docs/reviews/claude-peer-review-brief.md"
+    task: "Run Claude peer review against the updated repository"
 
 milestones:
   - id: M0
     state: active
-    progress: 0.8
+    progress: 0.9
+    title: "Research foundation + product reset"
   - id: M0-CD
     state: preparation
-    progress: 0.1
+    progress: 0.2
+    title: "Customer and channel discovery"
   - id: M1
     state: queued
     progress: 0.0
+    title: "UTILTS/APERAK deterministic conformance vertical slice"
   - id: M2
     state: queued
     progress: 0.0
+    title: "Developer conformance surfaces: CLI/API/CI + validated commercial slice"
+  - id: M3
+    state: hypothesis
+    progress: 0.0
+    title: "Change Impact + Migration Assurance"
+  - id: M4
+    state: research_later
+    progress: 0.0
+    title: "One selected XML/CIM/IEC 62325 market-process vertical slice"

@@ -1,68 +1,181 @@
 # Strategisk watch — centralt datahanteringsverktyg för elmarknaden
 
-**Status:** WATCH / EXTERNAL DEPENDENCY  
-**Rapporteringsdeadline:** 2026-09-30  
-**Owner för Tydel-analys:** ChatGPT  
-**Hard blocker för M0-research:** Nej  
-**Decision gate för långsiktig produkt-/arkitekturthesis:** Ja
+**Status:** REVIEWED / FOLLOW-UP WATCH  
+**Report date:** 2026-09-30  
+**Tydel checkpoint completed:** 2026-10-05  
+**Owner:** ChatGPT  
+**Hard blocker for M0:** No  
+**Long-term product decision gate:** Completed for current public evidence; continue monitoring implementation decisions and technical specifications.
 
-## Varför Tydel följer detta
+## Source boundary
 
-Energimarknadsinspektionen (Ei) och Svenska kraftnät har regeringens uppdrag att ta fram förslag till ett centralt datahanteringsverktyg för elmarknaden. Utfallet kan påverka vilka marknadsprocesser som centraliseras, hur aktörer ansluter, vilka format och gränssnitt som används, var validering sker och hur länge dagens Ediel-flöden lever parallellt med nya lösningar.
+Primary public identifiers:
 
-Det kan därför påverka Tydels långsiktiga marknad, integrationspunkt och expansionsplan. Det ändrar däremot inte behovet av källbaserad validator-research i M0.
+- Ei report: **Ei R2026:08**
+- Svenska kraftnät case: **Svk 2025/5201**
+- Government assignment references: `KN2023/01385`, `KN2024/02551`, `KN2025/01781`
 
-## Verifierad deadline
+Primary public pages:
 
-Regeringsuppdraget anger att **Energimarknadsinspektionen senast den 30 september 2026 ska lämna redovisningen till Regeringskansliet (Klimat- och näringslivsdepartementet)**.
+- Svenska kraftnät: https://www.svk.se/press-och-nyheter/nyheter/elmarknad-allmant/2026/forslag-infor-ett-centralt-datahanteringsverktyg-for-elmarknaden/
+- Svenska kraftnät, completed government assignments: https://www.svk.se/om-oss/verksamhet/vara-regeringsuppdrag/genomforda-regeringsuppdrag/
+- Government assignment: https://www.regeringen.se/regeringsuppdrag/2025/09/uppdrag-till-energimarknadsinspektionen-och-svenska-kraftnat-att-ta-fram-forslag-till-ett-centralt-datahanteringsverktyg-for-elmarknaden/
 
-Ingen offentlig källa som kontrollerats 2026-09-29 anger en exakt klockslag för publicering eller garanterar att rapporten publiceras öppet samma minut som den lämnas in.
+This document distinguishes public verified conclusions from Tydel hypotheses. Do not promote an implementation assumption to fact merely because it is strategically plausible.
 
-## Primära källor att bevaka
+## Verified public conclusions relevant to Tydel
 
-1. **Energimarknadsinspektionen (Ei)** — samordnar uppdraget och lämnar redovisningen.
-   - https://ei.se/
-   - Ärendenummer i Ei:s konsultationsmaterial: `2025-103808`
-2. **Svenska kraftnät** — gemensam uppdragspart och har en särskild sida för regeringsuppdraget.
-   - https://www.svk.se/om-oss/verksamhet/vara-regeringsuppdrag/centralt-datahanteringsverktyg-for-elmarknaden/
-   - Svenska kraftnäts ärendenummer: `Svk 2025/5201`
-3. **Regeringen / Klimat- och näringslivsdepartementet** — mottagare av redovisningen.
-   - https://www.regeringen.se/regeringsuppdrag/2025/09/uppdrag-till-energimarknadsinspektionen-och-svenska-kraftnat-att-ta-fram-forslag-till-ett-centralt-datahanteringsverktyg-for-elmarknaden/
-   - Regeringens diarienummer: `KN2023/01385`, `KN2024/02551`, `KN2025/01781`
+From the public authority summary of the 2026-09-30 report:
 
-## Förväntade publiceringskanaler
+1. Ei and Svenska kraftnät **propose** that a central data-management tool be introduced for the Swedish electricity market.
+2. Svenska kraftnät is proposed to be responsible for development, operation and maintenance.
+3. Ei is proposed to have a central role in governance/follow-up, including regulations concerning functions and cost review.
+4. The proposal is based on **retaining the current market model**. The report is about common data handling, not a return to the earlier supplier-centric market-model proposal.
+5. The tool is intended to make handling of information such as meter values, agreements and supplier switching more uniform and efficient.
+6. Publicly described function areas include master/basic data, market processes/coordination, calculation/verification and customer interfaces/authorisation management.
+7. The authorities state that centralised solutions in other countries have produced benefits such as standardised market processes and improved data quality, while development and migration have been challenging.
+8. The authorities explicitly describe implementation as something that needs to be well prepared and introduced stepwise.
 
-Följ i första hand:
+## What is NOT treated as verified for Tydel
 
-- Ei:s nyheter, rapporter och dokument;
-- Svenska kraftnäts sida för regeringsuppdraget och nyheter;
-- Regeringen.se för eventuell publicering av redovisning, pressmeddelande eller fortsatt beredning;
-- Ei:s registratur om rapporten är inlämnad men ännu inte publicerad öppet.
+The following remain open until authoritative implementation material exists:
 
-Ei:s webbplats anger registraturens vardagstider som 08:00–17:00, men detta ska **inte** tolkas som en utlovad publiceringstid för rapporten.
+- final government/political decision to implement the proposal;
+- final programme dates and mandatory cutover milestones;
+- exact external API/protocol model;
+- whether one or more interfaces use EDIFACT, XML, JSON, CIM/IEC 62325 or other representations;
+- exact acknowledgement/error contract;
+- division of technical/business validation between DHV and market actors;
+- certification/onboarding requirements;
+- exact legacy coexistence periods;
+- which process migrates first;
+- whether all current Ediel flows disappear, and when.
 
-## Tydel-frågor när rapporten finns
+Therefore Tydel must not use phrases such as "DHV will definitely replace Ediel on date X" or "DHV will use IEC 62325" without process-specific primary evidence.
 
-Rapporten ska analyseras innan Tydel låser långsiktiga antaganden om svensk marknadskommunikation:
+## Strategic impact on Tydel
 
-1. Vilka marknadsprocesser föreslås centraliseras?
-2. Vad föreslås hända med befintlig Ediel-kommunikation?
-3. Vilka format, API:er, XML/CIM-profiler eller transportmekanismer föreslås?
-4. Var ska teknisk och affärsmässig validering ske?
-5. Hur modelleras fel, acknowledgements och avvisningar?
-6. Vilken migrations-/övergångsperiod föreslås och vilka legacy-flöden består?
-7. Vilka nya test-, onboarding- och integrationskrav läggs på marknadsaktörer?
-8. Påverkas Tydels buyer, första validator-slice, roadmap eller nordiska expansionshypotes?
+### Ediel-only thesis
 
-## Projektregel fram till analys
+**Weakened.**
 
-Fortsätt:
+A company whose permanent value proposition depends on today's decentralised Swedish Ediel topology faces structural risk if more data/process coordination moves into a central national tool.
 
-- normativa Ediel-/UTILTS-/APERAK-regler;
-- taxonomi och evidence model;
-- customer discovery-förberedelser;
-- read-only validator-arkitektur som inte låser sig till ett enda transportformat.
+### Validator/conformance thesis
 
-Vänta med irreversibla beslut som förutsätter att dagens bilaterala svenska Ediel-landskap förblir oförändrat långsiktigt.
+**Strengthened, if broadened correctly.**
 
-När rapporten publiceras ska Tydel göra en **strategisk checkpoint**: uppdatera product thesis, roadmap, architecture assumptions, customer-discovery questions och investeringsbedömning utifrån rapportens faktiska innehåll.
+The difficult problem moves from partner-specific message rejection toward:
+
+- readiness for new market contracts;
+- versioned rule interpretation;
+- legacy/target coexistence;
+- pre-validation;
+- regression testing;
+- change impact;
+- evidence-backed diagnosis across migration phases.
+
+### Product conclusion
+
+Tydel should not optimise to be the best at one file format.
+
+Tydel should optimise to be the best at:
+
+> **resolving which market rules apply to a transaction at a given point in time, executing those rules deterministically and proving the result.**
+
+This conclusion is recorded in Decision 0005.
+
+## Tydel architecture consequences
+
+Continue:
+
+- UTILTS/APERAK first vertical slice;
+- deterministic validation;
+- source/edition/effective-date provenance;
+- process/profile/version resolver;
+- internal Rule IR and versioned RulePacks;
+- read-only deployment model;
+- format adapters separated from domain/runtime;
+- CLI/API/CI/MCP as surfaces over the same core.
+
+Add as first-class concerns:
+
+- RulePack lifecycle;
+- temporal rule resolution;
+- cross-version diffability;
+- Change Impact product hypothesis;
+- Migration Assurance product hypothesis.
+
+Do not add yet:
+
+- speculative DHV adapter;
+- full CIM implementation;
+- generic multi-protocol framework beyond what M1 naturally needs;
+- claims about DHV certification/pre-validation before a real contract exists.
+
+## Commercial consequences
+
+Discovery is now split into two tracks.
+
+### Operator / utility track
+
+Validate:
+
+- actual frequency of integration/message incidents;
+- investigation time;
+- specialist dependency;
+- business consequence;
+- current tools;
+- migration/change-management concerns;
+- buyer and budget path.
+
+### SI / software-vendor track
+
+Validate:
+
+- whether a deterministic conformance engine would improve internal QA;
+- whether CLI/API/CI is more useful than another standalone UI;
+- whether vendor teams would use RulePack/change-impact tooling;
+- channel/reseller/embedded potential;
+- whether vendor neutrality is an advantage or perceived threat.
+
+## Follow-up watch
+
+Monitor, in this order:
+
+1. Swedish government response/decision to Ei R2026:08.
+2. Svenska kraftnät implementation programme or programme organisation.
+3. Formal functional requirements and process scope.
+4. Technical interface specifications and schemas.
+5. Error/acknowledgement and validation responsibilities.
+6. Testing/certification/onboarding model.
+7. Migration phases and legacy coexistence rules.
+8. Any explicit mapping to IEC 62325/ENTSO-E ESMP or other standards.
+
+Each future update should be classified as one of:
+
+- `CONFIRMED`
+- `PROPOSED`
+- `UNSPECIFIED`
+- `FUTURE_DECISION`
+- `TYDEL_IMPACT`
+
+## Current Tydel conclusion
+
+The 2026-09-30 report is not a reason to stop Tydel.
+
+It is a reason to stop defining Tydel's future as "a Swedish Ediel validator".
+
+The current strategic sequence is:
+
+```text
+Swedish Ediel / UTILTS-APERAK
+        ↓
+prove deterministic RulePack runtime
+        ↓
+developer conformance surfaces
+        ↓
+Change Impact + Migration Assurance
+        ↓
+future DHV / XML-CIM market contracts when authoritative specs exist
+```
