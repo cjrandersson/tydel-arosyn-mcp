@@ -4,7 +4,7 @@ This folder contains Tydel's product, research, architecture-decision and review
 
 ## Product
 
-- [Product positioning](product/positioning.md) — canonical post-DHV positioning: Energy Market Conformance & Diagnostics.
+- [Product positioning](product/positioning.md) — canonical post-DHV positioning: Energy Market Conformance & Diagnostics with a local-first developer/CI delivery wedge.
 - [Post-DHV roadmap](product/post-dhv-roadmap.md) — gated 90-day and 6–24 month execution roadmap.
 - [Customer & channel discovery](product/customer-discovery.md) — operator/utility + SI/software-vendor discovery, evidence gates and kill/pivot logic.
 
@@ -32,10 +32,11 @@ This folder contains Tydel's product, research, architecture-decision and review
 - [Decision 0004 — Validator result and delivery contract](decisions/0004-validator-result-and-delivery-contract.md)
 - [Decision 0005 — Post-DHV conformance strategy](decisions/0005-post-dhv-conformance-strategy.md) — Ediel remains wedge; Rule IR/RulePacks, temporal resolution, Change Impact and Migration Assurance become explicit strategic direction.
 - [Decision 0006 — Lock Rule IR v0 before M1](decisions/0006-rule-ir-v0.md) — bounded deterministic internal rule representation; no custom DSL or arbitrary executable predicates in M1.
+- [Decision 0007 — Local-first developer conformance delivery](decisions/0007-local-first-developer-conformance.md) — local CLI/CI/GitHub Action first; API/UI/MCP remain secondary surfaces over the same core; `<15 ms` remains a benchmark target until measured.
 
 ## Reviews
 
-- [Claude M0 peer review brief](reviews/claude-peer-review-brief.md) — repository-grounded independent review instructions. Review should now challenge the post-DHV reset, Rule IR v0 and the developer-first/local-first direction before M1 runtime implementation.
+- [Claude M0 peer review brief](reviews/claude-peer-review-brief.md) — repository-grounded independent review instructions. Review should challenge the post-DHV reset, Rule IR v0 and the developer-first/local-first direction before M1 runtime implementation.
 
 ## Repository documentation rules
 
