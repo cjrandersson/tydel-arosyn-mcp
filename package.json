@@ -1,7 +1,7 @@
 {
   "name": "ediel-mcp-server-mvp",
   "version": "1.0.0",
-  "description": "AI-powered Ediel and EDIFACT parser using Model Context Protocol",
+  "description": "Research-stage local-first deterministic conformance and CI/CD layer for energy-market integrations",
   "main": "build/index.js",
   "type": "module",
   "scripts": {
