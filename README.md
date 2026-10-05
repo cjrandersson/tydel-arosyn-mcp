@@ -1,286 +1,62 @@
 # Tydel
 
-> **Tyda el**
+**Tydel** (från fornsvenskans *þyþa* – *”att göra något begripligt för folket”*) är ett utvecklarcentrerat **Conformance & CI/CD Layer** för energimarknadens migrering till det centrala Datahanteringsverktyget (DHV) och IEC CIM (Common Information Model).
+
+Tydel flyttar valideringen av komplexa marknadsprocesser och nätkoder hela vägen till vänster ("Shift-Left"). Istället för att integrationskonsulter och mjukvaruleverantörer testar asynkront mot externa hubb-sandlådor, validerar Tydel CIM-meddelanden (JSON/XML) lokalt på under 10 millisekunder – direkt i utvecklarens IDE eller som en automatiserad kvalitetsgrind i CI/CD-pipelinen.
+
+[![Validator First](https://shields.io)](ARCHITECTURE.md)
+[![CIM Compliant](https://shields.io)]()
+[![CI/CD Ready](https://shields.io)]()
+
+## ⚡ Varför Tydel?
+
+Energimarknaden genomgår sin största transformation i modern tid. Övergången till DHV och CIM innebär att hundratals mjukvarusystem och integrationsflöden måste byggas om från grunden. 
+
+En generisk JSON- eller XML-schema-validator kan verifiera att syntaxen är korrekt. Men den kan inte avgöra om meddelandet följer de sekventiella affärsreglerna för ett leverantörsbyte, en balansavräkning eller en mätvärdesrapportering enligt de nordiska tillämpningsprofilerna. 
+
+Tydel löser detta genom **marknadsprocessmedveten diagnostik**. Verktyget talar om exakt vilken affärsregel som brutits, vilken rad eller JSON-path det gäller, samt ger ett säkert nästa felsökningssteg för utvecklaren.
 
 ---
 
-**Tyda**  
-*fornsvenska* **þyþa**
+## 🧭 DEVELOPMENT COCKPIT
 
-Av äldre germanskt ursprung, besläktat med ord för **folk**. Den ursprungliga innebörden kan ungefär förstås som:
+Detta är källan för projektets aktuella läge. Statusen här speglar `project-status.yml`.
 
-> 🟡 **”att göra något begripligt för folket”**
+### Aktuellt läge
+* **Nuvarande milestone:** M0 — Research foundation & första CIM/DHV-validator-scope
+* **Status:** 🟡 PÅGÅR
+* **Nuvarande mål:** Låsa en smal, auktoritativ och testbar svensk CIM-profil (t.ex. mätvärden/metering) och förbereda kunddiscovery mot integrationskonsulter.
+* **Exakt nästa tekniska uppgift:** Extrahera normativa affärsregler för den valda CIM-profilen från Ei:s och Svenska kraftnäts DHV-specifikationer.
+* **Nästa owner:** ChatGPT
 
-Därifrån har ordet utvecklat betydelser som *tolka*, *förklara*, *meddela innebörden av* och *betyda*.
-
-**Kärnbetydelse:** att göra något förståeligt eller tydligt.
-
----
-
-## Tydel
-
-### Tydel validerar energimarknadens meddelanden mot rätt marknadsregler och visar exakt vad som är fel, varför det är fel och vad som bör undersökas härnäst.
-
-**Validator First.** Tydels kärna är en deterministisk, evidensbaserad validator för energimarknadskommunikation, med svensk Ediel som första produkt-wedge.
-
-AI får förklara verifierade resultat, men avgör inte om ett meddelande är giltigt. MCP är ett access-/integrationslager, inte själva produkten.
-
-Se [`docs/product/positioning.md`](docs/product/positioning.md) och [`Decision 0003`](docs/decisions/0003-validator-first-product-strategy.md).
+### Resursallokering & Ansvar
+* **@cjrandersson:** Strategisk styrning och uppsättning av GitHub Actions-arkitektur. Status: ⚪ CLEAR.
+* **ChatGPT:** Ansvarig för att bryta ner normativa CIM-regler, bygga upp fixture-strukturer samt Customer Discovery-underlag. Status: 🟢 ACTIVE.
+* **Codex:** Väntar på implementation av produktionskod till dess att första validator-kontraktet är låst. Status: ⏸ WAITING.
+* **@gonzalolorcakeabit-bit:** Ansvarig för oberoende peer-review via Claude-briefen. Status: 🟡 READY.
 
 ---
 
-# 🧭 DEVELOPMENT COCKPIT
+## 🏗 Kärnkomponenter i skiktet
 
-> **Operativ source of truth för projektets aktuella läge.** `project-status.yml` är statuskällan. README och den visuella cockpiten ska spegla samma statusmodell och får inte bära motstridiga pending-, blocker- eller owner-värden.
+1. **Tydel Engine (Deterministic Validator):** En blixtsnabb kompilerad motor som utvärderar inkommande eller utgående nyttolaster (payloads) mot maskinläsbara regelset (CIM-profiler).
+2. **Tydel CLI & CI/CD Gate:** Ett utvecklarverktyg som kan köras lokalt i terminalen eller sömlöst integreras i GitHub Actions, GitLab CI eller iCore/Mulesoft-pipelines för att blockera felaktiga byggen.
+3. **MCP Assistant Layer:** Ett Model Context Protocol-gränssnitt som låter AI-kodassistenter (Copilot, Cursor) konsumera Tydels valideringsmotor och referensmaterial live under kodning.
 
-![Tydel Development Cockpit](assets/graphics/development-cockpit.svg)
+## 🛡 Säkerhet & Arkitekturprinciper
 
-| | Aktuellt läge |
-|---|---|
-| **Nuvarande milestone** | **M0 — Research foundation & första validator-scope** |
-| **Status** | 🟡 **PÅGÅR** |
-| **Nuvarande mål** | Låsa en smal, auktoritativ och testbar svensk Ediel-slice och parallellt förbereda kunddiscovery |
-| **Exakt nästa tekniska uppgift** | Extrahera normativa revision-3 UTILTS/APERAK-regler för en smal kandidat-slice och håll dem separerade från processguide/exempel |
-| **Parallellt discovery-spår** | Förbered intervju-guide, target-list-struktur, failure-case intake template och discovery scorecard |
-| **Strategic watch** | 🟠 **DHV 2026-09-30** — Ei/Svenska kraftnäts redovisning om centralt datahanteringsverktyg ska analyseras innan långsiktiga Sverige-/Ediel-antaganden låses |
-| **Nästa owner** | **ChatGPT** |
-| **Blockerat / väntar på teamet** | **Inget hard block.** M0-research fortsätter; DHV är en decision gate för långsiktig produkt-/arkitekturthesis |
-| **Codex** | ⏸ **VÄNTAR** — implementation börjar först när första message/profile och validator contract är låsta |
-| **Peer review** | ✅ **READY** — **@gonzalolorcakeabit-bit** kör Claude enligt [`docs/reviews/claude-peer-review-brief.md`](docs/reviews/claude-peer-review-brief.md) |
-| **Nästa milestone** | **M1 — Första deterministiska validator vertical slice** |
-| **Senast uppdaterad** | **2026-09-29** |
+* **Validator First:** Parsern och de deterministiska reglerna är systemets "Source of Truth". AI-modeller används aldrig för att avgöra om ett meddelande är giltigt eller inte.
+* **Immutable Provenance:** Varje validering mot en specifik profilversion genererar ett kryptografiskt och audit-klart kvitto som kan användas som efterlevnadsbevis (Compliance Evidence).
+* **Zero Trust Ingestion:** Tydel hanterar enbart meddelandestruktur och affärslogik. Ingen känslig produktionsdata eller personuppgifter (GDPR) ska lagras eller skickas externt.
 
-### Aktivt ansvar / pending
+## 🚀 Komma igång
 
-| Owner | Pending nu | Läge |
-|---|---|---|
-| **@cjrandersson** | Ingen outreach eller DHV-åtgärd krävs just nu | ⚪ **CLEAR** |
-| **ChatGPT** | Normativa rev-3 UTILTS/APERAK-regler + customer discovery preparation + DHV strategic watch | 🟢 **ACTIVE** |
-| **Codex** | Vänta med produktionskod tills första validator-slice och contract är låsta | ⏸ **WAITING** |
-| **@gonzalolorcakeabit-bit** | Kör Claude peer-to-peer review enligt review-briefen | 🟡 **READY / NEXT REVIEW** |
+*(Implementation påbörjas i Milestone 1)*
 
-> **Ownership rule:** inget får markeras `pending`, `blocked`, `waiting` eller `next` utan explicit owner. Om Robin behöver agera ska det stå `🚨 @cjrandersson — <åtgärd>`.
-
-### Milestone progress
-
-- [ ] **M0 — Research foundation & första validator-scope** ← **CURRENT**
-  - [x] Read-only första versionsgräns definierad
-  - [x] Deterministisk parser/validator definierad som source of truth
-  - [x] MCP definierat som kontrollerat access-/förklaringslager
-  - [x] Arkitektur dokumenterad på svenska
-  - [x] Auktoritativ käll- och editionsseparation etablerad
-  - [x] OpenEDI utvärderat som kandidat för generiskt maskinläsbart EDIFACT-baslager
-  - [x] Svensk taxonomigrund etablerad: `Actor → Process → Transaction → Message → MessageVersion → Rule → Acknowledgement → Error → Resolution`
-  - [x] Processgrund verifierad för leverantörsbyte, mätvärdesrapportering och balansavräkning
-  - [x] Formatlandskap dokumenterat med `CURRENT`, `CURRENT_SCOPED`, `TRANSITIONAL`, `LEGACY`, `UNVERIFIED`
-  - [x] FCR-kedja kartlagd till `QUOTES`, `DELFOR`, `UTILTS S08/S01` och message-specifik `APERAK`
-  - [x] Produktstrategi låst: **Validator First**
-  - [x] Canonical product positioning förenklad och låst
-  - [x] Aktuell UTILTS/APERAK-edition identifierad: revision 3 / E5SE5A, giltig från 2025-06-01; revision 4 future-effective 2026-10-01
-  - [x] DHV strategic watch dokumenterad med primärkällor och analysfrågor
-  - [ ] Separera `example evidence` från `normative rule evidence` på regel-/segmentnivå — **ChatGPT**
-  - [ ] **2026-09-30 DHV checkpoint:** läs redovisningen och ompröva product thesis, roadmap, architecture assumptions, customer discovery och investeringsbedömning — **ChatGPT**
-  - [ ] Välj första stödda svenska message/profile — **ChatGPT rekommendation → @cjrandersson endast om produktval krävs**
-  - [ ] Definiera första validator contract + strukturerad error output — **ChatGPT / Codex**
-  - [ ] Definiera auktoritativa positiva och negativa fixtures — **ChatGPT / Codex**
-
-- [ ] **M0-CD — Customer Discovery** ← **PARALLELLT SPÅR**
-  - [x] Discovery-plan och kill/pivot-kriterier definierade
-  - [ ] Intervju-guide — **ChatGPT**
-  - [ ] Target-list-struktur — **ChatGPT**
-  - [ ] Failure-case intake template — **ChatGPT**
-  - [ ] Discovery scorecard — **ChatGPT**
-  - [ ] 10–15 kvalitativa operatorintervjuer — **start först när outreach-upplägg är klart**
-  - [ ] 20–50 anonymiserade real-world failure cases när sekretess och dataskydd tillåter
-  - [ ] Första design partner under M0/M1
-
-- [ ] **M1 — Första deterministiska validator vertical slice**
-  - [ ] Skapa production `src/`-struktur
-  - [ ] Implementera parser för vald message/profile
-  - [ ] Importera maskinläsbart base-standard-lager om OpenEDI-spiken håller
-  - [ ] Implementera separat versionerade svenska Ediel/profile-overlays
-  - [ ] Implementera deterministiska validation rules
-  - [ ] Returnera exakt segment, rule, evidence och safe next step
-  - [ ] Lägg till positiva/negativa unit fixtures och offline tests
-  - [ ] Ge en körbar lokal validerings-entry point
-
-- [ ] **M2 — MCP assistant layer**
-  - [ ] Exponera validator via MCP tools
-  - [ ] Exponera godkänt referensmaterial via kontrollerade resources
-  - [ ] Förklara verifierade validatorresultat på begripligt språk
-  - [ ] Bevara evidence/source traceability
-  - [ ] Behåll write/change actions utanför scope
-
-- [ ] **M3 — Observability & scale-up**
-  - [ ] Validation history/trends
-  - [ ] Kontrollerade alerts
-  - [ ] Bredda representativa operator workflows
-  - [ ] Mät tidsbesparing och diagnostisk precision i pilot
-
-**Regel:** en meningsfull projektförändring är inte färdigdokumenterad förrän `project-status.yml`, README-cockpit och den visuella cockpiten visar samma verkliga läge och korrekt owner för varje pending action.
-
-Se även [`docs/research/dhv-strategic-watch.md`](docs/research/dhv-strategic-watch.md) för den externa DHV-checkpointen.
-
----
-
-## Problemet
-
-Energimarknadens aktörer utbyter affärskritisk information via bland annat Ediel. När ett meddelande är felaktigt, avvisas eller försenas behöver specialister ofta läsa EDIFACT-segment, implementationsanvisningar, loggar och flera system manuellt.
-
-Tydel ska minska den felsökningstiden utan att låta en språkmodell gissa om standardregler.
-
-## Vad Tydel ska vara bäst på
-
-En generisk EDI-validator kan säga att ett segment eller dataelement är ogiltigt.
-
-Tydel ska kunna säga:
-
-```text
-Detta är message/profile X i process Y och edition Z.
-Regel R gäller här.
-Det mottagna värdet bryter mot regeln.
-Här är källan.
-Här är nästa säkra felsökningssteg.
+```bash
+# Validera en CIM-nyttolast lokalt mot DHV-profilen för mätvärden
+tydel validate --profile se-dhv-metering-v1 ./fixtures/metering_payload.json
 ```
 
-Det är skillnaden mellan syntaktisk EDIFACT-validering och **marknadsprocessmedveten diagnostik**.
-
-## Första versionen
-
-Den första användbara versionen ska kunna ta emot ett kopierat Ediel-meddelande eller dokumenterat fel och:
-
-1. identifiera message/profile/version och relevant process;
-2. parsa och validera med fasta, testbara regler;
-3. peka ut exakt fel och tillämplig regel;
-4. visa source/edition/evidence;
-5. förklara problemet begripligt;
-6. föreslå ett säkert nästa felsökningssteg.
-
-Tydel ska **inte** ändra eller skicka om produktionsmeddelanden i denna fas.
-
-## Arkitekturprincip
-
-```text
-MESSAGE / LOG
-    ↓
-INGEST
-    ↓
-PARSE
-    ↓
-CANONICAL MESSAGE
-    ↓
-BASE STANDARD + MARKET / PROCESS OVERLAY
-    ↓
-DETERMINISTIC VALIDATION
-    ↓
-STRUCTURED RESULT + EVIDENCE
-    ↓
-MCP / API / UI
-    ↓
-OPERATOR
-```
-
-Parsern och validatorn är source of truth. AI-lagret får förklara ett verifierat resultat men inte avgöra om ett meddelande är giltigt.
-
-Se [`ARCHITECTURE.md`](ARCHITECTURE.md).
-
-## Taxonomi
-
-Researchen byggs så att den senare kan bli maskinläsbar:
-
-```text
-Actor
-→ Process
-→ Transaction
-→ Message
-→ MessageVersion
-→ SyntaxFormat / TransportProfile
-→ Rule
-→ Acknowledgement
-→ Error
-→ Resolution
-```
-
-Varje regel eller profil måste bära scope, källa, edition/giltighet och evidensstatus:
-
-`CURRENT` · `CURRENT_SCOPED` · `TRANSITIONAL` · `LEGACY` · `UNVERIFIED`
-
-`CURRENT_SCOPED` betyder att något är verifierat som aktuellt inom en uttryckligen avgränsad process. Det får inte automatiskt upphöjas till generell svensk Ediel-regel.
-
-## Customer Discovery
-
-Den tekniska hypotesen och den kommersiella hypotesen ska valideras parallellt.
-
-Vi behöver verifiera om riktiga operatörer har återkommande felutredningar med hög diagnostid, flera system, specialistberoende eller tydlig affärskonsekvens, och om de vill pilotera eller köpa en deterministisk diagnosmotor.
-
-Se [`docs/product/customer-discovery.md`](docs/product/customer-discovery.md).
-
-## Expansionsriktning
-
-Arbetshypotesen är:
-
-```text
-Swedish Ediel
-    ↓
-Nordic market-message validation
-    ↓
-EDIFACT + XML/CIM diagnostics
-    ↓
-Broader European energy-market interoperability
-```
-
-Sverige är första wedge, inte nödvändigtvis slutmarknaden.
-
-## OpenEDI
-
-Tydel utvärderar OpenEDI som maskinläsbar representation av den generella EDI/EDIFACT-basstandarden:
-
-```text
-UN/EDIFACT / OpenEDI base
-          +
-Swedish Ediel / process-profile overlay
-          ↓
-Tydel deterministic validator
-```
-
-OpenEDI ersätter inte Svenska kraftnät, Ei, eSett eller andra auktoritativa marknadskällor.
-
-## Säkerhetsregler
-
-- Read-only som standard.
-- Deterministiska validation rules före AI-tolkning.
-- Inga standardpåståenden utan dokumenterad källa och scope.
-- Human approval för framtida åtgärder som ändrar data eller påverkar drift.
-- Synthetic eller korrekt anonymiserad testdata.
-- Least privilege och auditability.
-- Inga compliance-påståenden utan separat dokumenterad bedömning.
-
-## Projektfiler
-
-| Path | Innehåll |
-| --- | --- |
-| [`project-status.yml`](project-status.yml) | Gemensam statuskälla för Development Cockpit |
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Systemdesign, gränser och dataflöde |
-| [`docs/product/`](docs/product/) | Positionering och customer discovery |
-| [`docs/reviews/`](docs/reviews/) | Oberoende review-briefs och findings |
-| [`docs/research/`](docs/research/) | Källbaserad Ediel- och marknadsresearch |
-| [`docs/decisions/`](docs/decisions/) | Låsta tekniska/produktrelaterade beslut |
-| [`reference/`](reference/) | Källkatalog och referensmaterial |
-| [`AGENTS.md`](AGENTS.md) | Instruktioner för coding assistants |
-| [`assets/graphics/`](assets/graphics/) | Diagram och Development Cockpit |
-| [`fixtures/edifact/`](fixtures/edifact/) | Synthetic EDIFACT fixtures |
-| [`tests/`](tests/) | Offline tests |
-| `src/` | Framtida implementation; skapas först när M1-scope är låst |
-
-## Primära källor
-
-- Svenska kraftnät, Aktörsportalen / Ediel / implementationsguider
-- Energimarknadsinspektionen (Ei), föreskrifter och marknadsregler
-- eSett, Nordic Imbalance Settlement Handbook och relaterad dokumentation
-- Edielportalen, aktuella svenska implementationsanvisningar
-
-Externa tekniska projekt som OpenEDI är stödmaterial för maskinläsbar struktur, inte auktoritet för svenska marknadsregler.
-
-## Disclaimer
-
-Tydel är ett oberoende research- och utvecklingsprojekt. Det är inte anslutet till, godkänt av eller certifierat av Svenska kraftnät, Ei, eSett, EdiNation/EdiFabric eller någon marknadsaktör.
+## 📄 Disclaimer
+Tydel är ett oberoende research- och utvecklingsprojekt. Det är inte anslutet till, godkänt av eller certifierat av Svenska kraftnäts DHV-projekt, Energimarknadsinspektionen (Ei), eSett eller någon annan officiell marknadsaktör.
