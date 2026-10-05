@@ -6,15 +6,19 @@
 
 ## Canonical positioning
 
-> **Tydel är en deterministisk conformance- och diagnostikmotor för energimarknadens datautbyte. Den avgör vilka tekniska och marknadsmässiga regler som gäller för en transaktion, validerar den mot rätt process/profile/version och visar exakt vad som är fel, varför och vilken evidens som stöder resultatet.**
+> **Tydel är ett lokalt först, utvecklarcentrerat Conformance & CI/CD Layer för energimarknadens integrationer. Den deterministiska kärnan avgör vilka tekniska och marknadsmässiga regler som gäller för en transaktion, validerar den mot rätt process/profile/version och visar exakt vad som är fel, varför och vilken evidens som stöder resultatet.**
 
 Kort engelsk version:
 
-> **Tydel is a deterministic conformance and diagnostics layer for energy-market interoperability.**
+> **Tydel is a local-first deterministic conformance and CI/CD layer for energy-market integrations.**
 
 Kundnära version:
 
-> **Tydel validates energy-market transactions against the correct technical and market rules, showing exactly what failed, why, which version applies and the evidence behind the result.**
+> **Tydel validates energy-market integrations against the correct technical and market rules before they reach external test or production systems, showing exactly what failed, why, which version applies and the evidence behind the result.**
+
+Developer promise:
+
+> **Catch energy-market integration errors before the market does.**
 
 ## Vad Validator First betyder nu
 
@@ -27,7 +31,7 @@ Det betyder att Tydel först bygger en pålitlig, deterministisk kärna för:
 3. deterministisk validation/conformance;
 4. exakt strukturerad failure output;
 5. normative provenance och tidsmässig giltighet;
-6. reproducerbara resultat över CLI/API/UI/MCP/CI.
+6. reproducerbara resultat över local CLI/CI och senare API/UI/MCP.
 
 AI får förklara verifierade resultat. AI är inte validation authority.
 
@@ -41,6 +45,10 @@ Långsiktig kategori:
 
 > **Energy Market Conformance & Diagnostics**
 
+Initial delivery wedge:
+
+> **Developer Infrastructure / Conformance & CI/CD**
+
 Ediel är ett konkret sätt att bevisa kärnan mot verkliga, versionsstyrda marknadsregler. Det ska inte bli ett arkitektoniskt eller kommersiellt fängelse.
 
 ## Post-DHV thesis
@@ -52,11 +60,17 @@ Ei och Svenska kraftnät lämnade 2026-09-30 ett förslag om ett centralt dataha
 - Tydel ska inte anta att dagens decentraliserade Ediel-topologi består oförändrad;
 - Tydel ska inte heller anta att ett visst DHV-interface, schema, CIM-profile eller cutover-datum är beslutat innan auktoritativa specs finns.
 
-Myndigheternas offentliga sammanfattning beskriver DHV som ett förslag till regeringen, anger att den nuvarande marknadsmodellen är utgångspunkt och betonar stegvis införande samt migrationsutmaningar. Därför positioneras Tydel mot **marknadsregler och integrationskontrakt**, inte mot en viss nätverkstopologi.
+Därför positioneras Tydel mot **marknadsregler och integrationskontrakt**, inte mot en viss nätverkstopologi.
+
+Korrekt framtidsformulering är:
+
+> **Tydel starts with Swedish Ediel and is designed to extend to future DHV-era and CIM/IEC 62325 interfaces when authoritative contracts exist.**
+
+Inte att DHV redan har valt ett specifikt CIM-kontrakt.
 
 ## Det Tydel ska vara bäst på
 
-Tydel ska konkurrera på **regelresolution och spårbar marknadsbetydelse**, inte på generell syntaxkontroll.
+Tydel ska konkurrera på **regelresolution, spårbar marknadsbetydelse och developer ergonomics**, inte på generell syntaxkontroll.
 
 North-star capability:
 
@@ -83,6 +97,42 @@ och:
 > Var detta giltigt enligt den regelversion som gällde vid ett tidigare datum?
 
 Temporal versioning och provenance är därför kärnfunktioner, inte metadata i efterhand.
+
+## Local-first / Shift-Left
+
+Primär produktupplevelse:
+
+```text
+developer changes integration
+        ↓
+local Tydel CLI
+        ↓
+resolved schemas + RulePack
+        ↓
+deterministic validation
+        ↓
+source-linked diagnostics
+        ↓
+process exit code
+        ↓
+CI / GitHub Action passes or fails
+```
+
+Local/offline execution minskar beroendet av externa sandlådor och gör Tydel användbart i privata utvecklings- och CI-miljöer.
+
+Arkitektonisk inspiration hämtas selektivt från Conftest/OPA, Argo CD, Ruff/Biome och kubeconform. Dessa är inspirationsmönster, inte val av deras domänmodell eller policy-language.
+
+`<15 ms` är ett performance target för en definierad warm local benchmark. Det är inte ett marknadsclaim innan benchmarken är reproducerbart definierad och mätt.
+
+## Rule IR v0
+
+Rule IR v0 är nu låst som internt M1-kontrakt:
+
+- `../architecture/rule-ir-v0.md`
+- `../../schemas/rule-ir-v0.schema.json`
+- `../decisions/0006-rule-ir-v0.md`
+
+Rule IR innehåller bounded deterministic primitives, explicit temporal applicability och provenance. Det finns ingen arbitrary-code escape hatch. Mandatory rule semantics som inte kan representeras måste synliggöras som `unsupported` i stället för att döljas i specialkod.
 
 ## Produkt-hypoteser ovanpå samma core
 
@@ -120,26 +170,26 @@ Den centrala tekniska skalbarhetsfrågan är:
 
 > **Kan Tydel skapa, verifiera och uppdatera RulePacks snabbare än marknadsreglerna förändras utan att verksamheten blir konsulttung?**
 
-Därför används en intern **Rule IR** före eventuell egen DSL.
+Därför används den låsta interna **Rule IR v0** före eventuell egen DSL.
 
 ```text
 Normative source
 → importer / curated extraction
-→ Rule IR
+→ Rule IR v0
 → source/human verification
 → versioned executable RulePack
 → runtime
 ```
 
-En DSL ska endast införas om verkliga regelmönster visar att den behövs.
+En DSL ska endast införas om verkliga regelmönster och authoring-behov visar att den behövs.
 
 ## AI och MCP
 
 MCP är ett access- och integrationslager. Samma deterministic core ska kunna användas från:
 
-- CLI;
+- local CLI;
+- CI / GitHub Action;
 - API;
-- CI/CD;
 - operator UI;
 - local/private MCP;
 - framtida agentiska utvecklarflöden.
@@ -155,16 +205,16 @@ Discovery delas i två spår:
 1. **Operators / utilities** — finns den verkliga, återkommande och ekonomiskt betydande smärtan?
 2. **SI / software vendors** — kan Tydel distribueras som developer/QA infrastructure till flera slutkunder?
 
-Developer infrastructure kan bli distributions-wedge, medan större enterprise workflows kan byggas ovanpå samma core senare.
+Developer infrastructure är den initiala distributions-wedgen. Större enterprise workflows kan byggas ovanpå samma core senare om kundbehov och budget stöder det.
 
 ## Expansionsriktning
 
 ```text
 Swedish Ediel / UTILTS-APERAK
         ↓
-versioned RulePack + conformance core
+Rule IR v0 + versioned RulePack + conformance core
         ↓
-CLI / API / CI / MCP
+local CLI / CI / GitHub Action
         ↓
 Change Impact + Migration Assurance
         ↓
@@ -199,4 +249,6 @@ Se:
 - `../research/dhv-strategic-watch.md`
 - `../research/cim-iec62325-tooling.md`
 - `../decisions/0005-post-dhv-conformance-strategy.md`
+- `../decisions/0006-rule-ir-v0.md`
+- `../decisions/0007-local-first-developer-conformance.md`
 - `../../ARCHITECTURE.md`
