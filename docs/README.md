@@ -8,6 +8,11 @@ This folder contains Tydel's product, research, architecture-decision and review
 - [Post-DHV roadmap](product/post-dhv-roadmap.md) — gated 90-day and 6–24 month execution roadmap.
 - [Customer & channel discovery](product/customer-discovery.md) — operator/utility + SI/software-vendor discovery, evidence gates and kill/pivot logic.
 
+## Architecture
+
+- [Rule IR v0](architecture/rule-ir-v0.md) — locked internal rule contract for M1, including bounded assertion primitives, provenance, temporal applicability, unsupported-semantics handling and RulePack v0 envelope.
+- [Machine-readable Rule IR v0 schema](../schemas/rule-ir-v0.schema.json) — JSON Schema mirror of the Rule IR contract.
+
 ## Research
 
 - [Research reading guide](research/reading-guide.md) — source order, format boundaries and open questions.
@@ -26,10 +31,11 @@ This folder contains Tydel's product, research, architecture-decision and review
 - [Decision 0003 — Validator First product strategy](decisions/0003-validator-first-product-strategy.md) — reaffirmed with broader meaning after DHV.
 - [Decision 0004 — Validator result and delivery contract](decisions/0004-validator-result-and-delivery-contract.md)
 - [Decision 0005 — Post-DHV conformance strategy](decisions/0005-post-dhv-conformance-strategy.md) — Ediel remains wedge; Rule IR/RulePacks, temporal resolution, Change Impact and Migration Assurance become explicit strategic direction.
+- [Decision 0006 — Lock Rule IR v0 before M1](decisions/0006-rule-ir-v0.md) — bounded deterministic internal rule representation; no custom DSL or arbitrary executable predicates in M1.
 
 ## Reviews
 
-- [Claude M0 peer review brief](reviews/claude-peer-review-brief.md) — repository-grounded independent review instructions. Review should now challenge the post-DHV reset as well as the original validator scope.
+- [Claude M0 peer review brief](reviews/claude-peer-review-brief.md) — repository-grounded independent review instructions. Review should now challenge the post-DHV reset, Rule IR v0 and the developer-first/local-first direction before M1 runtime implementation.
 
 ## Repository documentation rules
 
