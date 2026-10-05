@@ -2,15 +2,17 @@
 
 > **Tyda el.**
 
-Tydel är en deterministisk **conformance- och diagnostikmotor för energimarknadens datautbyte**.
+Tydel är ett lokalt först, utvecklarcentrerat **Conformance & CI/CD Layer** för energimarknadens integrationer, byggt ovanpå en deterministisk conformance- och diagnostikkärna.
 
 Den avgör vilka tekniska och marknadsmässiga regler som gäller för en transaktion, validerar den mot rätt process/profile/version och visar exakt vad som är fel, varför det är fel och vilken evidens som stöder resultatet.
 
-**Validator First** gäller fortfarande, men betyder nu: bygg först en deterministisk conformance-kärna som kan bära flera marknadsformat över tid. Svensk Ediel är första wedge, inte slutdestinationen.
+**Validator First** gäller fortfarande: deterministiska regler avgör `PASS/FAIL`; AI används först efter validering för förklaring och assistans. Svensk Ediel är första wedge. Framtida DHV- och CIM/IEC 62325-stöd läggs till först när auktoritativa tekniska kontrakt finns.
 
-AI får förklara verifierade resultat men avgör inte `PASS/FAIL`. MCP är ett access- och integrationslager, inte själva produkten eller dess moat.
+Primära ytor är lokal CLI, CI/CD-gate och GitHub Action. MCP är ett accesslager, inte produkten eller dess moat.
 
-Se [`docs/product/positioning.md`](docs/product/positioning.md) och [`Decision 0005`](docs/decisions/0005-post-dhv-conformance-strategy.md).
+`<15 ms` är ett **performance target**, inte ett produktclaim, tills en reproducerbar benchmark har definierats och mätts.
+
+Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005`](docs/decisions/0005-post-dhv-conformance-strategy.md) och [`Decision 0006`](docs/decisions/0006-rule-ir-v0.md).
 
 ---
 
@@ -24,13 +26,15 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md) och [`Decision 0
 |---|---|
 | **Nuvarande milestone** | **M0 — Research foundation + post-DHV product reset** |
 | **Status** | 🟡 **PÅGÅR** |
-| **Nuvarande mål** | Låsa Rule IR v0 och ett auktoritativt UTILTS/APERAK-kontrakt för M1 utan att överkonstruera framtida DHV/CIM-stöd |
-| **Exakt nästa tekniska uppgift** | Definiera Rule IR v0 + M1 validator contract och representera första normativa regelsetet med provenance och giltighetstid |
-| **DHV checkpoint** | ✅ **REVIEWED 2026-10-05** — Ei/Svk-förslaget ändrar långsiktig positionering men inte behovet av en smal första validator-slice |
+| **Nuvarande mål** | Låsa exakt UTILTS/APERAK M1-scope ovanpå färdig **Rule IR v0** och förbereda första verifierade RulePack + validator contract |
+| **Exakt nästa tekniska uppgift** | Lås supported UTILTS/APERAK profile/scope, mappa första verifierade reglerna till Rule IR v0 och definiera validator result contract + golden fixtures |
+| **Rule IR** | ✅ **LOCKED v0** — bounded deterministic primitives, provenance, temporal validity, explicit unsupported semantics |
+| **DHV checkpoint** | ✅ **REVIEWED 2026-10-05** — riktningen ändras långsiktigt, men inga framtida DHV/CIM-kontrakt gissas |
+| **Developer direction** | ✅ **APPROVED** — local-first CLI / CI / GitHub Action; `<15 ms` är benchmark target |
 | **Discovery-spår** | 5 operator/utility-intervjuer + 5 SI/software-vendor-intervjuer efter färdig discovery-pack |
 | **Nästa owner** | **ChatGPT** |
-| **Blockerat** | **Nej.** Codex väntar tills Rule IR + validator contract + supported profile är låsta |
-| **Peer review** | ✅ **READY** — **@gonzalolorcakeabit-bit** kan köra Claude mot den uppdaterade strategin |
+| **Blockerat** | **Nej.** Codex väntar tills supported profile + first verified RulePack + validator contract + fixtures är låsta |
+| **Peer review** | ✅ **READY** — **@gonzalolorcakeabit-bit** kan köra Claude mot repo:t inklusive Rule IR v0 |
 | **Nästa milestone** | **M1 — UTILTS/APERAK deterministic conformance vertical slice** |
 | **Senast uppdaterad** | **2026-10-05** |
 
@@ -38,10 +42,10 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md) och [`Decision 0
 
 | Owner | Pending nu | Läge |
 |---|---|---|
-| **ChatGPT** | Rule IR v0, UTILTS/APERAK M1 contract, discovery-pack | 🟢 **ACTIVE** |
-| **Codex** | Vänta med M1-kod tills kontraktet är låst | ⏸ **WAITING** |
-| **@cjrandersson** | Ingen omedelbar åtgärd; outreach först efter review av discovery-pack | ⚪ **CLEAR** |
-| **@gonzalolorcakeabit-bit** | Claude peer review av uppdaterat repo | 🟡 **READY** |
+| **ChatGPT** | Lås UTILTS/APERAK M1-scope, första verifierade RulePack, validator contract och discovery-pack | 🟢 **ACTIVE** |
+| **Codex** | Vänta med M1-kod tills supported profile + RulePack + contract + fixtures är låsta | ⏸ **WAITING** |
+| **@cjrandersson** | Ingen omedelbar åtgärd; local-first developer direction godkänd | ⚪ **CLEAR** |
+| **@gonzalolorcakeabit-bit** | Claude peer review av uppdaterat repo inklusive Rule IR v0 | 🟡 **READY** |
 
 > **Ownership rule:** inget får markeras `pending`, `blocked`, `waiting` eller `next` utan explicit owner. Om Robin behöver agera ska det stå `🚨 @cjrandersson — <åtgärd>`.
 
@@ -57,11 +61,13 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md) och [`Decision 0
   - [x] Aktuell UTILTS/APERAK-edition identifierad
   - [x] DHV 2026-09-30 checkpoint genomförd på strateginivå
   - [x] Produktpositionering omdefinierad till **Energy Market Conformance & Diagnostics**
+  - [x] Local-first developer / CI direction godkänd
   - [x] RulePack lifecycle och temporal versioning lyfta till first-class concerns
-  - [x] Beslut: **Rule IR före egen DSL**
-  - [ ] Extrahera/representera tillräcklig normativ regelvariation för att stabilisera Rule IR v0 — **ChatGPT**
-  - [ ] Lås första supported UTILTS/APERAK profile + validator contract — **ChatGPT**
-  - [ ] Definiera positiva/negativa golden fixtures — **ChatGPT / Codex**
+  - [x] **Rule IR v0 låst** — [`docs/architecture/rule-ir-v0.md`](docs/architecture/rule-ir-v0.md)
+  - [x] Machine-readable Rule IR schema — [`schemas/rule-ir-v0.schema.json`](schemas/rule-ir-v0.schema.json)
+  - [ ] Lås första supported UTILTS/APERAK profile/scope — **ChatGPT**
+  - [ ] Mappa första verifierade normativa regelsetet till Rule IR v0 / RulePack — **ChatGPT**
+  - [ ] Lås validator result contract + positiva/negativa golden fixtures — **ChatGPT / Codex**
 
 - [ ] **M0-CD — Customer + channel discovery**
   - [x] Problem- och kill/pivot-principer definierade
@@ -80,11 +86,13 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md) och [`Decision 0
   - [ ] Versioned RulePack + Rule IR runtime
   - [ ] Deterministisk validation result med exact rule/source/expected/observed
   - [ ] Golden fixtures och offline regression tests
-  - [ ] Lokal CLI/API-entry point
+  - [ ] Lokal CLI + CI/GitHub Action entry point
+  - [ ] Definiera och mäta reproducerbar performance benchmark; `<15 ms` är mål, inte krav utan mätdata
 
 - [ ] **M2 — Developer conformance surfaces**
-  - [ ] CLI/API/CI integration över samma core
-  - [ ] MCP tools för agentiska utvecklarflöden
+  - [ ] Stabilisera CLI/CI/GitHub Action över samma core
+  - [ ] API/UI där kundbehov motiverar det
+  - [ ] MCP tools för kontrollerade agentiska utvecklarflöden
   - [ ] Välj Commercial Slice 2 från discovery; PRODAT är kandidat, inte låst beslut
 
 - [ ] **M3 — Change Impact + Migration Assurance** ← **PRODUCT HYPOTHESIS**
@@ -96,13 +104,13 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md) och [`Decision 0
 - [ ] **M4 — XML/CIM/IEC 62325 selected vertical slice** ← **LATER RESEARCH**
   - [ ] Välj en konkret marknadsprocess
   - [ ] Utvärdera officiella ESMP/profile artifacts
-  - [ ] Behåll samma Tydel validation-result contract
+  - [ ] Lägg till XML/CIM-adapter utan att ändra validation-result contract
 
 ---
 
 ## Vad ändrades efter DHV 2026-09-30?
 
-Ei och Svenska kraftnät har föreslagit ett centralt datahanteringsverktyg för den svenska elmarknaden. Förslaget innebär inte att ett färdigt tekniskt DHV-kontrakt redan är beslutat eller att hela marknadsmodellen ersätts. Myndigheternas offentliga sammanfattning säger att den nuvarande marknadsmodellen ska behållas, att Svenska kraftnät föreslås ansvara för utveckling/drift/förvaltning och att införandet behöver ske stegvis. Erfarenheter från andra länder pekas ut som särskilt utmanande under utvecklings- och migrationsfasen.
+Ei och Svenska kraftnät har föreslagit ett centralt datahanteringsverktyg för den svenska elmarknaden. Förslaget innebär inte att ett färdigt tekniskt DHV-kontrakt redan är beslutat eller att hela marknadsmodellen ersätts.
 
 Det förändrar Tydels långsiktiga thesis:
 
@@ -171,7 +179,9 @@ DETERMINISTIC CONFORMANCE ENGINE
    ↓
 STRUCTURED RESULT + PROVENANCE
    ↓
-CLI / API / UI / MCP / CI
+LOCAL CLI / CI / GITHUB ACTION
+   ↓
+API / UI / MCP where appropriate
 ```
 
 **M1 implementerar endast det som krävs för UTILTS/APERAK.** Arkitekturen får vara utbytbar men vi bygger inte EDIFACT, XML, CIM, REST och DHV samtidigt.
@@ -180,20 +190,22 @@ Se [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ---
 
-## Rule IR och RulePacks
+## Rule IR v0 och RulePacks
 
-Tydels största tekniska skalbarhetsfråga är inte parsing utan **Rule Operations**:
+Rule IR v0 är nu låst som M1:s interna regelkontrakt:
 
-> Kan vi skapa, verifiera och uppdatera RulePacks snabbare än marknadsreglerna förändras utan att arbetet blir konsulttungt?
+- [`docs/architecture/rule-ir-v0.md`](docs/architecture/rule-ir-v0.md)
+- [`schemas/rule-ir-v0.schema.json`](schemas/rule-ir-v0.schema.json)
+- [`Decision 0006`](docs/decisions/0006-rule-ir-v0.md)
 
-Därför gäller:
+Flödet är:
 
 ```text
 Normative source
       ↓
 Importer / curated extraction
       ↓
-Tydel Rule IR
+Tydel Rule IR v0
       ↓
 Human/source verification
       ↓
@@ -202,9 +214,44 @@ Versioned executable RulePack
 Runtime validator
 ```
 
-Vi designar **inte en egen DSL först**. Rule IR stabiliseras mot verkliga regler innan vi avgör om en separat DSL över huvud taget behövs.
+Rule IR v0 innehåller bounded primitives för bland annat presence, cardinality, datatype, allowed values, code lists, restricted conditional presence, reference integrity, sequence och temporal relation.
 
-Varje normativ regel ska bära explicit scope, source, edition, giltighetsperiod och review status.
+Det finns **ingen arbitrary-code escape hatch**. Om en verifierad obligatorisk regel inte kan representeras markeras den explicit `unsupported`. Det är arkitekturevidens, inte något som får gömmas i specialkod.
+
+Varje normativ regel bär explicit scope, source, edition, giltighetsperiod, review status och testlänkar.
+
+---
+
+## Local-first developer workflow
+
+Den godkända leveransriktningen är:
+
+```text
+developer changes integration
+        ↓
+local Tydel CLI
+        ↓
+schema + profile + business rules
+        ↓
+deterministic validation
+        ↓
+source-linked diagnostics
+        ↓
+exit code
+        ↓
+CI passes / fails
+```
+
+Arkitektonisk inspiration hämtas selektivt från:
+
+- **Conftest / OPA** — lokal policy evaluation och CI-vänliga exit semantics;
+- **Argo CD** — deklarativ desired-vs-actual diff och reproducerbarhet;
+- **Ruff / Biome** — snabb startup och tydliga source-linked terminal diagnostics;
+- **kubeconform** — offline schema resolution/cache och parallell validering.
+
+Tydel kopierar inte deras domänmodell. Vi lånar execution- och developer-experience-mönster.
+
+`<15 ms` är ett performance target för en definierad warm local benchmark. Payloadstorlek, antal regler, cache state, hårdvara samt cold/warm semantics måste definieras innan siffran blir ett produktclaim.
 
 ---
 
@@ -308,9 +355,9 @@ Se [`docs/product/post-dhv-roadmap.md`](docs/product/post-dhv-roadmap.md).
 Kort version:
 
 ```text
-M0     Rule IR + authoritative M1 contract + discovery
-M1     UTILTS/APERAK deterministic vertical slice
-M2     CLI/API/CI/MCP developer conformance surfaces
+M0     Rule IR v0 [LOCKED] + authoritative M1 profile/RulePack/contract + discovery
+M1     UTILTS/APERAK deterministic vertical slice + local CLI/CI benchmark
+M2     Stable developer conformance surfaces + validated commercial slice
 M3     Change Impact + Migration Assurance hypothesis validation
 M4     One selected XML/CIM/IEC 62325 market-process slice
 ```
@@ -337,7 +384,9 @@ Framtida DHV-stöd aktiveras först när auktoritativa tekniska specs existerar.
 | Path | Innehåll |
 | --- | --- |
 | [`project-status.yml`](project-status.yml) | Gemensam statuskälla för Development Cockpit |
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Conformance architecture, Rule IR, RulePacks och systemgränser |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Conformance architecture och systemgränser |
+| [`docs/architecture/rule-ir-v0.md`](docs/architecture/rule-ir-v0.md) | Låst Rule IR v0 + RulePack v0 contract |
+| [`schemas/rule-ir-v0.schema.json`](schemas/rule-ir-v0.schema.json) | Machine-readable Rule IR schema |
 | [`docs/product/positioning.md`](docs/product/positioning.md) | Canonical post-DHV positioning |
 | [`docs/product/post-dhv-roadmap.md`](docs/product/post-dhv-roadmap.md) | 90-day och 6–24 månaders roadmap |
 | [`docs/product/customer-discovery.md`](docs/product/customer-discovery.md) | Operator + SI/vendor discovery |
