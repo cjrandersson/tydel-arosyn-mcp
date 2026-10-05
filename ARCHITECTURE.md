@@ -2,7 +2,7 @@
 
 Det här dokumentet beskriver Tydels nuvarande arkitekturriktning efter DHV-checkpointen 2026-10-05.
 
-Tydel är en research-stage **energy-market conformance and diagnostics engine**. Svensk Ediel är första wedge och UTILTS/APERAK är första planerade M1 vertical slice. Arkitekturen ska kunna växa till fler syntax-/profile-familjer utan att M1 överkonstrueras.
+Tydel är ett research-stage, lokalt först **energy-market conformance and CI/CD layer** ovanpå en deterministisk conformance- och diagnostikkärna. Svensk Ediel är första wedge och UTILTS/APERAK är första planerade M1 vertical slice. Arkitekturen ska kunna växa till fler syntax-/profile-familjer utan att M1 överkonstrueras.
 
 ## Designprinciper
 
@@ -39,9 +39,9 @@ M1 implementerar **endast EDIFACT-stödet som behövs för den valda UTILTS/APER
 
 Vi bygger inte XML, CIM, REST och DHV samtidigt bara för att arkitekturen ska kunna stödja dem senare.
 
-### 4. Rule IR före egen DSL
+### 4. Rule IR v0 är låst före M1
 
-Tydel skapar inte ett eget regelspråk innan verklig regelvariation har visat vilka primitiver som behövs.
+Tydel använder ett internt, tool-neutral Rule IR-kontrakt. Vi skapar inte ett eget user-facing regelspråk innan verklig authoring-/rule-operations-data motiverar det.
 
 Flödet är:
 
@@ -50,7 +50,7 @@ Normative source
       ↓
 Importer / curated extraction
       ↓
-Tydel Rule IR
+Tydel Rule IR v0
       ↓
 Source + human verification
       ↓
@@ -59,7 +59,15 @@ Versioned executable RulePack
 Conformance runtime
 ```
 
-Rule IR ska vara intern och tool-neutral. Rules engine ska inte behöva veta om en regel ursprungligen kom från OpenEDI, XSD, en Ediel-guide, SHACL eller manuell kuratering.
+Canonical contract:
+
+- `docs/architecture/rule-ir-v0.md`
+- `schemas/rule-ir-v0.schema.json`
+- Decision 0006
+
+Rule IR v0 har bounded assertion primitives och **ingen arbitrary-code escape hatch**. Om en verifierad obligatorisk regel inte kan uttryckas korrekt markeras semantiken explicit `unsupported` i stället för att gömmas i specialkod.
+
+Rules engine ska inte behöva veta om en regel ursprungligen kom från OpenEDI, XSD, en Ediel-guide, SHACL eller manuell kuratering.
 
 ### 5. Version och tid är first-class
 
@@ -102,13 +110,15 @@ review_status
 
 Convenience är aldrig authority.
 
-### 8. Read-only först
+### 8. Read-only och local-first först
 
-Första produktfaserna arbetar med kopior, fixtures, meddelanden och loggar. Tydel ska inte routa, korrigera eller återsända produktionsmeddelanden.
+Första produktfaserna arbetar med lokala fixtures, kopior, meddelanden och loggar. Tydel ska inte routa, korrigera eller återsända produktionsmeddelanden.
+
+Primär leveransyta är lokal CLI/CI. Cloud service är inte ett krav för kärnvalidering.
 
 ### 9. Samma core, flera accessytor
 
-CLI, API, CI, operator UI och MCP ska vara olika clients/surfaces över samma validation core.
+Local CLI, CI/GitHub Action, API, operator UI och MCP ska vara olika clients/surfaces över samma validation core.
 
 MCP är inte validatorn och inte parsern.
 
@@ -122,12 +132,12 @@ flowchart TD
     B --> C["Canonical market transaction + source locations"]:::data
     C --> D["Process / profile / version resolver"]:::core
     D --> E["RulePack registry"]:::standard
-    E --> F["Resolved executable rules"]:::standard
+    E --> F["Resolved executable Rule IR v0"]:::standard
     F --> G["Deterministic conformance engine"]:::core
     G --> H["Structured validation result"]:::data
     H --> I["Evidence + provenance service"]:::core
-    I --> J["CLI / API / CI / UI / MCP"]:::mcp
-    J --> K["Developer / operator / controlled AI client"]:::mcp
+    I --> J["Local CLI / CI / GitHub Action"]:::mcp
+    I --> K["API / UI / MCP where appropriate"]:::mcp
 
     E --> L["RulePack diff / change impact"]:::future
     L --> M["Regression + migration assurance"]:::future
@@ -177,32 +187,36 @@ Resolvern får returnera `AMBIGUOUS_CONTEXT` istället för att gissa.
 
 ### RuleIR
 
-Intern representation av en normativ eller safety constraint.
+Rule IR v0 är den låsta interna representationen för M1. Assertions utvärderas mot canonical paths och måste bära scope, temporal applicability, provenance, review state och test linkage.
 
-Första kandidater till primitives, endast när de stöds av verkliga M1-regler:
+V0 primitive families är:
 
-- required/presence;
+- presence;
 - cardinality;
-- datatype/format;
-- allowed value/code list;
-- conditional required;
-- cross-field dependency;
-- reference integrity;
+- datatype;
+- pattern;
+- allowed value;
+- code list;
+- literal equality;
+- reference equality;
+- restricted conditional presence;
 - sequence;
-- temporal applicability;
-- business-state constraint.
+- temporal relation;
+- explicit reviewed business-state model reference.
 
-Detta är inte en låst DSL-design.
+Full contract: `docs/architecture/rule-ir-v0.md`.
 
 ### RulePack
 
-Ett immutable/versioned bundle med resolved regler för ett explicit scope.
+Ett immutable/versioned bundle med verifierade Rule IR-records för ett explicit scope.
 
 Exempel på identitet:
 
 ```text
-SE_EDIEL_UTILTS_E5SE5A_REV3
+SE_EDIEL_UTILTS_E5SE5A_REV4
 ```
+
+Detta exempel uttrycker identitetsmönster, inte att ett komplett revision-4 pack redan är publicerat.
 
 RulePack ska kunna samexistera med äldre och nyare editioner.
 
@@ -215,9 +229,13 @@ Ett finding ska minst kunna innehålla:
 ```text
 result_id
 rule_id
+rulepack_id
+rulepack_version
 severity
 rule_layer
 process/profile/version
+validation_as_of
+canonical_path
 source_location
 expected
 observed
@@ -242,7 +260,7 @@ CLASSIFY AUTHORITY / EDITION / SCOPE
     ↓
 EXTRACT CANDIDATE RULE
     ↓
-MAP TO RULE IR
+MAP TO RULE IR v0
     ↓
 REVIEW AGAINST SOURCE
     ↓
@@ -260,7 +278,7 @@ Målet är att minimera handskriven runtime-specialkod. Marknadsspecifik semanti
 Om varje ny profile/version kräver veckor av unik kod måste arkitekturen omprövas. Vi mäter därför under M1:
 
 - time-to-model per regeltyp;
-- antal regler som kräver custom runtime logic;
+- antal mandatory rules som är `unsupported`;
 - source-to-RuleIR review time;
 - regression coverage;
 - edition-to-edition diffability.
@@ -281,7 +299,7 @@ EDIFACT input
 → deterministic PASS/FAIL/findings
 → exact provenance
 → golden regression tests
-→ local CLI/API entry point
+→ local CLI + CI entry point
 ```
 
 M1 ska **inte** implementera:
@@ -293,6 +311,21 @@ M1 ska **inte** implementera:
 - automatic rule authoring by AI;
 - production routing/retransmission;
 - forecasting/analytics.
+
+### Performance target
+
+`<15 ms` är ett target för en definierad **warm local benchmark**, inte en arkitekturgaranti eller extern produktclaim.
+
+Innan målet kan användas externt måste benchmarken låsa minst:
+
+- payload size/type;
+- antal aktiva regler;
+- parser/schema cache state;
+- cold vs warm start;
+- hårdvara/CPU;
+- antal iterationer och percentile-mått.
+
+Correctness, determinism och zero hidden rule semantics prioriteras före mikrobenchmark-optimering.
 
 ---
 
@@ -375,17 +408,17 @@ OpenEDI får inte bli svensk marknadsauktoritet eller Tydels publika domain cont
 
 ## Access surfaces
 
-### CLI
+### Local CLI
 
-För lokala tester, CI och developer workflows.
+Primär M1-surface för lokal/offline validering, terminaldiagnostik och reproducerbara exit codes.
+
+### CI / GitHub Action
+
+Primär developer-distribution för shift-left conformance gates. Ska anropa samma core som CLI.
 
 ### API
 
-För privata eller serverbaserade integrationer.
-
-### CI runner
-
-För regression/conformance i build pipelines.
+För privata eller serverbaserade integrationer när kundbehov motiverar det.
 
 ### Operator UI
 
@@ -401,17 +434,18 @@ Ingen accessyta får ha en egen validation implementation.
 
 ## Planerad kodstruktur
 
-Skapas först när M1-contract är låst och faktiska modulgränser är tydliga.
+Skapas först när supported M1 profile + first verified RulePack + validator contract + golden fixtures är låsta och faktiska modulgränser är tydliga.
 
 ```text
 src/
   adapters/        syntax/input adapters
   domain/          canonical transaction + context + result
   resolver/        process/profile/version/as-of resolution
-  rules/           Rule IR, RulePack loading and registry
+  rules/           Rule IR v0, RulePack loading and registry
   runtime/         deterministic conformance execution
   evidence/        source/provenance resolution
   cli/             local developer entry point
+  ci/              CI/GitHub Action adapter
   api/             controlled API surface
   mcp/             MCP adapter over the same core
   app/             composition/startup
@@ -420,6 +454,7 @@ tests/
   unit/
   integration/
   regression/
+  benchmark/
 fixtures/
   edifact/
 ```
@@ -443,11 +478,13 @@ Mappar skapas inte som tom arkitekturdekor.
 
 ## Öppna beslut
 
-- Exakt Rule IR v0 efter första normativa UTILTS/APERAK-regelsetet.
-- Exakt supported UTILTS/APERAK profile för M1.
-- Validator contract och stable error taxonomy.
+- Exakt supported UTILTS/APERAK profile/scope för M1.
+- Första verifierade RulePack-innehåll och eventuella `unsupported` semantics.
+- Validator result contract och stable error taxonomy.
+- Golden positive/negative fixtures.
 - Vilka machine-readable base artifacts som juridiskt och tekniskt kan användas.
 - Hur RulePack signing/checksums ska fungera senare.
+- Reproducerbar performance benchmark och om `<15 ms` är realistiskt.
 - Vilken deploymentmodell första design partner kräver.
 - Om Commercial Slice 2 ska vara PRODAT eller annan process efter discovery.
 - När Change Impact har tillräcklig kundsignal för M3.
