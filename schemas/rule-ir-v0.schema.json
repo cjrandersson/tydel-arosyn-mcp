@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tydel.dev/schemas/rule-ir-v0.schema.json",
+  "title": "Tydel Rule IR v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "rule_id",
+    "title",
+    "layer",
+    "severity",
+    "scope",
+    "applicability",
+    "selector",
+    "assertion",
+    "evidence",
+    "review",
+    "tests",
+    "execution"
+  ],
+  "properties": {
+    "schema_version": { "const": "tydel.rule-ir/v0" },
+    "rule_id": { "type": "string", "minLength": 3 },
+    "title": { "type": "string", "minLength": 1 },
+    "layer": {
+      "enum": ["BASE_STANDARD", "MARKET_PROFILE", "BUSINESS_PROCESS", "TYDEL_SAFETY"]
+    },
+    "severity": { "enum": ["error", "warning", "info"] },
+    "scope": { "$ref": "#/$defs/scope" },
+    "applicability": { "$ref": "#/$defs/applicability" },
+    "selector": { "$ref": "#/$defs/selector" },
+    "assertion": { "$ref": "#/$defs/assertion" },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/evidence" }
+    },
+    "review": { "$ref": "#/$defs/review" },
+    "tests": { "$ref": "#/$defs/tests" },
+    "execution": { "$ref": "#/$defs/execution" }
+  },
+  "$defs": {
+    "nullableString": {
+      "type": ["string", "null"]
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jurisdiction",
+        "market",
+        "process",
+        "transaction",
+        "message",
+        "profile",
+        "message_version",
+        "syntax",
+        "actor_roles"
+      ],
+      "properties": {
+        "jurisdiction": { "type": "string", "minLength": 2 },
+        "market": { "$ref": "#/$defs/nullableString" },
+        "process": { "$ref": "#/$defs/nullableString" },
+        "transaction": { "$ref": "#/$defs/nullableString" },
+        "message": { "$ref": "#/$defs/nullableString" },
+        "profile": { "$ref": "#/$defs/nullableString" },
+        "message_version": { "$ref": "#/$defs/nullableString" },
+        "syntax": { "$ref": "#/$defs/nullableString" },
+        "actor_roles": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["effective_from", "effective_to"],
+      "properties": {
+        "effective_from": { "type": ["string", "null"], "format": "date" },
+        "effective_to": { "type": ["string", "null"], "format": "date" }
+      }
+    },
+    "selector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model", "path"],
+      "properties": {
+        "model": { "const": "canonical" },
+        "path": { "type": "string", "minLength": 1 }
+      }
+    },
+    "assertion": {
+      "oneOf": [
+        { "$ref": "#/$defs/presenceAssertion" },
+        { "$ref": "#/$defs/cardinalityAssertion" },
+        { "$ref": "#/$defs/datatypeAssertion" },
+        { "$ref": "#/$defs/patternAssertion" },
+        { "$ref": "#/$defs/allowedValueAssertion" },
+        { "$ref": "#/$defs/codeListAssertion" },
+        { "$ref": "#/$defs/equalsAssertion" },
+        { "$ref": "#/$defs/referenceEqualsAssertion" },
+        { "$ref": "#/$defs/conditionalPresenceAssertion" },
+        { "$ref": "#/$defs/sequenceAssertion" },
+        { "$ref": "#/$defs/temporalRelationAssertion" },
+        { "$ref": "#/$defs/businessStateAssertion" }
+      ]
+    },
+    "presenceAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "required"],
+      "properties": {
+        "kind": { "const": "presence" },
+        "required": { "type": "boolean" }
+      }
+    },
+    "cardinalityAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "min", "max"],
+      "properties": {
+        "kind": { "const": "cardinality" },
+        "min": { "type": "integer", "minimum": 0 },
+        "max": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "datatypeAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "type"],
+      "properties": {
+        "kind": { "const": "datatype" },
+        "type": { "enum": ["string", "integer", "decimal", "boolean", "date", "datetime"] }
+      }
+    },
+    "patternAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "regex"],
+      "properties": {
+        "kind": { "const": "pattern" },
+        "regex": { "type": "string", "minLength": 1 }
+      }
+    },
+    "allowedValueAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "values"],
+      "properties": {
+        "kind": { "const": "allowed_value" },
+        "values": { "type": "array", "minItems": 1, "items": {} }
+      }
+    },
+    "codeListAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "code_list_id"],
+      "properties": {
+        "kind": { "const": "code_list" },
+        "code_list_id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "equalsAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "const": "equals" },
+        "value": {}
+      }
+    },
+    "referenceEqualsAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "other_path"],
+      "properties": {
+        "kind": { "const": "reference_equals" },
+        "other_path": { "type": "string", "minLength": 1 }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "operator"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "operator": { "enum": ["equals", "not_equals", "exists", "not_exists", "in"] },
+        "value": {},
+        "values": { "type": "array", "items": {} }
+      }
+    },
+    "conditionalPresenceAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "when", "then"],
+      "properties": {
+        "kind": { "const": "conditional_presence" },
+        "when": { "$ref": "#/$defs/condition" },
+        "then": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "required"],
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "required": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "sequenceAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "before", "after"],
+      "properties": {
+        "kind": { "const": "sequence" },
+        "before": { "type": "string", "minLength": 1 },
+        "after": { "type": "string", "minLength": 1 }
+      }
+    },
+    "temporalRelationAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "left_path", "operator", "right_path"],
+      "properties": {
+        "kind": { "const": "temporal_relation" },
+        "left_path": { "type": "string", "minLength": 1 },
+        "operator": { "enum": ["before", "before_or_equal", "after", "after_or_equal", "equal"] },
+        "right_path": { "type": "string", "minLength": 1 }
+      }
+    },
+    "businessStateAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "model_id", "transition"],
+      "properties": {
+        "kind": { "const": "business_state" },
+        "model_id": { "type": "string", "minLength": 1 },
+        "transition": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "publisher",
+        "evidence_level",
+        "source_edition",
+        "source_location",
+        "source_checksum",
+        "note"
+      ],
+      "properties": {
+        "source_id": { "type": "string", "minLength": 1 },
+        "publisher": { "type": "string", "minLength": 1 },
+        "evidence_level": { "enum": ["NORMATIVE", "PROCESS_GUIDE", "EXAMPLE", "SECONDARY"] },
+        "source_edition": { "$ref": "#/$defs/nullableString" },
+        "source_location": { "type": "string", "minLength": 1 },
+        "source_checksum": { "$ref": "#/$defs/nullableString" },
+        "note": { "$ref": "#/$defs/nullableString" }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reviewed_by", "reviewed_at", "notes"],
+      "properties": {
+        "status": { "enum": ["candidate", "verified", "rejected", "deprecated"] },
+        "reviewed_by": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "reviewed_at": { "type": ["string", "null"], "format": "date" },
+        "notes": { "$ref": "#/$defs/nullableString" }
+      }
+    },
+    "tests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["positive", "negative"],
+      "properties": {
+        "positive": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "negative": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["support"],
+      "properties": {
+        "support": { "enum": ["supported", "unsupported", "not_applicable"] },
+        "reason": { "$ref": "#/$defs/nullableString" }
+      }
+    }
+  }
+}
