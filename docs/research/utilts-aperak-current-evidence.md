@@ -37,6 +37,79 @@ Källor:
 - `reference/catalogs/ediel-se.json`
 - `reference/download-lock.json`
 
+## Energimyndigheten / Cesar — kompletterande produktionsnära evidens
+
+Energimyndighetens aktuella Cesar-dokumentation ger en användbar kombination av **teknisk Ediel-anvisning**, **giltigt UTILTS-exempel** och **verkliga felkoder med orsak/åtgärd**. Materialet är särskilt intressant för Tydel eftersom det binder ihop meddelandestruktur med konkreta avvisnings-/felutfall utan att vi behöver behandla exemplen som en fullständig corpus av rå produktionsdata.
+
+### Teknisk EDIEL-anvisning — 15 minuters rapportering
+
+Energimyndighetens dokument **Teknisk EDIEL anvisning — 15 minuters rapportering** gäller från **2025-06-01**. Dokumentet länkas fortfarande från Energimyndighetens aktuella Cesar-material under hösten **2026** och behandlas därför här som aktuell publicerad vägledning, med separat metadata för ikraftdatum och senare aktualitetskontroll.
+
+Tydel ska hålla isär dessa datum:
+
+- `effective_from: 2025-06-01`
+- `verified_current: 2026-09-25`
+- `publisher: Energimyndigheten`
+- `system_scope: Cesar`
+- `message_family: UTILTS`
+- `evidence_level: PROCESS_GUIDE / EXAMPLE`
+
+Dokumentet innehåller ett konkret UTILTS E66-exempel och beskriver bland annat kvartsmätning, KWH och 96 kvartsvärden per dygn. Exempelstrukturen är värdefull fixture-evidens men ska inte ensam uppgraderas till generell normativ Ediel-regel.
+
+Källa:
+- https://www.energimyndigheten.se/49fbbf/globalassets/fornybart/elcertifikat/information-till-natagarerapportorer-och-installatorer/teknisk-ediel-anvisning---15-minuters-rapportering.pdf
+
+### Felkoder vid mätvärdesrapportering i Cesar
+
+Energimyndighetens felkodsguide beskriver fel som Cesar kan identifiera i inkommande mätvärdesrapportering och kopplar felkod till **förklaring, möjlig orsak och åtgärd**. Det gör dokumentet särskilt relevant för Tydels målmodell:
+
+```text
+input message
+→ deterministic rule
+→ detected deviation
+→ publisher error code
+→ explanation / cause
+→ remediation
+```
+
+Exempel som dokumenterats i guiden omfattar bland annat:
+
+- `E10` — rapporterad anläggning kan inte identifieras;
+- `E29` — fel produktkod;
+- `E51` — fler än tre decimaler;
+- `E73` — fel enhet;
+- `E87` — mätdygnet innehåller inte exakt 96 kvartsvärden;
+- `E55` — fel rapportör skickar mätvärden.
+
+Dessa är starka kandidater för deterministiska regler **inom Cesar-scope**, men får inte generaliseras till all svensk Ediel utan separat stöd.
+
+Källa:
+- https://www.energimyndigheten.se/49a457/globalassets/fornybart/cesar/felkoder-vid-matvardesrapportering-i-cesar.pdf
+
+### Faktablad för nätägare
+
+Energimyndighetens faktablad kompletterar den tekniska anvisningen med processorienterad evidens. Det beskriver bland annat rapportering via Ediel/UTILTS samt identifierare, produkt-/statuskoder och andra verksamhetskrav kring Cesar-rapporteringen.
+
+Källa:
+- https://www.energimyndigheten.se/48e2f4/globalassets/fornybart/elcertifikat/information-till-natagarerapportorer-och-installatorer/faktablad-for-natagare.pdf
+
+### Evidensbedömning för Tydel
+
+Cesar-materialet är **produktionsnära men inte samma sak som rå produktionsdata**. Det ger officiellt publicerade regler, giltiga exempel och felutfall från den verkliga mottagande tjänstens domän. Det gör materialet lämpligt för ett första `Tydel Validation Corpus`, samtidigt som riktiga anonymiserade produktionsincidenter fortsatt bör behandlas som en separat evidensklass.
+
+Rekommenderad metadata för varje härledd Cesar-regel:
+
+- exakt källa och URL;
+- dokumenttitel;
+- publisher;
+- `effective_from` när dokumentet anger det;
+- `verified_current` när vi senare har verifierat att myndigheten fortfarande publicerar/länkar dokumentet;
+- scope/system;
+- message family/version där det kan beläggas;
+- `evidence_level`;
+- original felkod när sådan finns;
+- förklaring, orsak och åtgärd utan att utvidga betydelsen utanför källans scope.
+
 ## Evidenshierarki
 
 För att undvika att ett exempel blir en påhittad standardregel använder Tydel följande ordning:
