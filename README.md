@@ -26,7 +26,7 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
 |---|---|
 | **Nuvarande milestone** | **M0 — Research foundation + post-DHV product reset** |
 | **Status** | 🟡 **PÅGÅR** |
-| **Nuvarande mål** | Låsa första verifierade production UTILTS/APERAK RulePack medan Codex implementerar det nu låsta **Validator Result v0**-kontraktet |
+| **Nuvarande mål** | Slutföra review-gaten för **Validator Result v0 PR #2** och parallellt låsa första verifierade production UTILTS/APERAK RulePack |
 | **Exakt nästa tekniska uppgift** | Verifiera exakt supported UTILTS/APERAK profile/scope och mappa första normativa production-reglerna till Rule IR v0 utan att uppgradera process-guide/exempel till normativ regel |
 | **Rule IR** | ✅ **LOCKED v0** — bounded deterministic primitives, provenance, temporal validity, explicit unsupported semantics |
 | **Validator Result** | ✅ **LOCKED v0** — strict JSON Schema, PASS/FAIL invariants, exact `segmentPath`, provenance, safe `nextStep` |
@@ -35,7 +35,7 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
 | **Developer direction** | ✅ **APPROVED** — local-first CLI / CI / GitHub Action; `<15 ms` är benchmark target |
 | **Discovery-spår** | 5 operator/utility-intervjuer + 5 SI/software-vendor-intervjuer efter färdig discovery-pack |
 | **Nästa owner** | **ChatGPT** |
-| **Blockerat** | **Kod klar i Codex-workspace men ännu inte publicerad till GitHub.** 🚨 **@cjrandersson — välj Publish/Create draft PR i Codex-tasken.** Production market-rule implementation väntar fortfarande på verifierat RulePack |
+| **Blockerat** | **PR #2 finns som Draft men är inte mergebar mot aktuell `main`.** Branchen måste rebasas/reconcileras och stale/unrelated diff tas bort innan review/merge |
 | **Peer review** | ✅ **READY** — **@gonzalolorcakeabit-bit** kan köra Claude mot repo:t inklusive Rule IR v0 |
 | **Nästa milestone** | **M1 — UTILTS/APERAK deterministic conformance vertical slice** |
 | **Senast uppdaterad** | **2026-10-07** |
@@ -45,8 +45,8 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
 | Owner | Pending nu | Läge |
 |---|---|---|
 | **ChatGPT** | Verifiera supported production UTILTS/APERAK scope + första source-verified RulePack | 🟢 **ACTIVE** |
-| **Codex** | [`Issue #1`](https://github.com/cjrandersson/tydel-arosyn-mcp/issues/1) — implementation klar i isolerad workspace, final commit `84011a40...`; branch/commit ännu inte synliga på GitHub | ✅ **COMPLETE IN WORKSPACE** |
-| **@cjrandersson** | 🚨 Publish/Create draft PR från Codex-tasken så implementationen blir granskningsbar på GitHub | 🔴 **ACTION REQUIRED** |
+| **Codex** | [`PR #2`](https://github.com/cjrandersson/tydel-arosyn-mcp/pull/2) — Draft skapad; rebase/reconcile mot aktuell `main` krävs innan review | 🟡 **READY FOR REBASE** |
+| **@cjrandersson** | 🚨 Be Codex i implementation-tasken rebase/reconcile PR #2 mot aktuell `main`, bevara main-status/reference-filer och köra om alla checks | 🔴 **ACTION REQUIRED** |
 | **@gonzalolorcakeabit-bit** | Claude peer review av uppdaterat repo inklusive Rule IR v0 | 🟡 **READY** |
 
 > **Ownership rule:** inget får markeras `pending`, `blocked`, `waiting` eller `next` utan explicit owner. Om Robin behöver agera ska det stå `🚨 @cjrandersson — <åtgärd>`.
