@@ -45,7 +45,7 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
 | Owner | Pending nu | Läge |
 |---|---|---|
 | **ChatGPT** | Verifiera supported production UTILTS/APERAK scope + första source-verified RulePack | 🟢 **ACTIVE** |
-| **Codex** | Implementera Validator Result v0, schema validation, deterministic serialization, golden contract tests och CLI/CI exit semantics; inga påhittade market rules | 🟡 **READY** |
+| **Codex** | [`Issue #1`](https://github.com/cjrandersson/tydel-arosyn-mcp/issues/1) — implementera Validator Result v0, schema validation, deterministic serialization, golden contract tests och CLI/CI exit semantics; inga påhittade market rules | 🟡 **READY** |
 | **@cjrandersson** | Ingen omedelbar åtgärd; local-first developer direction godkänd | ⚪ **CLEAR** |
 | **@gonzalolorcakeabit-bit** | Claude peer review av uppdaterat repo inklusive Rule IR v0 | 🟡 **READY** |
 
