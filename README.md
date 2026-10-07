@@ -26,7 +26,7 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
 |---|---|
 | **Nuvarande milestone** | **M0 — Research foundation + post-DHV product reset** |
 | **Status** | 🟡 **PÅGÅR** |
-| **Nuvarande mål** | Låsa första verifierade production UTILTS/APERAK RulePacket medan Codex implementerar det nu låsta **Validator Result v0**-kontraktet |
+| **Nuvarande mål** | Låsa första verifierade production UTILTS/APERAK RulePack medan Codex implementerar det nu låsta **Validator Result v0**-kontraktet |
 | **Exakt nästa tekniska uppgift** | Verifiera exakt supported UTILTS/APERAK profile/scope och mappa första normativa production-reglerna till Rule IR v0 utan att uppgradera process-guide/exempel till normativ regel |
 | **Rule IR** | ✅ **LOCKED v0** — bounded deterministic primitives, provenance, temporal validity, explicit unsupported semantics |
 | **Validator Result** | ✅ **LOCKED v0** — strict JSON Schema, PASS/FAIL invariants, exact `segmentPath`, provenance, safe `nextStep` |
