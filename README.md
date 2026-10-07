@@ -35,7 +35,7 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
 | **Developer direction** | ✅ **APPROVED** — local-first CLI / CI / GitHub Action; `<15 ms` är benchmark target |
 | **Discovery-spår** | 5 operator/utility-intervjuer + 5 SI/software-vendor-intervjuer efter färdig discovery-pack |
 | **Nästa owner** | **ChatGPT** |
-| **Blockerat** | **Nej.** Codex är upplåst för Result Contract/model/schema/serializer/golden tests/exit codes. Production market-rule implementation väntar fortfarande på verifierat RulePack |
+| **Blockerat** | **Nej.** Codex är upplåst och READY för Result Contract/model/schema/serializer/golden tests/exit codes. Production market-rule implementation väntar fortfarande på verifierat RulePack |
 | **Peer review** | ✅ **READY** — **@gonzalolorcakeabit-bit** kan köra Claude mot repo:t inklusive Rule IR v0 |
 | **Nästa milestone** | **M1 — UTILTS/APERAK deterministic conformance vertical slice** |
 | **Senast uppdaterad** | **2026-10-07** |
@@ -45,7 +45,7 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
 | Owner | Pending nu | Läge |
 |---|---|---|
 | **ChatGPT** | Verifiera supported production UTILTS/APERAK scope + första source-verified RulePack | 🟢 **ACTIVE** |
-| **Codex** | Implementera Validator Result v0, schema validation, deterministic serialization, golden contract tests och CLI/CI exit semantics; inga påhittade market rules | 🟢 **ACTIVE** |
+| **Codex** | Implementera Validator Result v0, schema validation, deterministic serialization, golden contract tests och CLI/CI exit semantics; inga påhittade market rules | 🟡 **READY** |
 | **@cjrandersson** | Ingen omedelbar åtgärd; local-first developer direction godkänd | ⚪ **CLEAR** |
 | **@gonzalolorcakeabit-bit** | Claude peer review av uppdaterat repo inklusive Rule IR v0 | 🟡 **READY** |
 
