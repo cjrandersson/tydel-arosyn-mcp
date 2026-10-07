@@ -155,7 +155,7 @@ owners:
     state: active
     task: "Verify supported production UTILTS/APERAK scope and populate first source-verified RulePack; do not block Codex contract work"
   - owner: Codex
-    state: active
+    state: ready
     task: "Implement Validator Result v0 model/schema validation, deterministic serialization, golden contract tests and CLI/CI exit semantics; do not invent production market rules"
   - owner: "@cjrandersson"
     state: clear
