@@ -15,9 +15,9 @@ Only vendored files travel with Git. Recreate the local cache with the fetch com
 | nmeg-common | 29 | 0 | 18 | 11 | 0 |
 | nmeg-nbs | 13 | 0 | 5 | 8 | 0 |
 | regulation | 1 | 0 | 0 | 1 | 0 |
-| standards | 4 | 0 | 0 | 4 | 0 |
+| standards | 6 | 0 | 0 | 6 | 0 |
 | swedish-handbook | 1 | 0 | 1 | 0 | 0 |
-| **Total** | 222 | 36 | 136 | 50 | 0 |
+| **Total** | 224 | 36 | 136 | 52 | 0 |
 
 Counts are source files, not distinct standards or unique editions. Archives may contain multiple files.
 
