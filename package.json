@@ -3,14 +3,20 @@
   "version": "1.0.0",
   "description": "Research-stage local-first deterministic conformance and CI/CD layer for energy-market integrations",
   "main": "build/index.js",
+  "bin": {
+    "tydel-validator-result": "build/cli/index.js"
+  },
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node build/index.js",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "start": "node build/cli/index.js",
     "dev": "tsc --watch"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.1",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "node-edifact": "^0.3.0"
   },
   "devDependencies": {
