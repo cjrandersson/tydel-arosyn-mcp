@@ -222,30 +222,42 @@ RulePack ska kunna samexistera med äldre och nyare editioner.
 
 ### ValidationResult
 
-Primärt output är maskinläsbart.
+Primärt output är maskinläsbart och **Validator Result Contract v0 är låst för M1**:
 
-Ett finding ska minst kunna innehålla:
+- `docs/architecture/validator-result-v0.md`
+- `schemas/validator-result-v0.schema.json`
+
+Root contract:
 
 ```text
-result_id
-rule_id
-rulepack_id
-rulepack_version
-severity
-rule_layer
-process/profile/version
-validation_as_of
-canonical_path
-source_location
-expected
-observed
-normative_source
-source_location_in_spec
-effective_period
-safe_next_step
+schemaVersion
+resultId
+status: PASS | FAIL
+context
+rulePack
+error[]
+execution
 ```
 
-Resultatet ska vara reproducerbart från samma input + context + RulePack-version.
+Varje M1 error/finding innehåller minst:
+
+```text
+ruleId
+severity: ERROR | WARNING
+ruleLayer
+segmentPath
+canonicalPath
+observed
+expected
+provenance[]
+nextStep
+```
+
+För M1 ger `segmentPath` exakt EDIFACT-position medan `canonicalPath` bevarar den semantiska identiteten för framtida adapters.
+
+En `FAIL` måste innehålla minst ett `ERROR`. En `PASS` får inte innehålla ett `ERROR`. Originala marknadssignaler såsom negativ APERAK kan bevaras i `originalResponse` utan att ersättas av Tydels finding.
+
+Resultatet ska vara reproducerbart från samma input + context + exakt RulePack-version + engine-version.
 
 ---
 
@@ -480,8 +492,8 @@ Mappar skapas inte som tom arkitekturdekor.
 
 - Exakt supported UTILTS/APERAK profile/scope för M1.
 - Första verifierade RulePack-innehåll och eventuella `unsupported` semantics.
-- Validator result contract och stable error taxonomy.
-- Golden positive/negative fixtures.
+- Stable finding-code catalogue beyond the locked Validator Result v0 shape.
+- Production golden fixtures derived from the first verified UTILTS/APERAK RulePack; contract-level PASS/FAIL fixtures are already locked.
 - Vilka machine-readable base artifacts som juridiskt och tekniskt kan användas.
 - Hur RulePack signing/checksums ska fungera senare.
 - Reproducerbar performance benchmark och om `<15 ms` är realistiskt.
