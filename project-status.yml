@@ -107,11 +107,11 @@ validator_result:
     pass: 0
     fail: 1
     contract_or_runtime_failure: 2
-  codex_gate: "running"
+  codex_gate: "completed_in_workspace_waiting_for_publish"
   codex_handoff_issue: 1
   codex_user_approval: "APPROVED by @cjrandersson on 2026-10-07"
-  codex_execution_state: "running"
-  codex_launch_requirement: null
+  codex_execution_state: "completed_in_workspace_not_published"
+  codex_launch_requirement: "Publish the completed Codex workspace to GitHub as a branch/draft PR, then review before merge."
   production_rulepack_gate: "still evidence-gated; Codex must not invent missing market rules"
   performance_guardrail: "durationMs is measured output only; <15 ms remains an unproven benchmark target"
 
@@ -159,11 +159,11 @@ owners:
     state: active
     task: "Verify supported production UTILTS/APERAK scope and populate first source-verified RulePack; do not block Codex contract work"
   - owner: Codex
-    state: running
-    task: "Implement Validator Result v0 on isolated branch codex/issue-1-validator-result-v0; model/schema validation, deterministic serialization, golden contract tests and CLI/CI exit semantics; do not invent production market rules"
+    state: completed_in_workspace
+    task: "Issue #1 implementation completed in isolated Codex workspace at commit 84011a40a05a006a581b0975e357a245d08c38ee; awaiting publication to GitHub for review"
   - owner: "@cjrandersson"
-    state: clear
-    task: "No immediate action; Codex Cloud task for Issue #1 is running"
+    state: action_required
+    task: "🚨 @cjrandersson — Publish/Create draft PR from the completed Codex task so branch codex/issue-1-validator-result-v0 and commit 84011a40a05a006a581b0975e357a245d08c38ee become visible on GitHub"
   - owner: "@gonzalolorcakeabit-bit"
     state: ready
     task: "Run Claude peer review against the updated repository including Rule IR v0"
