@@ -1,5 +1,5 @@
 version: 1
-updated: 2026-10-05
+updated: 2026-10-07
 
 product:
   strategy: validator_first_conformance
@@ -50,8 +50,8 @@ current:
   milestone: M0
   milestone_title: "Research foundation + post-DHV product reset"
   status: active
-  objective: "Låsa ett auktoritativt UTILTS/APERAK M1-scope ovanpå färdig Rule IR v0 och förbereda första verifierade RulePack + validator contract."
-  next_task: "Lås exakt supported UTILTS/APERAK profile/scope, mappa första verifierade normativa reglerna till Rule IR v0 och definiera M1 validator result contract + golden fixtures."
+  objective: "Låsa det första verifierade production UTILTS/APERAK RulePacket ovanpå färdig Rule IR v0 medan Codex implementerar det nu låsta Validator Result v0-kontraktet."
+  next_task: "Verifiera exakt supported UTILTS/APERAK profile/scope och mappa första normativa production-reglerna till Rule IR v0 utan att generalisera process-guide/exempel till normativa regler."
   next_owner: ChatGPT
   blocked: false
 
@@ -89,6 +89,27 @@ rule_operations:
     - evidence_location
     - review_status
   scaling_question: "Can verified RulePacks be created and updated faster than market rules change without turning Tydel into a consulting-heavy business?"
+
+validator_result:
+  state: locked_v0
+  owner: ChatGPT
+  contract: "docs/architecture/validator-result-v0.md"
+  schema: "schemas/validator-result-v0.schema.json"
+  golden_fixtures:
+    - "fixtures/m1/validator-result/pass.json"
+    - "fixtures/m1/validator-result/fail-aperak-313.json"
+  invariants:
+    - "FAIL requires at least one ERROR"
+    - "PASS must not contain ERROR"
+    - "M1 finding preserves exact EDIFACT segmentPath plus canonicalPath"
+    - "Every deterministic market finding carries provenance and a safe nextStep"
+  exit_semantics:
+    pass: 0
+    fail: 1
+    contract_or_runtime_failure: 2
+  codex_gate: "open_for_contract_implementation"
+  production_rulepack_gate: "still evidence-gated; Codex must not invent missing market rules"
+  performance_guardrail: "durationMs is measured output only; <15 ms remains an unproven benchmark target"
 
 developer_delivery:
   state: approved_direction
@@ -132,10 +153,10 @@ peer_review:
 owners:
   - owner: ChatGPT
     state: active
-    task: "Lock UTILTS/APERAK M1 scope, populate first verified RulePack, validator contract and discovery preparation"
+    task: "Verify supported production UTILTS/APERAK scope and populate first source-verified RulePack; do not block Codex contract work"
   - owner: Codex
-    state: waiting
-    task: "Implement M1 only after supported profile + first verified RulePack + validator contract + golden fixtures are locked"
+    state: active
+    task: "Implement Validator Result v0 model/schema validation, deterministic serialization, golden contract tests and CLI/CI exit semantics; do not invent production market rules"
   - owner: "@cjrandersson"
     state: clear
     task: "No immediate action; local-first developer direction approved; outreach begins after discovery pack review"
@@ -146,7 +167,7 @@ owners:
 milestones:
   - id: M0
     state: active
-    progress: 0.93
+    progress: 0.95
     title: "Research foundation + product reset"
   - id: M0-CD
     state: preparation
