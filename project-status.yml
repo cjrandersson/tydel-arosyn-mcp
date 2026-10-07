@@ -107,11 +107,11 @@ validator_result:
     pass: 0
     fail: 1
     contract_or_runtime_failure: 2
-  codex_gate: "approved_waiting_for_launch"
+  codex_gate: "running"
   codex_handoff_issue: 1
   codex_user_approval: "APPROVED by @cjrandersson on 2026-10-07"
-  codex_execution_state: "not_started"
-  codex_launch_requirement: "Start a Codex Cloud task against the Tydel repository/environment using Issue #1 as the implementation brief."
+  codex_execution_state: "running"
+  codex_launch_requirement: null
   production_rulepack_gate: "still evidence-gated; Codex must not invent missing market rules"
   performance_guardrail: "durationMs is measured output only; <15 ms remains an unproven benchmark target"
 
@@ -159,11 +159,11 @@ owners:
     state: active
     task: "Verify supported production UTILTS/APERAK scope and populate first source-verified RulePack; do not block Codex contract work"
   - owner: Codex
-    state: approved_waiting_for_launch
-    task: "Implement Validator Result v0 model/schema validation, deterministic serialization, golden contract tests and CLI/CI exit semantics after an actual Codex Cloud task is started; do not invent production market rules"
+    state: running
+    task: "Implement Validator Result v0 on isolated branch codex/issue-1-validator-result-v0; model/schema validation, deterministic serialization, golden contract tests and CLI/CI exit semantics; do not invent production market rules"
   - owner: "@cjrandersson"
-    state: action_required
-    task: "🚨 @cjrandersson — Start the Codex Cloud task for repo cjrandersson/tydel-arosyn-mcp using Issue #1 as the implementation brief; approval has already been given"
+    state: clear
+    task: "No immediate action; Codex Cloud task for Issue #1 is running"
   - owner: "@gonzalolorcakeabit-bit"
     state: ready
     task: "Run Claude peer review against the updated repository including Rule IR v0"
