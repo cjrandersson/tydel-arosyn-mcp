@@ -26,24 +26,26 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
 |---|---|
 | **Nuvarande milestone** | **M0 — Research foundation + post-DHV product reset** |
 | **Status** | 🟡 **PÅGÅR** |
-| **Nuvarande mål** | Låsa exakt UTILTS/APERAK M1-scope ovanpå färdig **Rule IR v0** och förbereda första verifierade RulePack + validator contract |
-| **Exakt nästa tekniska uppgift** | Lås supported UTILTS/APERAK profile/scope, mappa första verifierade reglerna till Rule IR v0 och definiera validator result contract + golden fixtures |
+| **Nuvarande mål** | Låsa första verifierade production UTILTS/APERAK RulePacket medan Codex implementerar det nu låsta **Validator Result v0**-kontraktet |
+| **Exakt nästa tekniska uppgift** | Verifiera exakt supported UTILTS/APERAK profile/scope och mappa första normativa production-reglerna till Rule IR v0 utan att uppgradera process-guide/exempel till normativ regel |
 | **Rule IR** | ✅ **LOCKED v0** — bounded deterministic primitives, provenance, temporal validity, explicit unsupported semantics |
+| **Validator Result** | ✅ **LOCKED v0** — strict JSON Schema, PASS/FAIL invariants, exact `segmentPath`, provenance, safe `nextStep` |
+| **Golden contract fixtures** | ✅ **LOCKED** — PASS + source-backed negative APERAK 313 result fixture |
 | **DHV checkpoint** | ✅ **REVIEWED 2026-10-05** — riktningen ändras långsiktigt, men inga framtida DHV/CIM-kontrakt gissas |
 | **Developer direction** | ✅ **APPROVED** — local-first CLI / CI / GitHub Action; `<15 ms` är benchmark target |
 | **Discovery-spår** | 5 operator/utility-intervjuer + 5 SI/software-vendor-intervjuer efter färdig discovery-pack |
 | **Nästa owner** | **ChatGPT** |
-| **Blockerat** | **Nej.** Codex väntar tills supported profile + first verified RulePack + validator contract + fixtures är låsta |
+| **Blockerat** | **Nej.** Codex är upplåst för Result Contract/model/schema/serializer/golden tests/exit codes. Production market-rule implementation väntar fortfarande på verifierat RulePack |
 | **Peer review** | ✅ **READY** — **@gonzalolorcakeabit-bit** kan köra Claude mot repo:t inklusive Rule IR v0 |
 | **Nästa milestone** | **M1 — UTILTS/APERAK deterministic conformance vertical slice** |
-| **Senast uppdaterad** | **2026-10-05** |
+| **Senast uppdaterad** | **2026-10-07** |
 
 ### Aktivt ansvar / pending
 
 | Owner | Pending nu | Läge |
 |---|---|---|
-| **ChatGPT** | Lås UTILTS/APERAK M1-scope, första verifierade RulePack, validator contract och discovery-pack | 🟢 **ACTIVE** |
-| **Codex** | Vänta med M1-kod tills supported profile + RulePack + contract + fixtures är låsta | ⏸ **WAITING** |
+| **ChatGPT** | Verifiera supported production UTILTS/APERAK scope + första source-verified RulePack | 🟢 **ACTIVE** |
+| **Codex** | Implementera Validator Result v0, schema validation, deterministic serialization, golden contract tests och CLI/CI exit semantics; inga påhittade market rules | 🟢 **ACTIVE** |
 | **@cjrandersson** | Ingen omedelbar åtgärd; local-first developer direction godkänd | ⚪ **CLEAR** |
 | **@gonzalolorcakeabit-bit** | Claude peer review av uppdaterat repo inklusive Rule IR v0 | 🟡 **READY** |
 
@@ -67,7 +69,9 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
   - [x] Machine-readable Rule IR schema — [`schemas/rule-ir-v0.schema.json`](schemas/rule-ir-v0.schema.json)
   - [ ] Lås första supported UTILTS/APERAK profile/scope — **ChatGPT**
   - [ ] Mappa första verifierade normativa regelsetet till Rule IR v0 / RulePack — **ChatGPT**
-  - [ ] Lås validator result contract + positiva/negativa golden fixtures — **ChatGPT / Codex**
+  - [x] **Validator Result Contract v0 låst** — [`docs/architecture/validator-result-v0.md`](docs/architecture/validator-result-v0.md)
+  - [x] **Golden contract fixtures låsta** — PASS + source-backed APERAK 313 FAIL
+  - [ ] Lås production golden fixtures från första verifierade UTILTS/APERAK RulePack — **ChatGPT / Codex**
 
 - [ ] **M0-CD — Customer + channel discovery**
   - [x] Problem- och kill/pivot-principer definierade
