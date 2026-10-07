@@ -26,7 +26,7 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
 |---|---|
 | **Nuvarande milestone** | **M0 — Research foundation + post-DHV product reset** |
 | **Status** | 🟡 **PÅGÅR** |
-| **Nuvarande mål** | Verifiera grön merge-result baseline för **Validator Result v0 PR #2** efter separat reference-library-reparation, därefter merge |
+| **Nuvarande mål** | Låsa exakt supported UTILTS/APERAK production-scope och bygga första source-verified RulePack ovanpå implementerad **Rule IR v0 + Validator Result v0** |
 | **Exakt nästa tekniska uppgift** | Verifiera exakt supported UTILTS/APERAK profile/scope och mappa första normativa production-reglerna till Rule IR v0 utan att uppgradera process-guide/exempel till normativ regel |
 | **Rule IR** | ✅ **LOCKED v0** — bounded deterministic primitives, provenance, temporal validity, explicit unsupported semantics |
 | **Validator Result** | ✅ **LOCKED v0** — strict JSON Schema, PASS/FAIL invariants, exact `segmentPath`, provenance, safe `nextStep` |
@@ -35,7 +35,7 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
 | **Developer direction** | ✅ **APPROVED** — local-first CLI / CI / GitHub Action; `<15 ms` är benchmark target |
 | **Discovery-spår** | 5 operator/utility-intervjuer + 5 SI/software-vendor-intervjuer efter färdig discovery-pack |
 | **Nästa owner** | **ChatGPT** |
-| **Blockerat** | **Det pre-existing reference-library-felet är reparerat via PR #3.** PR #2 behöver nu bara en sista sync mot aktuell `main` + full grön check-run innan merge |
+| **Blockerat** | **Nej.** Validator Result v0 är mergad till `main`; nästa gate är evidenslåsning av första production RulePack |
 | **Peer review** | ✅ **READY** — **@gonzalolorcakeabit-bit** kan köra Claude mot repo:t inklusive Rule IR v0 |
 | **Nästa milestone** | **M1 — UTILTS/APERAK deterministic conformance vertical slice** |
 | **Senast uppdaterad** | **2026-10-07** |
@@ -45,9 +45,8 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
 | Owner | Pending nu | Läge |
 |---|---|---|
 | **ChatGPT** | Verifiera supported production UTILTS/APERAK scope + första source-verified RulePack | 🟢 **ACTIVE** |
-| **Codex** | [`PR #2`](https://github.com/cjrandersson/tydel-arosyn-mcp/pull/2) — review passed; synka mot senaste `main` efter PR #3 och kör hela check-sviten | 🟡 **READY** |
-| **ChatGPT** | Final review + merge-gate direkt efter grön synced check-run | 🟡 **REVIEW READY** |
-| **@cjrandersson** | 🚨 Kör sista Codex sync/check-pass för PR #2; inget nytt produktbeslut krävs | 🔴 **ACTION REQUIRED** |
+| **Codex** | [`PR #2`](https://github.com/cjrandersson/tydel-arosyn-mcp/pull/2) — Validator Result v0 implementation mergad till `main` (`c5bf0057...`) | ✅ **COMPLETE** |
+| **@cjrandersson** | Ingen omedelbar åtgärd; merge godkänd och genomförd | ⚪ **CLEAR** |
 | **@gonzalolorcakeabit-bit** | Claude peer review av uppdaterat repo inklusive Rule IR v0 | 🟡 **READY** |
 
 > **Ownership rule:** inget får markeras `pending`, `blocked`, `waiting` eller `next` utan explicit owner. Om Robin behöver agera ska det stå `🚨 @cjrandersson — <åtgärd>`.
@@ -72,6 +71,7 @@ Se [`docs/product/positioning.md`](docs/product/positioning.md), [`Decision 0005
   - [ ] Mappa första verifierade normativa regelsetet till Rule IR v0 / RulePack — **ChatGPT**
   - [x] **Validator Result Contract v0 låst** — [`docs/architecture/validator-result-v0.md`](docs/architecture/validator-result-v0.md)
   - [x] **Golden contract fixtures låsta** — PASS + source-backed APERAK 313 FAIL
+  - [x] **Validator Result v0 implementation mergad** — PR #2 / `c5bf0057...`
   - [ ] Lås production golden fixtures från första verifierade UTILTS/APERAK RulePack — **ChatGPT / Codex**
 
 - [ ] **M0-CD — Customer + channel discovery**
