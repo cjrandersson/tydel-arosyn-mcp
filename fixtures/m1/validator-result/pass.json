@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "tydel.validator-result/v0",
+  "resultId": "golden-pass-0001",
+  "status": "PASS",
+  "context": {
+    "jurisdiction": "SE",
+    "process": "M1 contract fixture",
+    "message": "UTILTS",
+    "profile": "fixture",
+    "messageVersion": "D:02B:UN",
+    "syntax": "EDIFACT",
+    "asOf": "2026-10-07"
+  },
+  "rulePack": {
+    "id": "TEST_UTILTS_CONTRACT",
+    "version": "0.0.0-fixture",
+    "contentHash": null
+  },
+  "error": [],
+  "execution": {
+    "engineVersion": "0.0.0-fixture",
+    "mode": "LOCAL",
+    "offline": true,
+    "durationMs": 0
+  }
+}
