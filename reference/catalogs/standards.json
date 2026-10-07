@@ -73,11 +73,11 @@
       "version_hint": "2.0.0",
       "version_verified": true,
       "effective_from": null,
-      "storage": "vendored-eligible",
+      "storage": "link-only",
       "rights": "MIT",
       "rights_url": "https://github.com/EdiNation/OpenEDI-Specification/blob/main/LICENSE",
       "model_use": "specification-use-approved-subject-to-MIT",
-      "note": "Candidate machine-readable representation for generic EDI/EDIFACT structure. This source defines the OpenEDI format; it is not an authority for Swedish Ediel business rules."
+      "note": "Candidate machine-readable representation for generic EDI/EDIFACT structure. Currently link-only; vendoring requires an explicit path and checksum review. This source defines the OpenEDI format; it is not an authority for Swedish Ediel business rules."
     },
     {
       "id": "edination-edi-spec-library",
