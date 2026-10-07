@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "tydel.validator-result/v0",
+  "resultId": "golden-fail-aperak-313-0001",
+  "status": "FAIL",
+  "context": {
+    "jurisdiction": "SE",
+    "process": "FCR acknowledgement",
+    "message": "APERAK",
+    "profile": "E5SE9B",
+    "messageVersion": "D:04A:UN",
+    "syntax": "EDIFACT",
+    "asOf": "2026-10-07"
+  },
+  "rulePack": {
+    "id": "TEST_FCR_APERAK_E5SE9B",
+    "version": "0.0.0-fixture",
+    "contentHash": null
+  },
+  "error": [
+    {
+      "ruleId": "TYDEL-M1-ACK-001",
+      "severity": "ERROR",
+      "ruleLayer": "BUSINESS_PROCESS",
+      "segmentPath": "UNB[1]/UNH[1]/BGM[1]",
+      "canonicalPath": "acknowledgement.status",
+      "observed": "313",
+      "expected": "312 (positive APERAK) for an accepted UTILTS acknowledgement in this FCR-scoped fixture",
+      "provenance": [
+        {
+          "sourceId": "svk-fcr-2025",
+          "publisher": "Svenska kraftnät",
+          "title": "BSP – Implementation guide FCR",
+          "edition": "Version 1",
+          "section": "Appendix C – Example file – Acknowledgement for UTILTS-documents",
+          "evidenceLevel": "PROCESS_GUIDE",
+          "effectiveFrom": "2025-04-28",
+          "effectiveTo": null,
+          "sourceChecksum": null
+        },
+        {
+          "sourceId": "se-elmarknadshandbok-26A",
+          "publisher": "Energiföretagen Sverige / Svenska kraftnät",
+          "title": "Svensk Elmarknadshandbok",
+          "edition": "26A / 2026-04-01",
+          "section": "10.3.2 APERAK-meddelande",
+          "evidenceLevel": "PROCESS_GUIDE",
+          "effectiveFrom": "2026-04-01",
+          "effectiveTo": null,
+          "sourceChecksum": null
+        }
+      ],
+      "originalResponse": {
+        "type": "APERAK",
+        "code": "313",
+        "messageReference": "205436160319",
+        "transactionReference": "MD200205832134"
+      },
+      "nextStep": "Resolve DOC and RFF+ACW to the rejected UTILTS message and transaction, validate that original payload against its exact RulePack and as-of date, correct the underlying finding, then resend through the normal market channel."
+    }
+  ],
+  "execution": {
+    "engineVersion": "0.0.0-fixture",
+    "mode": "LOCAL",
+    "offline": true,
+    "durationMs": 0
+  }
+}
