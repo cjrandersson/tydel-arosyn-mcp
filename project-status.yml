@@ -50,7 +50,7 @@ current:
   milestone: M0
   milestone_title: "Research foundation + post-DHV product reset"
   status: active
-  objective: "Låsa det första verifierade production UTILTS/APERAK RulePacket ovanpå färdig Rule IR v0 medan Codex implementerar det nu låsta Validator Result v0-kontraktet."
+  objective: "Låsa det första verifierade production UTILTS/APERAK RulePack ovanpå färdig Rule IR v0 medan Codex implementerar det nu låsta Validator Result v0-kontraktet."
   next_task: "Verifiera exakt supported UTILTS/APERAK profile/scope och mappa första normativa production-reglerna till Rule IR v0 utan att generalisera process-guide/exempel till normativa regler."
   next_owner: ChatGPT
   blocked: false
