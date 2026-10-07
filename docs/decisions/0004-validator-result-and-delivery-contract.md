@@ -1,8 +1,9 @@
 # Decision 0004 — Validation result and delivery contract
 
-**Status:** Accepted, refined post-DHV  
+**Status:** Accepted; M1 field names locked  
 **Original date:** 2026-09-28  
-**Refined:** 2026-10-05
+**Refined:** 2026-10-05  
+**M1 contract locked:** 2026-10-07
 
 ## Problem
 
@@ -42,7 +43,14 @@ A Tydel code normalises diagnostics. It does not replace the original market res
 
 ## Contract direction
 
-Exact field names are locked with M1, but the canonical result must support at least:
+M1 field names are now locked by:
+
+- `docs/architecture/validator-result-v0.md`
+- `schemas/validator-result-v0.schema.json`
+- `fixtures/m1/validator-result/pass.json`
+- `fixtures/m1/validator-result/fail-aperak-313.json`
+
+The canonical result supports at least:
 
 ```json
 {
@@ -77,7 +85,9 @@ Exact field names are locked with M1, but the canonical result must support at l
 }
 ```
 
-The contract must not require every syntax family to expose EDIFACT-specific concepts such as `segment` at top level. Syntax-specific source locations belong inside a generic location/source-reference structure.
+For the EDIFACT-only M1 slice, the locked error item includes an exact `segmentPath` plus a semantic `canonicalPath`. The former gives developers an exact wire location such as `UNB[1]/UNH[1]/BGM[1]`; the latter prevents rule identity from becoming permanently EDIFACT-bound. A later non-EDIFACT slice may generalize source-location representation without changing the deterministic finding semantics.
+
+A `FAIL` result must contain at least one `ERROR`. A `PASS` result must not contain an `ERROR`; warnings may coexist with `PASS`.
 
 ## Determinism requirement
 
