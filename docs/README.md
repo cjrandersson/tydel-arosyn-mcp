@@ -12,6 +12,9 @@ This folder contains Tydel's product, research, architecture-decision and review
 
 - [Rule IR v0](architecture/rule-ir-v0.md) — locked internal rule contract for M1, including bounded assertion primitives, provenance, temporal applicability, unsupported-semantics handling and RulePack v0 envelope.
 - [Machine-readable Rule IR v0 schema](../schemas/rule-ir-v0.schema.json) — JSON Schema mirror of the Rule IR contract.
+- [Validator Result Contract v0](architecture/validator-result-v0.md) — locked deterministic M1 result shape, PASS/FAIL invariants, provenance and safe next-step semantics.
+- [Machine-readable Validator Result v0 schema](../schemas/validator-result-v0.schema.json) — strict JSON Schema used by CLI/CI and golden contract tests.
+- [Validator Result golden fixtures](../fixtures/m1/validator-result/) — first PASS and source-backed APERAK 313 FAIL contract fixtures.
 
 ## Research
 
