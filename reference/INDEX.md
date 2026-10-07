@@ -275,6 +275,8 @@ A listed source is not necessarily downloaded, current or approved for productio
 | [UN/EDIFACT directories](https://unece.org/trade/uncefact/unedifact) | reference-not-adopted | link-only | not fetched |
 | [ISO 9735 — EDIFACT syntax](https://www.iso.org/standard/35032.html) | reference-not-adopted | link-only | not fetched |
 | [Svenska kraftnät — using Ediel](https://www.svk.se/aktorsportalen/it-systemsupport/anvanda-ediel/) | reference-not-adopted | link-only | not fetched |
+| [OpenEDI Specification](https://github.com/EdiNation/OpenEDI-Specification) | evaluation-approved | link-only | not fetched |
+| [EdiNation EDI Specification Library](https://edination.edifabric.com/edi-spec-library.html) | evaluation-approved | link-only | not fetched |
 | [esbuild architecture — documentation style reference](https://github.com/evanw/esbuild/blob/main/docs/architecture.md) | reference-not-adopted | link-only | not fetched |
 
 ## swedish-handbook
