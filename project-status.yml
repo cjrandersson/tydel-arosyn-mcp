@@ -50,9 +50,9 @@ current:
   milestone: M0
   milestone_title: "Research foundation + post-DHV product reset"
   status: active
-  objective: "Återställ grön main-baseline för reference library, därefter slutgranska och merge-gata Validator Result v0 PR #2; parallellt fortsätter första verifierade production UTILTS/APERAK RulePack."
-  next_task: "Reparera det pre-existing main-felet openedi-specification storage policy + regenererad reference index/inventory, verifiera grön baseline, därefter slutgranska PR #2 för merge."
-  next_owner: "@cjrandersson"
+  objective: "Verifiera grön merge-result baseline för Validator Result v0 PR #2 efter separat reference-library-reparation; därefter merge och fortsätt första verifierade production UTILTS/APERAK RulePack."
+  next_task: "Synka PR #2 mot aktuell main efter PR #3-baselinefixen och kör hela repository check-sviten igen; merge först när Issue #1-tester + Python + reference verify + diff-check är gröna."
+  next_owner: Codex
   blocked: false
 
 strategic_checkpoint:
@@ -107,12 +107,12 @@ validator_result:
     pass: 0
     fail: 1
     contract_or_runtime_failure: 2
-  codex_gate: "pr_review_passed_waiting_for_green_main_baseline"
+  codex_gate: "pr_review_passed_waiting_for_final_synced_checks"
   codex_handoff_issue: 1
   codex_pull_request: 2
   codex_user_approval: "APPROVED by @cjrandersson on 2026-10-07"
   codex_execution_state: "published_as_draft_pr"
-  codex_review_state: "pr_clean_and_mergeable; final merge held by pre-existing main reference-library failure"
+  codex_review_state: "pr clean/mergeable; PR #3 repaired inherited reference-library baseline; final synced check run required before merge"
   codex_launch_requirement: null
   production_rulepack_gate: "still evidence-gated; Codex must not invent missing market rules"
   performance_guardrail: "durationMs is measured output only; <15 ms remains an unproven benchmark target"
@@ -161,14 +161,14 @@ owners:
     state: active
     task: "Verify supported production UTILTS/APERAK scope and populate first source-verified RulePack; do not block Codex contract work"
   - owner: Codex
-    state: review_passed
-    task: "PR #2 is clean and mergeable at head 61190f7f9fff01f3dfd994fcd6cce01b09424cf8; no PR-specific changes requested"
-  - owner: ChatGPT
     state: ready
-    task: "Repair the inherited main reference-library storage/index inconsistency in a separate focused change, verify baseline checks, then perform final PR #2 merge review"
+    task: "Sync PR #2 with current main after merged PR #3, rerun npm/Issue #1/Python/reference/diff checks, and report final head; do not merge"
+  - owner: ChatGPT
+    state: review_ready
+    task: "Final review PR #2 immediately after the synced green check run, then merge only if all gates pass"
   - owner: "@cjrandersson"
     state: action_required
-    task: "🚨 @cjrandersson — Approve the separate baseline repair for openedi-specification/reference inventory before PR #2 is merged"
+    task: "🚨 @cjrandersson — Run the final Codex sync/check pass for PR #2; no further product decision is required"
   - owner: "@gonzalolorcakeabit-bit"
     state: ready
     task: "Run Claude peer review against the updated repository including Rule IR v0"
