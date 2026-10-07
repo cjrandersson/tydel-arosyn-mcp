@@ -44,7 +44,7 @@
           "edition": "26A / 2026-04-01",
           "section": "10.3.2 APERAK-meddelande",
           "evidenceLevel": "PROCESS_GUIDE",
-          "effectiveFrom": "2026-04-01",
+          "effectiveFrom": null,
           "effectiveTo": null,
           "sourceChecksum": null
         }
