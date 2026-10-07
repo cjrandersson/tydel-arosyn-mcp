@@ -108,6 +108,7 @@ validator_result:
     fail: 1
     contract_or_runtime_failure: 2
   codex_gate: "open_for_contract_implementation"
+  codex_handoff_issue: 1
   production_rulepack_gate: "still evidence-gated; Codex must not invent missing market rules"
   performance_guardrail: "durationMs is measured output only; <15 ms remains an unproven benchmark target"
 
